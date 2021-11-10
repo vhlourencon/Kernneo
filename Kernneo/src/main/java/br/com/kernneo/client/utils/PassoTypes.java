@@ -12,5 +12,8 @@ public class PassoTypes {
 	public static final int TELA_MESAS_ABERTAS = 101;
 	public static final int CLIENTE = 102;
 	
+	
+	
+	
 
 }
