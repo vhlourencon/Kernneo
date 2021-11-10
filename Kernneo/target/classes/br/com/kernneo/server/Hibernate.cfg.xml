@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+	<session-factory>
+		<property name="javax.persistence.validation.mode">none</property>
+
+		<!-- Database connection settings -->
+		<property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+		<property name="connection.url">jdbc:mysql://10.15.28.133:3306/kernneo</property>
+		<property name="connection.username">root</property>
+		<property name="connection.password">admin</property>
+
+		<property name="connection.autoReconnect">true</property>
+		<property name="connection.failOverReadOnly">false</property>
+		<property name="connection.maxReconnects">10</property>
+
+		<!-- JDBC connection pool (use the built-in) -->
+		<property name="connection.pool_size">10</property>
+
+		<!-- SQL dialect -->
+		<property name="dialect">org.hibernate.dialect.MySQL8Dialect</property>
+
+		<!-- Enable Hibernate's automatic session context management -->
+		<property name="current_session_context_class">thread</property>
+
+
+		<!-- Echo all executed SQL to stdout -->
+		<property name="show_sql">false</property>
+		<property name="format_sql">true</property>
+
+
+		<!-- Important
+		<property name="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
+		<property name="hibernate.c3p0.acquire_increment">1</property>
+		<property name="hibernate.c3p0.idle_test_period">300</property>
+		<property name="hibernate.c3p0.timeout">120</property>
+		<property name="hibernate.c3p0.max_size">25</property>
+		<property name="hibernate.c3p0.min_size">1</property>
+		<property name="hibernate.c3p0.max_statement">0</property>
+		<property name="hibernate.c3p0.preferredTestQuery">select 1;</property>
+ -->
+
+		<property name="hibernate.temp.use_jdbc_metadata_defaults">false</property>
+		<!-- Drop and re-create the database schema on startup -->
+		<property name="hbm2ddl.auto">update</property>
+
+		<!--Mapeamentos -->
+
+		<mapping class="br.com.kernneo.client.model.TicketModel" />
+		<mapping class="br.com.kernneo.client.model.CartaoModel" />
+		<mapping class="br.com.kernneo.client.model.PlanoContasModel" />
+		<mapping class="br.com.kernneo.client.model.ObservacaoModel" />
+		<mapping class="br.com.kernneo.client.model.BancoModel" />
+		<mapping class="br.com.kernneo.client.model.ContaBancariaModel" />
+		<mapping class="br.com.kernneo.client.model.ClienteModel" />
+
+		<mapping class="br.com.kernneo.client.model.ConvenioModel" />
+		<mapping class="br.com.kernneo.client.model.EnderecoModel" />
+		<mapping class="br.com.kernneo.client.model.EnderecoClienteModel" />
+		<mapping class="br.com.kernneo.client.model.EnderecoFornecedorModel" />
+		<mapping class="br.com.kernneo.client.model.DepartamentoModel" />
+
+		<mapping class="br.com.kernneo.client.model.FornecedorModel" />
+		<mapping class="br.com.kernneo.client.model.NCMModel" />
+		<mapping class="br.com.kernneo.client.model.SubGrupoModel" />
+		<mapping class="br.com.kernneo.client.model.CategoriaModel" />
+		<mapping class="br.com.kernneo.client.model.BairroModel" />
+		<mapping class="br.com.kernneo.client.model.CidadeModel" />
+		<mapping class="br.com.kernneo.client.model.EstadoModel" />
+		<mapping class="br.com.kernneo.client.model.CFOPModel" />
+
+		<mapping class="br.com.kernneo.client.model.MesaModel" />
+		<mapping class="br.com.kernneo.client.model.CaixaModel" />
+
+		<mapping class="br.com.kernneo.client.model.ProdutoModel" />
+		<mapping class="br.com.kernneo.client.model.ComposicaoModel" />
+		<mapping class="br.com.kernneo.client.model.FuncionarioModel" />
+		<mapping class="br.com.kernneo.client.model.EnderecoFuncionarioModel" />
+		<mapping class="br.com.kernneo.client.model.FuncionarioRHModel" />
+		<mapping class="br.com.kernneo.client.model.CargoModel" />
+		<mapping class="br.com.kernneo.client.model.MesaRecebimentoModel" />
+
+		<mapping class="br.com.kernneo.client.model.ItemModel" />
+		<mapping class="br.com.kernneo.client.model.EmpresaModel" />
+		<mapping class="br.com.kernneo.client.model.UsuarioModel" />
+		<mapping class="br.com.kernneo.client.model.MovimentacaoModel" />
+		<mapping class="br.com.kernneo.client.model.EstoqueModel" />
+		<mapping class="br.com.kernneo.client.model.EstoqueLancamentoModel" />
+		<mapping class="br.com.kernneo.client.model.ComposicaoModel" />
+		<mapping class="br.com.kernneo.client.model.ComposicaoProdutoModel" />
+		<mapping class="br.com.kernneo.client.model.IcmsCSTModel" />
+		<mapping class="br.com.kernneo.client.model.IcmsCSOSNModel" />
+		<mapping class="br.com.kernneo.client.model.PISModel" />
+		<mapping class="br.com.kernneo.client.model.COFINSModel" />
+		<mapping class="br.com.kernneo.client.model.NFCeModel" />
+		<mapping class="br.com.kernneo.client.model.ContaModel" />
+		<mapping class="br.com.kernneo.client.model.ContaCategoriaModel" />
+		<mapping class="br.com.kernneo.client.model.LSTModel" />
+		<mapping class="br.com.kernneo.client.model.GeneroModel" />
+		<mapping class="br.com.kernneo.client.model.TipoItemModel" />
+		<mapping class="br.com.kernneo.client.model.OpcaoModel" />
+		<mapping class="br.com.kernneo.client.model.OpcaoAlternativaModel" />
+		<mapping class="br.com.kernneo.client.model.OpcaoCategoriaModel" />
+		<mapping class="br.com.kernneo.client.model.OpcaoProdutoModel" />
+		<mapping class="br.com.kernneo.client.model.OpcaoItemModel" />
+		<mapping class="br.com.kernneo.client.model.OpcaoItemAlternativaModel" />
+
+
+
+
+		<mapping class="br.com.kernneo.client.model.CstPisCofinsModel" />
+		<mapping class="br.com.kernneo.client.model.CstIpiModel" />
+		<mapping class="br.com.kernneo.client.model.CstIpiModel" />
+
+
+
+
+		<mapping class="br.com.kernneo.client.model.CaixaRelatorioModel" />
+		<mapping
+			class="br.com.kernneo.client.model.relatorio.RelatorioVendaPeriodoModel" />
+
+
+		<mapping
+			class="br.com.kernneo.client.model.relatorio.RelatorioVendaPeriodoModel" />
+
+
+
+		<mapping class="br.com.kernneo.client.band.model.BandLogImportacaoModel" />
+		<mapping class="br.com.kernneo.client.band.model.BandProgramaModel" />
+		<mapping class="br.com.kernneo.client.band.model.BandEmpresaModel" />
+		<mapping class="br.com.kernneo.client.band.model.BandAgenciaModel" />
+		<mapping class="br.com.kernneo.client.band.model.BandRelatorioExibicaoModel" />
+		<mapping class="br.com.kernneo.client.band.model.BandPiModel" />
+
+
+		<mapping class="br.com.kernneo.client.caravana.model.CaravanaUsuarioModel" />
+		<mapping class="br.com.kernneo.client.caravana.model.CaravanaCatParticipanteModel" />
+		<mapping class="br.com.kernneo.client.caravana.model.CaravanaCatServicoModel" />
+		<mapping class="br.com.kernneo.client.caravana.model.CaravanaLocalModel" />
+		<mapping class="br.com.kernneo.client.caravana.model.CaravanaServicoModel" />
+		<mapping class="br.com.kernneo.client.caravana.model.CaravanaParticipanteModel" />
+
+		<mapping class="br.com.kernneo.client.caravana.model.CaravanaEventoModel" />
+		<mapping class="br.com.kernneo.client.caravana.model.EventoServicoLocalModel" />
+		<mapping class="br.com.kernneo.client.caravana.model.EventoCategoriaPartModel" />
+		<mapping class="br.com.kernneo.client.caravana.model.EventoPermissaoAgendamentoModel" />
+		<mapping class="br.com.kernneo.client.caravana.model.CaravanaCredenciamentoModel" />
+		<mapping class="br.com.kernneo.client.caravana.model.CaravanaAgendamentoModel" />
+
+		<mapping class="br.com.kernneo.client.caravana.model.CredenciamentoServicoModel" />
+		<mapping class="br.com.kernneo.client.caravana.model.RelatorioCredenciamentoCategoriaModel" />
+		
+
+
+	</session-factory>
+
+</hibernate-configuration>
