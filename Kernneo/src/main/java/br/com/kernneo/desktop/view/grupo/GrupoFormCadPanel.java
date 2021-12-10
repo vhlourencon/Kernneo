@@ -26,17 +26,17 @@ public class GrupoFormCadPanel extends GenericFormCadPanel<CategoriaModel> {
 	setLayout(null);
 
 	JPanel panel = new JPanel();
-	panel.setBorder(new TitledBorder(null, "Informa\u00E7\u00F5es de Grupo", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+	panel.setBorder(new TitledBorder(null, "Informações de Categoria", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 	panel.setBounds(10, 11, 516, 80);
 	add(panel);
 	panel.setLayout(null);
 
 	JLabel labelNome = new JLabel("Nome:");
-	labelNome.setBounds(10, 38, 46, 14);
+	labelNome.setBounds(10, 38, 38, 14);
 	panel.add(labelNome);
 
 	textFieldDescricao = new JTextField();
-	textFieldDescricao.setBounds(54, 35, 438, 20);
+	textFieldDescricao.setBounds(54, 30, 438, 30);
 	panel.add(textFieldDescricao);
 	textFieldDescricao.setColumns(10);
 
@@ -44,8 +44,7 @@ public class GrupoFormCadPanel extends GenericFormCadPanel<CategoriaModel> {
 
     @Override
     public CategoriaModel getModel() {
-	model.setDescricao(textFieldDescricao.getText());
-
+	model.setCategoria_nome_portugues(textFieldDescricao.getText());
 	return model;
     }
 
@@ -57,8 +56,7 @@ public class GrupoFormCadPanel extends GenericFormCadPanel<CategoriaModel> {
 	}
 
 	super.setModel(model);
-
-	textFieldDescricao.setText(model.getDescricao());
+	textFieldDescricao.setText(model.getCategoria_nome_portugues());
 
     }
 }

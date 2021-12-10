@@ -17,21 +17,22 @@ public class PaginacaoUtils<T extends GenericModel> {
 	 * sql que faz a contagem de registros para fazer o calculo de paginas.
 	 */
 	String sqlCount = "select count(id) " + sql;
-
-	Query selectCount = session.createQuery(sqlCount);
+	
+	org.hibernate.query.Query selectCount = session.createQuery(sqlCount);
 	Long quantidadeRegistros = (Long) selectCount.uniqueResult();
 	if (quantidadeRegistros == null) {
 	    quantidadeRegistros = 0L;
 	}
-
+	
+	
 	/**
 	 * sql que tras a lista de registros
 	 */
-	Query select = session.createQuery(sql);
+	org.hibernate.query.Query select = session.createQuery(sql);
 
 	int iniPagina = pagina.getPaginaAtual();
 	iniPagina = iniPagina * pagina.getQtdeRegistro();
-
+	
 	select.setFirstResult(iniPagina);
 	select.setMaxResults(pagina.getQtdeRegistro());
 
@@ -40,13 +41,14 @@ public class PaginacaoUtils<T extends GenericModel> {
 	int nLinhasPorPagina = pagina.getQtdeRegistro();
 	int nPaginas = (int) ((quantidadeRegistros + (nLinhasPorPagina - 1)) / nLinhasPorPagina);
 	int resto = (int) (quantidadeRegistros % nLinhasPorPagina);
-
-	if (pagina.getPaginaAtual() >= nPaginas) {
+	
+	if (pagina.getPaginaAtual() > nPaginas ) {
 	    pagina.setPaginaAtual(nPaginas - 1);
 
 	    iniPagina = pagina.getPaginaAtual();
 	    iniPagina = iniPagina * pagina.getQtdeRegistro();
-
+	    
+	  
 	    select.setFirstResult(iniPagina);
 	    select.setMaxResults(pagina.getQtdeRegistro());
 

@@ -60,48 +60,48 @@ public class FornecedorFormCadPanel extends GenericFormCadPanel<FornecedorModel>
 
     private void initialize() {
 
-	setSize(758, 447);
+	setSize(758, 458);
 	setLayout(null);
 	JLabel labelRazao = new JLabel("Razão Social:");
-	labelRazao.setBounds(22, 11, 82, 14);
+	labelRazao.setBounds(22, 69, 82, 14);
 	add(labelRazao);
 
 	textFieldFornRazao = new JTextField();
-	textFieldFornRazao.setBounds(22, 25, 410, 20);
+	textFieldFornRazao.setBounds(22, 83, 410, 30);
 	add(textFieldFornRazao);
 	textFieldFornRazao.setColumns(10);
 
 	JLabel labelTipo = new JLabel("Tipo:");
-	labelTipo.setBounds(442, 11, 46, 14);
+	labelTipo.setBounds(442, 69, 46, 14);
 	add(labelTipo);
 
 	comboBoxFornTipo = new JComboBox();
-	comboBoxFornTipo.setBounds(442, 25, 97, 20);
+	comboBoxFornTipo.setBounds(442, 83, 97, 30);
 	add(comboBoxFornTipo);
 	comboBoxFornTipo.setModel(new DefaultComboBoxModel(new String[] { "Fisica", "Juridica" }));
 	comboBoxFornTipo.setSelectedIndex(0);
 
 	JLabel lblAbreviatura = new JLabel("Abreviatura:");
-	lblAbreviatura.setBounds(549, 11, 72, 14);
+	lblAbreviatura.setBounds(549, 69, 72, 14);
 	add(lblAbreviatura);
 
 	textFieldFornAbreviatura = new JTextField();
-	textFieldFornAbreviatura.setBounds(549, 25, 184, 20);
+	textFieldFornAbreviatura.setBounds(549, 83, 184, 30);
 	add(textFieldFornAbreviatura);
 	textFieldFornAbreviatura.setColumns(10);
 
 	JLabel labelNomeFantasia = new JLabel("Nome de Fantasia:");
-	labelNomeFantasia.setBounds(22, 57, 121, 14);
+	labelNomeFantasia.setBounds(22, 10, 121, 14);
 	add(labelNomeFantasia);
 	// setTextFieldPK(textFieldFornCod);
 
 	textFieldFornFantasia = new JTextField();
-	textFieldFornFantasia.setBounds(22, 75, 711, 20);
+	textFieldFornFantasia.setBounds(22, 28, 711, 30);
 	add(textFieldFornFantasia);
 	textFieldFornFantasia.setColumns(10);
 
 	JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-	tabbedPane.setBounds(22, 106, 721, 323);
+	tabbedPane.setBounds(22, 124, 721, 323);
 	add(tabbedPane);
 
 	JPanel panelInfoGerais = new JPanel();

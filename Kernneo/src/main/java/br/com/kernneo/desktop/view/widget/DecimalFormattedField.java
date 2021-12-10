@@ -5,6 +5,12 @@ import javax.swing.*;
 import java.text.*;  
 import java.awt.event.*;  
 import java.math.RoundingMode;  
+
+import java.awt.Color;  
+import javax.swing.*;  
+import java.text.*;  
+import java.awt.event.*;  
+import java.math.RoundingMode;  
 /** 
  * Classe para criar campos formatados com valores em decimal 
  * Tanto para valores simples, como para exibir máscaras monetárias  
@@ -71,6 +77,7 @@ public class DecimalFormattedField extends JFormattedTextField {
   
         this.addActionListener(new ActionListener() {  
   
+            @Override  
             public void actionPerformed(ActionEvent e) {  
                 transferFocus();  
             }  
@@ -78,10 +85,12 @@ public class DecimalFormattedField extends JFormattedTextField {
   
         this.addFocusListener(new FocusListener() {  
   
+            @Override  
             public void focusLost(FocusEvent evt) {  
                 thisFocusLost(evt);  
             }  
   
+            @Override  
             public void focusGained(FocusEvent evt) {  
                 thisFocusGained(evt);  
             }  
@@ -90,13 +99,21 @@ public class DecimalFormattedField extends JFormattedTextField {
     }  
   
     /**Verifica se o valor digitado é válido, e insere os novos valores*/  
-    public void thisFocusLost(FocusEvent evt) {  
-        String valor = getText().replace(',', '.');  
+    public void thisFocusLost(FocusEvent evt) { 
+    	String minus = "";
+    	if(getText().charAt(0) == '-') { 
+    		minus = "-";
+    	}
+    	String valor = getText().replaceAll("\\D+", "");
+		valor = valor.substring(0, valor.length() - 2) + "." + valor.substring(valor.length() - 2);
         if (!valor.equals("") && !valor.trim().isEmpty()) {  
             oldValue = valor;  
         }  
+        valor = minus + valor; 
         setValue(valor);  
     }  
+    
+    
   
     /**Limpa o campo para que seja digitado novo valor*/  
     public void thisFocusGained(FocusEvent fe) {  
@@ -181,5 +198,7 @@ public class DecimalFormattedField extends JFormattedTextField {
             return (Math.floor((d * 100.0))) / 100.0;  
         }  
     }  
+    
+    
+    
 } 
-

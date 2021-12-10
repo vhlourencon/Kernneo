@@ -2,7 +2,6 @@ package br.com.kernneo.desktop;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,18 +18,20 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.InsetsUIResource;
 import javax.swing.plaf.basic.BasicDesktopPaneUI;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import org.hibernate.Session;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.JXLoginPane;
+import org.jdesktop.swingx.auth.LoginService;
 
 import br.com.kernneo.client.exception.CategoriaException;
 import br.com.kernneo.client.exception.UnidadeException;
+import br.com.kernneo.client.model.FuncionarioModel;
 import br.com.kernneo.desktop.view.bairro.BairroListInternalFrame;
 import br.com.kernneo.desktop.view.cargo.CargoListInternalFrame;
 import br.com.kernneo.desktop.view.cartao.CartaoListInternalFrame;
@@ -40,6 +41,7 @@ import br.com.kernneo.desktop.view.contabancaria.ContaBancariaListInternalFrame;
 import br.com.kernneo.desktop.view.convenio.ConvenioListIternalFrame;
 import br.com.kernneo.desktop.view.departamento.DepartamentoListInternalFrame;
 import br.com.kernneo.desktop.view.empresa.EmpresaFormInternalFrame;
+import br.com.kernneo.desktop.view.financeiro.MovimentacaoInternalFrame;
 import br.com.kernneo.desktop.view.fornecedor.FornecedorListInternalFrame;
 import br.com.kernneo.desktop.view.funcionario.FuncionarioListInternalFrame;
 import br.com.kernneo.desktop.view.grupo.GrupoListInternalFrame;
@@ -50,27 +52,134 @@ import br.com.kernneo.desktop.view.subgrupo.SubGrupoListInternalFrame;
 import br.com.kernneo.desktop.view.ticket.TicketListInternalFrame;
 import br.com.kernneo.desktop.view.transportadora.TransportadoraListInternalFrame;
 import br.com.kernneo.desktop.view.widget.SampleDesktopMgr;
+import br.com.kernneo.desktop.view.widget.TrippleDes;
 import br.com.kernneo.server.ConnectFactory;
-import javafx.geometry.Insets;
+import br.com.kernneo.server.dao.FuncionarioDAO;
 
 public class PrincipalDesktop extends JFrame {
 
-	public static void main(String[] args) {
+	public static FuncionarioModel usarioLogado;
 
-		final PrincipalDesktop principal = new PrincipalDesktop();
-		principal.setVisible(true);
+	public static FuncionarioModel getUsarioLogado() {
+		return usarioLogado;
+	}
+
+	public static void setUsarioLogado(FuncionarioModel usarioLogado) {
+		PrincipalDesktop.usarioLogado = usarioLogado;
+	}
+
+	public static void main(String[] args) {
 		
-		principal.addWindowListener(new WindowAdapter() {
+		
+		PrincipalDesktop principalDesktop = new PrincipalDesktop();
+		principalDesktop.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+		// atalho();
+		// ConnectFactory.getSession();
+
+		principalDesktop.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				principal.setVisible(false);
-				principal.dispose();
-				
+				principalDesktop.setVisible(false);
+				principalDesktop.dispose();
+
 				System.exit(0);
 			}
 		});
+
+		String plaf = "";
+		plaf = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
+		plaf = "com.sun.java.swing.plaf.motif.MotifLookAndFeel";
+		plaf = "javax.swing.plaf.metal.MetalLookAndFeel";
+		plaf = "javax.swing.plaf.mac.MacLookAndFeel.Mac";
+		plaf = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
+		UIManager.put("Table.alternateRowColor", Color.LIGHT_GRAY);
+//	UIManager.put("FormattedTextField.contentMargins", new InsetsUIResource(0, 0, 0, 0));
+
+		try {
+			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+				if ("Nimbus".equals(info.getName())) {
+					UIManager.setLookAndFeel(info.getClassName());
+					UIManager.put("FormattedTextField.margins", "FormattedTextField.contentMargins");
+					// UIManager.getDefaults().put("TextField.font",
+					// UIManager.getFont("TextField.font"));
+					// UIManager.put("TextField.font", new Font("arial", Font.BOLD, 20 ));
+					// UIManager.put("TextField.font", new Font("arial", Font.BOLD, 20 ));
+					UIManager.getDefaults().put("TextField.contentMargins", new InsetsUIResource(0, 0, 0, 0));
+					UIManager.getDefaults().put("TextField.minimumSize", new Dimension(10, 30));
+
+					break;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		principalDesktop.setExtendedState(MAXIMIZED_BOTH);
+		SwingUtilities.updateComponentTreeUI(principalDesktop);
+
+		JXLoginPane jxLoginPane = new JXLoginPane();
+		jxLoginPane.setLoginService(new LoginService() {
+
+			@Override
+			public boolean authenticate(String name, char[] password, String server) throws Exception {
+				TrippleDes td = new TrippleDes(); 
+				
+				PrincipalDesktop.setUsarioLogado(null);
+				String passwordString = new String(password);
+				
+                FuncionarioModel funcionarioModel = null ; 
+				
+				Session session = ConnectFactory.getSession();
+				try {
+					session.beginTransaction();
+			
+					funcionarioModel = new FuncionarioDAO().obterPorLogin(name);
+				
+					session.getTransaction().commit();
+				} catch (Exception e) {
+					session.getTransaction().rollback();
+					e.printStackTrace();
+					JXErrorPane.showDialog(e);
+					throw e;
+				} finally {
+					if (session != null && session.isOpen()) {
+						session.close();
+					}
+				}
+
+				
+				
+				if (funcionarioModel !=null && funcionarioModel.getSenha() !=null && td.decrypt(funcionarioModel.getSenha()).equals(passwordString)) {
+					
+					PrincipalDesktop.setUsarioLogado(funcionarioModel);
+					return true;
+				} else {
+					return false;
+				}
+			}
+		});
+
+		JXLoginPane.showLoginDialog(principalDesktop, jxLoginPane);
+
+		if (jxLoginPane.getStatus() == JXLoginPane.Status.SUCCEEDED) {
+			principalDesktop.setVisible(true);
+
+		} else {
+			principalDesktop.setVisible(false);
+			principalDesktop.dispose();
+			System.exit(0);
+		}
+
 	}
 
 	private static JDesktopPane jDesktopPane;
+
+	static void atalho() {
+
+		MovimentacaoInternalFrame clienteListPanel = new MovimentacaoInternalFrame();
+		clienteListPanel.setVisible(true);
+		jDesktopPane.add(clienteListPanel);
+	}
 
 	public PrincipalDesktop() {
 
@@ -85,9 +194,42 @@ public class PrincipalDesktop extends JFrame {
 		jDesktopPane.setDesktopManager(new SampleDesktopMgr());
 		jDesktopPane.setUI(new BasicDesktopPaneUI());
 		jDesktopPane.putClientProperty("JDesktopPane.dragMode", "outline");
-		
-	
+
 		setContentPane(jDesktopPane);
+		createMenu();
+
+	}
+
+	private void createMenuZeca() {
+
+		JMenuBar jMenuBar = new JMenuBar();
+
+		// INÍCIO do Cadastro de Menus
+
+		JMenu jMenuCadastro = new JMenu("Cadastro");
+		jMenuBar.add(jMenuCadastro);
+
+		JMenu jMenuFinanceiro = new JMenu("Financeiro");
+		jMenuBar.add(jMenuFinanceiro);
+
+		JMenuItem jMenuItemMovimentoCaixa = new JMenuItem("Movimentação Diária");
+		jMenuFinanceiro.add(jMenuItemMovimentoCaixa);
+		jMenuItemMovimentoCaixa.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+
+		JMenu jMenuRelatorio = new JMenu("Relatórios");
+		jMenuBar.add(jMenuRelatorio);
+
+		setJMenuBar(jMenuBar);
+
+	}
+
+	private void createMenu() {
 
 		JMenuBar jMenuBar = new JMenuBar();
 
@@ -543,39 +685,6 @@ public class PrincipalDesktop extends JFrame {
 			}
 		});
 		jMenuBar.add(jMenuPDV);
-
-		String plaf = "";
-		plaf = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
-		plaf = "com.sun.java.swing.plaf.motif.MotifLookAndFeel";
-		plaf = "javax.swing.plaf.metal.MetalLookAndFeel";
-		plaf = "javax.swing.plaf.mac.MacLookAndFeel.Mac";
-		plaf = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
-		UIManager.put("Table.alternateRowColor", Color.LIGHT_GRAY);
-//	UIManager.put("FormattedTextField.contentMargins", new InsetsUIResource(0, 0, 0, 0));
-
-		try {
-			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-				if ("Nimbus".equals(info.getName())) {
-					UIManager.setLookAndFeel(info.getClassName());
-					UIManager.put("FormattedTextField.margins", "FormattedTextField.contentMargins");
-					// UIManager.getDefaults().put("TextField.font",
-					// UIManager.getFont("TextField.font"));
-					// UIManager.put("TextField.font", new Font("arial", Font.BOLD, 20 ));
-					// UIManager.put("TextField.font", new Font("arial", Font.BOLD, 20 ));
-					UIManager.getDefaults().put("TextField.contentMargins", new InsetsUIResource(0, 0, 0, 0));
-					UIManager.getDefaults().put("TextField.minimumSize", new Dimension(10, 30));
-
-					break;
-				}
-			}
-		} catch (Exception e) {
-			// If Nimbus is not available, you can set the GUI to another look
-			e.printStackTrace();
-		}
-		  //maximiza o frame
-        this.setExtendedState(MAXIMIZED_BOTH);
-		SwingUtilities.updateComponentTreeUI(this);
-
 	}
 
 	public static JDesktopPane getjDesktopPane() {

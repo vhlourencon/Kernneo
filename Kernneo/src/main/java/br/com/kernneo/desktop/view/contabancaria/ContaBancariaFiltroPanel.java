@@ -36,12 +36,11 @@ public class ContaBancariaFiltroPanel  extends GenericFiltroPanel<ContaBancariaM
     @Override
     public ContaBancariaModel getModelFiltro() {
 	if (modelFiltro == null) { 
-	    setModelFiltro(new ContaBancariaModel());
-	    
-	    getModelFiltro().setDescricao(null);
+	    setModelFiltro(new ContaBancariaModel());  
+	    getModelFiltro().setNome(null);
 	}
 	
-	modelFiltro.setDescricao(textField.getText());
+	modelFiltro.setNome(textField.getText());
 	
 
 	return modelFiltro;

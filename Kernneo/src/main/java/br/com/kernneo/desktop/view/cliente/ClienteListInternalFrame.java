@@ -23,13 +23,14 @@ public class ClienteListInternalFrame extends GenericListInternalFrame<Cliente, 
 	setModel(new ClienteModel());
 	setPagina(new GenericPagina<ClienteModel>());
 	setColunasDaTabela(new String[] { "cod" , "Descrição" });
-	setGenericFiltroPanel(new ClienteFiltroPanel(), new ClienteModel(),  true);
+	setGenericFiltroPanel(new ClienteFiltroPanel(), new ClienteModel(),  false);
 	setTitle("Cadastro de Clientes");
 	
 	table.getColumnModel().getColumn(0).setResizable(true);
 	
 	table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+	
 	
 
     }

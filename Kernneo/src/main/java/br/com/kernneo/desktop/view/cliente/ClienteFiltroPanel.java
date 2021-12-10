@@ -17,18 +17,18 @@ public class ClienteFiltroPanel  extends GenericFiltroPanel<ClienteModel> {
    
     public ClienteFiltroPanel() {
     	buttonOk.setSize(77, 30);
-    	buttonOk.setLocation(312, 41); 
+    	buttonOk.setLocation(325, 40); 
 
 	setBorder(new TitledBorder(null, "Filtrar por ", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 	setLayout(null);
-	setPreferredSize(new Dimension(536, 80));
+	setPreferredSize(new Dimension(536, 99));
 	
 	JLabel lblNewLabel_1 = new JLabel("Descrição:");
-	lblNewLabel_1.setBounds(10, 24, 101, 14);
+	lblNewLabel_1.setBounds(23, 23, 101, 14);
 	add(lblNewLabel_1);
 	
 	textField = new JTextField();
-	textField.setBounds(10, 41, 292, 30);
+	textField.setBounds(23, 40, 292, 30);
 	add(textField);
 	textField.setColumns(10);
     }

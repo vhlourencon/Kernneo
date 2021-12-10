@@ -61,9 +61,6 @@ public class GenericListInternalFrame<NEGOCIO extends Negocio, GENERICMODEL exte
 		setLocation(250, 50);
 		setSize(560, 526);
 		setIconifiable(true);
-		
-		
-		
 
 		buttonBarComponent = new ButtonBarComponent();
 		buttonBarComponent.btIncluir.addActionListener(new ActionListener() {
@@ -219,12 +216,12 @@ public class GenericListInternalFrame<NEGOCIO extends Negocio, GENERICMODEL exte
 
 	protected void acaoExcluir(GENERICMODEL model) {
 		try {
-		    Conexao.Executar(new Comando() {
-				
+			Conexao.Executar(new Comando() {
+
 				@Override
 				public void execute(Session session) throws Exception {
 					negocio.excluir(model);
-				   if (isPaginada() == false) {
+					if (isPaginada() == false) {
 						getPagina().getListaRegistros().remove((GENERICMODEL) model);
 						acaoAtualizarPagina();
 					} else {
@@ -238,8 +235,8 @@ public class GenericListInternalFrame<NEGOCIO extends Negocio, GENERICMODEL exte
 
 				}
 			});
-		    JOptionPane.showMessageDialog(this, "Excluido com sucesso!");
-		
+			JOptionPane.showMessageDialog(this, "Excluido com sucesso!");
+
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, e.getMessage());
 			e.printStackTrace();
@@ -251,16 +248,16 @@ public class GenericListInternalFrame<NEGOCIO extends Negocio, GENERICMODEL exte
 		try {
 
 			Conexao.Executar(new Comando() {
-				
+
 				@Override
 				public void execute(Session session) throws Exception {
 					daoEditar(getFormCadPanel().getModel());
-					acaoAtualizarPagina();
-					setModoLista();
-					
+				
+
 				}
 			});
-			
+			acaoAtualizarPagina();
+			setModoLista();
 			JOptionPane.showMessageDialog(this, "Alterado com sucesso!");
 
 		} catch (Exception e) {
@@ -289,16 +286,17 @@ public class GenericListInternalFrame<NEGOCIO extends Negocio, GENERICMODEL exte
 	public void acaoObterTodos() {
 		try {
 			Conexao.Executar(new Comando() {
-				
+
 				@Override
 				public void execute(Session session) throws Exception {
-					ArrayList<GENERICMODEL> lista = negocio.obterTodosComFiltro(getGenericFiltroPanel().getModelFiltro());
+					ArrayList<GENERICMODEL> lista = negocio
+							.obterTodosComFiltro(getGenericFiltroPanel().getModelFiltro());
 					getPagina().setListaRegistros(lista);
 					acaoAtualizarPagina();
-				
+
 				}
 			});
-		
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, e.getMessage());
@@ -309,9 +307,15 @@ public class GenericListInternalFrame<NEGOCIO extends Negocio, GENERICMODEL exte
 	public void acaoSalvar() {
 
 		try {
+			Conexao.Executar(new Comando() {
 
-			GenericModel model = getFormCadPanel().getModel();
-			daoSalvar((GENERICMODEL) model);
+				@Override
+				public void execute(Session session) throws Exception {
+					GenericModel model = getFormCadPanel().getModel();
+					daoSalvar((GENERICMODEL) model);
+					
+				}
+			});
 			if (isPaginada() == false) {
 				getPagina().getListaRegistros().add((GENERICMODEL) model);
 				acaoAtualizarPagina();
@@ -322,7 +326,7 @@ public class GenericListInternalFrame<NEGOCIO extends Negocio, GENERICMODEL exte
 				} else {
 					acaoIrUltimaPagina();
 				}
-			}
+			}				
 			setModoLista();
 			JOptionPane.showMessageDialog(this, "Inserido com sucesso!");
 			eventoAcaoSalvar((GENERICMODEL) model);
@@ -337,8 +341,16 @@ public class GenericListInternalFrame<NEGOCIO extends Negocio, GENERICMODEL exte
 
 	public void acaoIrPrimeiraPagina() {
 		try {
-			getPagina().setPaginaAtual(0);
-			setPagina(negocio.obterPaginaPosterior(getPagina(), getFiltroModel()));
+			Conexao.Executar(new Comando() {
+				
+				@Override
+				public void execute(Session session) throws Exception {
+					getPagina().setPaginaAtual(0);
+					setPagina(negocio.obterPaginaPosterior(getPagina(), getFiltroModel()));
+					
+				}
+			});
+			
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, e.getMessage());
 			e.printStackTrace();
@@ -348,8 +360,15 @@ public class GenericListInternalFrame<NEGOCIO extends Negocio, GENERICMODEL exte
 
 	public void acaoIrProximaPagina() {
 		try {
-			paginacaoButtonBarComponent.liberarComponentes(false);
-			setPagina(negocio.obterPaginaPosterior(getPagina(), getFiltroModel()));
+			Conexao.Executar(new Comando() {
+				
+				@Override
+				public void execute(Session session) throws Exception {
+					paginacaoButtonBarComponent.liberarComponentes(false);
+					setPagina(negocio.obterPaginaPosterior(getPagina(), getFiltroModel()));
+				}
+			});
+		
 
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, e.getMessage());
@@ -360,9 +379,18 @@ public class GenericListInternalFrame<NEGOCIO extends Negocio, GENERICMODEL exte
 
 	public void acaoIrPaginaAnterior() {
 		try {
-			paginacaoButtonBarComponent.liberarComponentes(false);
-			setPagina(negocio.obterPaginaAnterior(getPagina(), getFiltroModel()));
+			Conexao.Executar(new Comando() {
+				
+				@Override
+				public void execute(Session session) throws Exception {
+					paginacaoButtonBarComponent.liberarComponentes(false);
+					setPagina(negocio.obterPaginaAnterior(getPagina(), getFiltroModel()));
 
+					
+				}
+			});
+			
+		
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, e.getMessage());
 			e.printStackTrace();
@@ -372,10 +400,19 @@ public class GenericListInternalFrame<NEGOCIO extends Negocio, GENERICMODEL exte
 
 	public void acaoIrUltimaPagina() {
 		try {
-			paginacaoButtonBarComponent.liberarComponentes(false);
-			getPagina().setPaginaAtual(getPagina().getUltimaPagina() - 1);
-			setPagina(negocio.obterPaginaPosterior(getPagina(), getFiltroModel()));
+			Conexao.Executar(new Comando() {
+				
+				@Override
+				public void execute(Session session) throws Exception {
+					paginacaoButtonBarComponent.liberarComponentes(false);
+					getPagina().setPaginaAtual(getPagina().getUltimaPagina() - 1);
+					setPagina(negocio.obterPaginaPosterior(getPagina(), getFiltroModel()));
 
+					
+				}
+			});
+		
+			
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, e.getMessage());
 			e.printStackTrace();
@@ -385,14 +422,22 @@ public class GenericListInternalFrame<NEGOCIO extends Negocio, GENERICMODEL exte
 
 	public void acaoAtualizarPagina() {
 		try {
-			paginacaoButtonBarComponent.liberarComponentes(false);
+			Conexao.Executar(new Comando() {
+				
+				@Override
+				public void execute(Session session) throws Exception {
+					paginacaoButtonBarComponent.liberarComponentes(false);
 
-			if (isPaginada) {
-				getPagina().setPaginaAtual(getPagina().getPaginaAtual() - 1);
-				setPagina(negocio.obterPaginaPosterior(getPagina(), getModel()));
-			} else {
-				setPagina(getPagina());
-			}
+					if (isPaginada) {
+						getPagina().setPaginaAtual(getPagina().getPaginaAtual() - 1);
+						setPagina(negocio.obterPaginaPosterior(getPagina(), getModel()));
+					} else {
+						setPagina(getPagina());
+					}
+					
+				}
+			});
+			
 
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, e.getMessage());
@@ -461,7 +506,6 @@ public class GenericListInternalFrame<NEGOCIO extends Negocio, GENERICMODEL exte
 				return false;
 			}
 		});
-	
 
 		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 		dtcr.setHorizontalAlignment(SwingConstants.CENTER);

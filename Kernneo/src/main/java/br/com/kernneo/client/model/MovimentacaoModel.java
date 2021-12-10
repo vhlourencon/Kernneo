@@ -1,5 +1,7 @@
 package br.com.kernneo.client.model;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -11,89 +13,158 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.docs.MobileDevelopment;
 
 import br.com.kernneo.client.types.FormaDePagamento;
+import br.com.kernneo.client.types.MovimentacaoFinanceiraTypes;
 import br.com.kernneo.client.types.MovimentacaoTypes;
 
 @Table
 @Entity(name = "movimentacao")
 public class MovimentacaoModel extends GenericModel {
 
-    @ManyToOne
-    @JoinColumn(name = "id_caixa")
-    private CaixaModel caixa;
-    private Date dataHora;
-    private String descricao;
-    private Double valor;
-    private FormaDePagamento formaDePagamento;
-    private String observacao;
-    
-    
-  
+	@ManyToOne
+	@JoinColumn(name = "id_movimentacao_pai")
+	private MovimentacaoModel movimentacaoPai;
 
-    @Enumerated(EnumType.STRING)
-    private MovimentacaoTypes movimentacaoTypes;
+	@ManyToOne
+	@JoinColumn(name = "id_categoria")
+	private CategoriaModel categoria;
 
-    public CaixaModel getCaixa() {
-	return caixa;
-    }
+	@ManyToOne
+	@JoinColumn(name = "id_conta")
+	private ContaBancariaModel conta;
 
-    public void setCaixa(CaixaModel caixa) {
-	this.caixa = caixa;
-    }
+	@ManyToOne
+	@JoinColumn(name = "id_fornecedor")
+	private FornecedorModel fornecedor;
+	
+	@ManyToOne
+	@JoinColumn(name = "id_cliente")
+	private ClienteModel cliente;
 
-    public Date getDataHora() {
-	return dataHora;
-    }
+	private BigDecimal valor;
+	private Date dataHora;
+	private String descricao;
 
-    public void setDataHora(Date dataHora) {
-	this.dataHora = dataHora;
-    }
+	private boolean repetir;
+	private int repetirQtde;
 
-    public String getDescricao() {
-	return descricao;
-    }
+	private boolean contaMovimentacaoInicial;
 
-    public void setDescricao(String descricao) {
-	this.descricao = descricao;
-    }
+	@Enumerated(EnumType.STRING)
+	private MovimentacaoFinanceiraTypes tipo;
 
-    public Double getValor() {
-	return valor;
-    }
+	public MovimentacaoModel getMovimentacaoPai() {
+		return movimentacaoPai;
+	}
 
-    public void setValor(Double valor) {
-	this.valor = valor;
-    }
+	public void setMovimentacaoPai(MovimentacaoModel movimentacaoPai) {
+		this.movimentacaoPai = movimentacaoPai;
+	}
 
-    public FormaDePagamento getFormaDePagamento() {
-	return formaDePagamento;
-    }
+	public CategoriaModel getCategoria() {
+		return categoria;
+	}
 
-    public void setFormaDePagamento(FormaDePagamento formaDePagamento) {
-	this.formaDePagamento = formaDePagamento;
-    }
+	public void setCategoria(CategoriaModel categoria) {
+		this.categoria = categoria;
+	}
 
-    public String getObservacao() {
-	return observacao;
-    }
+	public ContaBancariaModel getConta() {
+		return conta;
+	}
 
-    public void setObservacao(String observacao) {
-	this.observacao = observacao;
-    }
+	public void setConta(ContaBancariaModel conta) {
+		this.conta = conta;
+	}
 
-    public MovimentacaoTypes getMovimentacaoTypes() {
-	return movimentacaoTypes;
-    }
+	public FornecedorModel getFornecedor() {
+		return fornecedor;
+	}
 
-    public void setMovimentacaoTypes(MovimentacaoTypes movimentacaoTypes) {
-	this.movimentacaoTypes = movimentacaoTypes;
-    }
+	public void setFornecedor(FornecedorModel fornecedor) {
+		this.fornecedor = fornecedor;
+	}
 
-    @Override
-    public Record toRecord() {
-	// TODO Auto-generated method stub
-	return null;
-    }
+	public BigDecimal getValor() {
+		if (valor != null) {
+			valor = valor.setScale(2, RoundingMode.HALF_EVEN);
+		}
+
+		return valor;
+	}
+
+	public void setValor(BigDecimal valor) {
+		if (valor != null) {
+			valor = valor.setScale(2, RoundingMode.HALF_EVEN);
+		}
+		this.valor = valor;
+	}
+
+	public Date getDataHora() {
+		return dataHora;
+	}
+
+	public void setDataHora(Date dataHora) {
+		this.dataHora = dataHora;
+	}
+
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
+	public boolean isRepetir() {
+		return repetir;
+	}
+
+	public void setRepetir(boolean repetir) {
+		this.repetir = repetir;
+	}
+
+	public int getRepetirQtde() {
+		return repetirQtde;
+	}
+
+	public void setRepetirQtde(int repetirQtde) {
+		this.repetirQtde = repetirQtde;
+	}
+
+	public MovimentacaoFinanceiraTypes getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(MovimentacaoFinanceiraTypes tipo) {
+		this.tipo = tipo;
+	}
+
+	@Override
+	public Record toRecord() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public boolean isContaMovimentacaoInicial() {
+		return contaMovimentacaoInicial;
+	}
+	
+	
+	
+
+	public ClienteModel getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(ClienteModel cliente) {
+		this.cliente = cliente;
+	}
+
+	public void setContaMovimentacaoInicial(boolean contaMovimentacaoInicial) {
+		this.contaMovimentacaoInicial = contaMovimentacaoInicial;
+	}
 
 }

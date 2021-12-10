@@ -112,7 +112,7 @@ public class Categoria extends Negocio<CategoriaModel, CategoriaDAO, CategoriaEx
 				vo = obterModelAtualizadoComDetalhes(vo);
 				return vo;
 			} catch (Exception e) {
-				throw (CategoriaException) new Exception("Ocorreu um erro ao tentar salvar:\n" + e.getMessage());
+				throw  new CategoriaException("Ocorreu um erro ao tentar salvar:\n" + e.getMessage());
 			}
 		} else {
 			throw exc;

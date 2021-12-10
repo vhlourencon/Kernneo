@@ -110,5 +110,11 @@ public class ClienteModel extends GenericModel {
 
 	return record;
     }
+    
+    @Override
+    public String toString() {
+    	// TODO Auto-generated method stub
+    	return getNome();
+    }
 
 }

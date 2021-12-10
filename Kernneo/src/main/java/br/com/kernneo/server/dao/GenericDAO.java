@@ -53,7 +53,6 @@ public abstract class GenericDAO<GENERICMODEL extends GenericModel> {
 	public GENERICMODEL obterPorId(GENERICMODEL model) throws SQLException {
 
 		Session session = ConnectFactory.getSession();
-
 		org.hibernate.Query select = session
 				.createQuery("select g FROM " + model.getClass().getCanonicalName() + " g WHERE g.id = :id ");
 		select.setLong("id", model.getId());
@@ -91,7 +90,6 @@ public abstract class GenericDAO<GENERICMODEL extends GenericModel> {
 	public ArrayList<GenericModel> obterTodos(Class c) throws SQLException {
 
 		Session session = ConnectFactory.getSession();
-
 		Query select = session.createQuery(" FROM " + c.getCanonicalName() + " g WHERE g.deletado = :deletado");
 		select.setParameter("deletado", false);
 		ArrayList<GenericModel> lista = (ArrayList<GenericModel>) select.getResultList();

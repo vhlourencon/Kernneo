@@ -5,6 +5,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cascade;
 
@@ -30,7 +31,16 @@ public class FuncionarioModel extends GenericModel {
     private CargoModel cargo;
 
     public boolean ativo;
+    private String login; 
     private String senha;
+    
+    
+    @Transient
+    private String senhaTemp; 
+    
+    @Transient
+    private String confirmaSenhaTemp;
+    
     private String cpf;
     private String rg;
 
@@ -90,7 +100,36 @@ public class FuncionarioModel extends GenericModel {
 	this.senha = senha;
     }
 
-    public EnderecoFuncionarioModel getEnderecoFuncionario() {
+    
+    
+    
+    
+ 
+	public String getSenhaTemp() {
+		return senhaTemp;
+	}
+
+	public void setSenhaTemp(String senhaTemp) {
+		this.senhaTemp = senhaTemp;
+	}
+
+	public String getConfirmaSenhaTemp() {
+		return confirmaSenhaTemp;
+	}
+
+	public void setConfirmaSenhaTemp(String confirmaSenhaTemp) {
+		this.confirmaSenhaTemp = confirmaSenhaTemp;
+	}
+
+	public String getLogin() {
+		return login;
+	}
+
+	public void setLogin(String login) {
+		this.login = login;
+	}
+
+	public EnderecoFuncionarioModel getEnderecoFuncionario() {
 	if(enderecoFuncionario == null)
 	    enderecoFuncionario = new EnderecoFuncionarioModel();
         return enderecoFuncionario;

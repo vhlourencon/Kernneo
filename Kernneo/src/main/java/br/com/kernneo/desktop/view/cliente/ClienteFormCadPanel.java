@@ -24,20 +24,20 @@ public class ClienteFormCadPanel extends GenericFormCadPanel<ClienteModel> {
     private void initialize() {
 
 	//setSize(379, 100);
-    	setLayout(new MigLayout("", "", "[50px]"));
+    	setLayout(null);
 
 	JPanel panel = new JPanel();
 	panel.setBorder(new TitledBorder(null, "Informa\u00E7\u00F5es de Cliente", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-	panel.setBounds(10, 11, 430, 102);
-	add(panel, "");
-	panel.setLayout(new MigLayout());
+	panel.setBounds(10, 11, 446, 99);
+	add(panel, "cell 0 0");
+	panel.setLayout(null);
 
 	JLabel labelNome = new JLabel("Nome:");
-	labelNome.setBounds(10, 31, 46, 14);
+	labelNome.setBounds(20, 26, 46, 14);
 	panel.add(labelNome);
 
 	textFieldDescricao = new JTextField();
-	textFieldDescricao.setBounds(10, 48, 300, 30);
+	textFieldDescricao.setBounds(20, 43, 400, 30);
 
 	panel.add(textFieldDescricao);
 	textFieldDescricao.setColumns(50);

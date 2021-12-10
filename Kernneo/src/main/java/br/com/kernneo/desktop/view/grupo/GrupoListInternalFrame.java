@@ -24,8 +24,9 @@ public class GrupoListInternalFrame extends GenericListInternalFrame<Categoria, 
 	setNegocio(new Categoria());
 	setModel(new CategoriaModel());
 	setPagina(new GenericPagina<CategoriaModel>());
-	setColunasDaTabela(new String[] { "cod" , "Descrição" });
-	setGenericFiltroPanel(new GrupoFiltroPanel(), new CategoriaModel(),  true);
+	setColunasDaTabela(new String[] { "cod" , "Nome" });
+	setGenericFiltroPanel(new GrupoFiltroPanel(), new CategoriaModel(),  false);
+	setTitle("Cadastro de Categoria");
 	
 	table.getColumnModel().getColumn(0).setResizable(true);
 	
@@ -33,9 +34,10 @@ public class GrupoListInternalFrame extends GenericListInternalFrame<Categoria, 
 	table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 	
+	setModoLista();
 	
 	
-	
+
 	
 
     }
@@ -43,7 +45,7 @@ public class GrupoListInternalFrame extends GenericListInternalFrame<Categoria, 
     @Override
     public String[] modelToRow(CategoriaModel model) {
 	String id = String.valueOf(model.getId());
-	String descricao = model.getDescricao();
+	String descricao = model.getCategoria_nome_portugues();
 	
 
 	String[] row = new String[] { id, descricao };

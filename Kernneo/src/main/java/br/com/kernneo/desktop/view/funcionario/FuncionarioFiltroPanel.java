@@ -13,19 +13,19 @@ public class FuncionarioFiltroPanel extends GenericFiltroPanel<FuncionarioModel>
     private JTextField textField;
 
     public FuncionarioFiltroPanel() {
-	buttonOk.setSize(77, 28);
-	buttonOk.setLocation(238, 34);
+	buttonOk.setSize(77, 30);
+	buttonOk.setLocation(444, 48);
 
 	setBorder(new TitledBorder(null, "Filtrar por ", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 	setLayout(null);
-	setPreferredSize(new Dimension(536, 80));
+	setPreferredSize(new Dimension(545, 103));
 
 	JLabel jLabelNome = new JLabel("Nome:");
-	jLabelNome.setBounds(10, 21, 101, 14);
+	jLabelNome.setBounds(26, 32, 101, 14);
 	add(jLabelNome);
 
 	textField = new JTextField();
-	textField.setBounds(10, 38, 218, 20);
+	textField.setBounds(26, 48, 410, 30);
 	add(textField);
 	textField.setColumns(10);
     }

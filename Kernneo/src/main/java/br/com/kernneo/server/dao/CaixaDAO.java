@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import br.com.kernneo.client.model.CaixaRelatorioModel;
 import br.com.kernneo.client.model.CaixaModel;
@@ -16,7 +17,8 @@ public class CaixaDAO extends GenericDAO<CaixaModel> {
     public CaixaModel obterCaixaAberto() throws SQLException {
 
 	Session session = ConnectFactory.getSession();
-
+	
+	
 	org.hibernate.Query select = session.createQuery("select g FROM " + CaixaModel.class.getCanonicalName() + " g WHERE g.aberto = :aberto  and deletado=:deletado");
 	select.setBoolean("aberto", true);
 	select.setBoolean("deletado", false);

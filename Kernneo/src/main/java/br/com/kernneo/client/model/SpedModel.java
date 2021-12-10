@@ -6,8 +6,7 @@ import com.smartgwt.client.data.Record;
 
 public class SpedModel extends GenericModel {
     
-    
-
+   
     private String cod_ver;
     private String tipo_escrit;
     private String ind_sit_esp;

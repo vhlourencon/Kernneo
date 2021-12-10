@@ -134,5 +134,11 @@ public class CategoriaModel extends GenericModel {
 	public void setListaDeOpcaoDaCategoria(ArrayList<OpcaoCategoriaModel> listaDeOpcaoDaCategoria) {
 		this.listaDeOpcaoDaCategoria = listaDeOpcaoDaCategoria;
 	}
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return getCategoria_nome_portugues();
+	}
 
 }

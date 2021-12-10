@@ -35,7 +35,7 @@ public class ContaBancariaListInternalFrame extends GenericListInternalFrame<Con
 	
 	
 	
-	
+
 	
 
     }
@@ -43,7 +43,7 @@ public class ContaBancariaListInternalFrame extends GenericListInternalFrame<Con
     @Override
     public String[] modelToRow(ContaBancariaModel model) {
 	String id = String.valueOf(model.getId());
-	String descricao = model.getDescricao();
+	String descricao = model.getNome();
 	
 
 	String[] row = new String[] { id, descricao };
