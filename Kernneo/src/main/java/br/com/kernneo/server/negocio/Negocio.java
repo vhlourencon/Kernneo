@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.hibernate.Session;
 
 import br.com.kernneo.client.exception.ClienteException;
+import br.com.kernneo.client.model.FuncionarioModel;
 import br.com.kernneo.client.model.GenericModel;
 import br.com.kernneo.client.utils.GenericPagina;
 import br.com.kernneo.server.ConnectFactory;
@@ -67,6 +68,15 @@ public abstract class Negocio<GENERICMODEL extends GenericModel, DAOG extends Ge
 			throw (EXCEPTION) new Exception("Ocorreu um erro ao tentar excluir:\n" + e.getMessage());
 		}
 	}
+	
+	public void excluir(GENERICMODEL model,FuncionarioModel funcionarioDeleteModel) throws EXCEPTION {
+		try {
+			dao.excluir(model);
+		} catch (SQLException e) {
+			throw (EXCEPTION) new Exception("Ocorreu um erro ao tentar excluir:\n" + e.getMessage());
+		}
+	}
+
 
 	public void setarDeletado(GENERICMODEL model) throws EXCEPTION {
 		try {

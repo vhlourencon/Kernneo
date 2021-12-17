@@ -2,8 +2,10 @@ package br.com.kernneo.server.negocio;
 
 import java.math.BigDecimal;
 
+import br.com.kernneo.client.exception.FuncionarioException;
 import br.com.kernneo.client.exception.MovimentacaoException;
 import br.com.kernneo.client.model.CaixaModel;
+import br.com.kernneo.client.model.FuncionarioModel;
 import br.com.kernneo.client.model.MovimentacaoModel;
 import br.com.kernneo.client.types.MovimentacaoFinanceiraTypes;
 import br.com.kernneo.server.dao.MovimentacaoDAO;
@@ -13,6 +15,46 @@ public class Movimentacao extends Negocio<MovimentacaoModel, MovimentacaoDAO, Mo
 	public Movimentacao() {
 		super();
 		dao = new MovimentacaoDAO();
+	}
+	
+	
+	@Override
+	public void excluir(MovimentacaoModel model) throws MovimentacaoException {
+
+		if (model.getUsuarioDelete() != null && model.getUsuarioSave() != null) {
+			FuncionarioModel funcionarioDeleteModel = null;
+			try {
+				funcionarioDeleteModel = new Funcionario().obterPorId(model.getUsuarioDelete());
+				if (funcionarioDeleteModel.getPermissaoMovFinanceiraModel() != null) {
+					if (funcionarioDeleteModel.getId().compareTo(model.getUsuarioSave().getId()) == 0) {
+						if (funcionarioDeleteModel.getPermissaoMovFinanceiraModel()
+								.isDeleteUsuarioLancamentoFeito() == false) {
+							throw new MovimentacaoException("Usuário sem permissao para deletar esse registro!");
+						}
+						if (funcionarioDeleteModel.getPermissaoMovFinanceiraModel()
+								.isDeleteOutrosLancamentoPendente() == false) {
+							throw new MovimentacaoException("Usuário sem permissao para deletar esse registro!");
+						}
+					} else {
+						if (funcionarioDeleteModel.getPermissaoMovFinanceiraModel()
+								.isDeleteOutrosLancamentoFeito() == false) {
+							throw new MovimentacaoException("Usuário sem permissao para deletar esse registro!");
+						}
+						if (funcionarioDeleteModel.getPermissaoMovFinanceiraModel()
+								.isDeleteOutrosLancamentoPendente() == false) {
+							throw new MovimentacaoException("Usuário sem permissao para deletar esse registro!");
+						}
+					}
+				}
+
+			} catch (FuncionarioException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				throw new MovimentacaoException(e.getLocalizedMessage());
+			}
+
+		}
+		super.excluir(model);
 	}
 
 	@Override
@@ -27,14 +69,14 @@ public class Movimentacao extends Negocio<MovimentacaoModel, MovimentacaoDAO, Mo
 				// }
 				// vo.setCaixa(caixaModel);
 				BigDecimal valorAux = vo.getValor();
-				if(vo.getTipo() == MovimentacaoFinanceiraTypes.credito) { 
-					if(valorAux.compareTo(BigDecimal.ZERO) < 0) { 
-						valorAux = valorAux.negate(); 
+				if (vo.getTipo() == MovimentacaoFinanceiraTypes.credito) {
+					if (valorAux.compareTo(BigDecimal.ZERO) < 0) {
+						valorAux = valorAux.negate();
 					}
 				}
-				if(vo.getTipo() == MovimentacaoFinanceiraTypes.debito) { 
-					if(valorAux.compareTo(BigDecimal.ZERO) > 0) { 
-						valorAux = valorAux.negate(); 
+				if (vo.getTipo() == MovimentacaoFinanceiraTypes.debito) {
+					if (valorAux.compareTo(BigDecimal.ZERO) > 0) {
+						valorAux = valorAux.negate();
 					}
 				}
 				vo.setValor(valorAux);

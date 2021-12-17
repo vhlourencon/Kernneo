@@ -108,6 +108,8 @@ public class FuncionarioFormCadPanel extends GenericFormCadPanel<FuncionarioMode
 
 	private TrippleDes td;
 
+	private FuncionarioPerMovimentacaoPanel funcionarioPerMovimentacaoPanel;
+
 	public FuncionarioFormCadPanel() {
 		try {
 			initialize();
@@ -214,7 +216,7 @@ public class FuncionarioFormCadPanel extends GenericFormCadPanel<FuncionarioMode
 		// ComboItem(unidadeModel.getDescricao(),
 		// unidadeModel.getId().toString()));
 		// }
-		FuncionarioPerMovimentacaoPanel funcionarioPerMovimentacaoPanel = new FuncionarioPerMovimentacaoPanel();
+		 funcionarioPerMovimentacaoPanel = new FuncionarioPerMovimentacaoPanel();
 
 		tabbedPane.addTab("Mov. Financeira", null, funcionarioPerMovimentacaoPanel, null);
 
@@ -478,6 +480,13 @@ public class FuncionarioFormCadPanel extends GenericFormCadPanel<FuncionarioMode
 		model.setConfirmaSenhaTemp(new String(confirmaPasswordField.getPassword()));
 		model.setSenha(td.encrypt(model.getSenhaTemp()));
 		
+		model.getPermissaoMovFinanceiraModel().setDeleteOutrosLancamentoPendente(funcionarioPerMovimentacaoPanel.getCheckBoxOutrosPendentes().isSelected());;
+		model.getPermissaoMovFinanceiraModel().setDeleteOutrosLancamentoFeito(funcionarioPerMovimentacaoPanel.getCheckBoxOutrosRecebidos().isSelected());;
+		
+		model.getPermissaoMovFinanceiraModel().setDeleteUsuarioLancamentoPendente(funcionarioPerMovimentacaoPanel.getCheckBoxUsuarioPendente().isSelected());;
+		model.getPermissaoMovFinanceiraModel().setDeleteUsuarioLancamentoFeito(funcionarioPerMovimentacaoPanel.getCheckBoxUsuariorecebidoPago().isSelected());;
+		
+		
 		return model;
 	}
 
@@ -515,6 +524,21 @@ public class FuncionarioFormCadPanel extends GenericFormCadPanel<FuncionarioMode
 		confirmaPasswordField.setEnabled(model.isAtivo());
 
 		textFieldLogin.setEnabled(model.isAtivo());
+		
+		/*
+		 * PERMISSAO DE MOV. FINANCEIRA
+		 */
+		// lima os checkbox 
+		 funcionarioPerMovimentacaoPanel.getCheckBoxOutrosPendentes().setSelected(false);
+		 funcionarioPerMovimentacaoPanel.getCheckBoxOutrosRecebidos().setSelected(false);
+		 funcionarioPerMovimentacaoPanel.getCheckBoxUsuarioPendente().setSelected(false);
+		 funcionarioPerMovimentacaoPanel.getCheckBoxUsuariorecebidoPago().setSelected(false);
+		 
+		 funcionarioPerMovimentacaoPanel.getCheckBoxOutrosPendentes().setSelected(model.getPermissaoMovFinanceiraModel().isDeleteOutrosLancamentoPendente());
+		 funcionarioPerMovimentacaoPanel.getCheckBoxOutrosRecebidos().setSelected(model.getPermissaoMovFinanceiraModel().isDeleteOutrosLancamentoFeito());
+		 funcionarioPerMovimentacaoPanel.getCheckBoxUsuarioPendente().setSelected(model.getPermissaoMovFinanceiraModel().isDeleteUsuarioLancamentoPendente());
+		 funcionarioPerMovimentacaoPanel.getCheckBoxUsuariorecebidoPago().setSelected(model.getPermissaoMovFinanceiraModel().isDeleteUsuarioLancamentoFeito());
+		 
 
 	}
 

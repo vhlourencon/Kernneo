@@ -45,7 +45,6 @@ public class ContaBancariaListInternalFrame extends GenericListInternalFrame<Con
 	String id = String.valueOf(model.getId());
 	String descricao = model.getNome();
 	
-
 	String[] row = new String[] { id, descricao };
 	return row;
 

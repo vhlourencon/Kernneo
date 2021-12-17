@@ -18,6 +18,8 @@ public class BandAgenciaModel extends GenericModel {
 	private String bairro;
 	private String cidade;
 	private String uf;
+	
+	
 
 	public String getNome() {
 		return nome;

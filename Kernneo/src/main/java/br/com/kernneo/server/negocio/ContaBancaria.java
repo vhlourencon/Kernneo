@@ -13,7 +13,7 @@ public class ContaBancaria extends Negocio<ContaBancariaModel, ContaBancariaDAO,
 	
 	@Override
 	public ContaBancariaModel salvar(ContaBancariaModel vo) throws ContaBancariaException {
-		vo = salvar(vo);
+		vo = super.salvar(vo);
 	     if(vo.getMovimentacaoInicial() == null) { 
 	    	 vo.setMovimentacaoInicial(new MovimentacaoModel());
 	    	 vo.getMovimentacaoInicial().setValor(BigDecimal.ZERO);

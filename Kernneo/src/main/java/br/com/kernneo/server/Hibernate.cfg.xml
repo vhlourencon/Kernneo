@@ -115,7 +115,12 @@
 		<mapping class="br.com.kernneo.client.model.CstPisCofinsModel" />
 		<mapping class="br.com.kernneo.client.model.CstIpiModel" />
 		<mapping class="br.com.kernneo.client.model.CstIpiModel" />
-
+		
+		
+		<mapping class="br.com.kernneo.client.model.permissao.PermissaoMovFinanceiraModel" />
+		
+		
+		
 
 
 

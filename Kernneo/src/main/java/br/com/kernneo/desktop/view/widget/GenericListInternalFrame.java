@@ -292,10 +292,11 @@ public class GenericListInternalFrame<NEGOCIO extends Negocio, GENERICMODEL exte
 					ArrayList<GENERICMODEL> lista = negocio
 							.obterTodosComFiltro(getGenericFiltroPanel().getModelFiltro());
 					getPagina().setListaRegistros(lista);
-					acaoAtualizarPagina();
+				
 
 				}
 			});
+			acaoAtualizarPagina();
 
 		} catch (Exception e) {
 			e.printStackTrace();

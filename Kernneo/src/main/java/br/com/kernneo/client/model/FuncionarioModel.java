@@ -8,103 +8,104 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import com.smartgwt.client.data.Record;
+
+import br.com.kernneo.client.model.permissao.PermissaoMovFinanceiraModel;
 
 @Table
 @Entity(name = "funcionario")
 public class FuncionarioModel extends GenericModel {
 
-    private Long codigo;
-    private String nome;
+	private Long codigo;
+	private String nome;
 
-    @OneToOne(mappedBy = "funcionario")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private EnderecoFuncionarioModel enderecoFuncionario;
+	@OneToOne(mappedBy = "funcionario")
+	@Cascade(org.hibernate.annotations.CascadeType.ALL)
+	private EnderecoFuncionarioModel enderecoFuncionario;
 
-    @OneToOne(mappedBy = "funcionario")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private FuncionarioRHModel funcionarioRH;
+	@OneToOne(mappedBy = "funcionario")
+	@Cascade(org.hibernate.annotations.CascadeType.ALL)
+	private FuncionarioRHModel funcionarioRH;
 
-    @ManyToOne
-    @JoinColumn(name = "id_cargo")
-    private CargoModel cargo;
+	@OneToOne(mappedBy = "funcionario")
+	@Cascade(CascadeType.ALL)
+	private PermissaoMovFinanceiraModel permissaoMovFinanceiraModel;
 
-    public boolean ativo;
-    private String login; 
-    private String senha;
-    
-    
-    @Transient
-    private String senhaTemp; 
-    
-    @Transient
-    private String confirmaSenhaTemp;
-    
-    private String cpf;
-    private String rg;
+	@ManyToOne
+	@JoinColumn(name = "id_cargo")
+	private CargoModel cargo;
 
-    public Long getCodigo() {
-	return codigo;
-    }
+	public boolean ativo;
+	private String login;
+	private String senha;
 
-    public void setCodigo(Long codigo) {
-	this.codigo = codigo;
-    }
+	@Transient
+	private String senhaTemp;
 
-    public String getNome() {
-	return nome;
-    }
+	@Transient
+	private String confirmaSenhaTemp;
 
-    public void setNome(String nome) {
-	this.nome = nome;
-    }
-    
-    public String getCpf() {
-        return cpf;
-    }
+	private String cpf;
+	private String rg;
 
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
+	public Long getCodigo() {
+		return codigo;
+	}
 
-    public String getRg() {
-        return rg;
-    }
+	public void setCodigo(Long codigo) {
+		this.codigo = codigo;
+	}
 
-    public void setRg(String rg) {
-        this.rg = rg;
-    }
+	public String getNome() {
+		return nome;
+	}
 
-    public boolean isAtivo() {
-	return ativo;
-    }
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
 
-    public void setAtivo(boolean ativo) {
-	this.ativo = ativo;
-    }
+	public String getCpf() {
+		return cpf;
+	}
 
-    public CargoModel getCargo() {
-        return cargo;
-    }
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
 
-    public void setCargo(CargoModel cargo) {
-        this.cargo = cargo;
-    }
+	public String getRg() {
+		return rg;
+	}
 
-    public String getSenha() {
-	return senha;
-    }
+	public void setRg(String rg) {
+		this.rg = rg;
+	}
 
-    public void setSenha(String senha) {
-	this.senha = senha;
-    }
+	public boolean isAtivo() {
+		return ativo;
+	}
 
-    
-    
-    
-    
- 
+	public void setAtivo(boolean ativo) {
+		this.ativo = ativo;
+	}
+
+	public CargoModel getCargo() {
+		return cargo;
+	}
+
+	public void setCargo(CargoModel cargo) {
+		this.cargo = cargo;
+	}
+
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
+
 	public String getSenhaTemp() {
 		return senhaTemp;
 	}
@@ -130,39 +131,52 @@ public class FuncionarioModel extends GenericModel {
 	}
 
 	public EnderecoFuncionarioModel getEnderecoFuncionario() {
-	if(enderecoFuncionario == null)
-	    enderecoFuncionario = new EnderecoFuncionarioModel();
-        return enderecoFuncionario;
-    }
-
-    public void setEnderecoFuncionario(EnderecoFuncionarioModel enderecoFuncionario) {
-        this.enderecoFuncionario = enderecoFuncionario;
-    }
-
-    public FuncionarioRHModel getFuncionarioRH() {
-	return funcionarioRH;
-    }
-
-    public void setFuncionarioRH(FuncionarioRHModel funcionarioRH) {
-	this.funcionarioRH = funcionarioRH;
-    }
-
-    @Override
-    public Record toRecord() {
-	Record record = new Record();
-	record.setAttribute("id", getId());
-	record.setAttribute("nome", getNome() );
-	record.setAttribute("cargo", getCargo().getDescricao() );
-	record.setAttribute("celular", enderecoFuncionario.getCelular() );
-
-	record.setAttribute("bairro", enderecoFuncionario.getBairro().getNome());
-
-	if(enderecoFuncionario == null){
-	    record.setAttribute("endereco_email", "Não tem.");
-	} else {
-	    record.setAttribute("endereco_email", enderecoFuncionario.getEmail());
+		if (enderecoFuncionario == null)
+			enderecoFuncionario = new EnderecoFuncionarioModel();
+		return enderecoFuncionario;
 	}
-	return record;
-    }
+
+	public void setEnderecoFuncionario(EnderecoFuncionarioModel enderecoFuncionario) {
+		this.enderecoFuncionario = enderecoFuncionario;
+	}
+
+	public FuncionarioRHModel getFuncionarioRH() {
+		return funcionarioRH;
+	}
+
+	public void setFuncionarioRH(FuncionarioRHModel funcionarioRH) {
+		this.funcionarioRH = funcionarioRH;
+	}
+
+	public PermissaoMovFinanceiraModel getPermissaoMovFinanceiraModel() {
+		if (permissaoMovFinanceiraModel == null) {
+			permissaoMovFinanceiraModel = new PermissaoMovFinanceiraModel();
+			permissaoMovFinanceiraModel.setFuncionario(this);
+			this.setPermissaoMovFinanceiraModel(permissaoMovFinanceiraModel);
+		}
+		return permissaoMovFinanceiraModel;
+	}
+
+	public void setPermissaoMovFinanceiraModel(PermissaoMovFinanceiraModel permissaoMovFinanceiraModel) {
+		this.permissaoMovFinanceiraModel = permissaoMovFinanceiraModel;
+	}
+
+	@Override
+	public Record toRecord() {
+		Record record = new Record();
+		record.setAttribute("id", getId());
+		record.setAttribute("nome", getNome());
+		record.setAttribute("cargo", getCargo().getDescricao());
+		record.setAttribute("celular", enderecoFuncionario.getCelular());
+
+		record.setAttribute("bairro", enderecoFuncionario.getBairro().getNome());
+
+		if (enderecoFuncionario == null) {
+			record.setAttribute("endereco_email", "Não tem.");
+		} else {
+			record.setAttribute("endereco_email", enderecoFuncionario.getEmail());
+		}
+		return record;
+	}
 
 }

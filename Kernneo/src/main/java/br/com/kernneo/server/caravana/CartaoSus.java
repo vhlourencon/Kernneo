@@ -12,7 +12,6 @@ public class CartaoSus {
 		}
 	}
 
-	// Rotina de validação de Números que iniciam com “7”, “8” ou “9”
 	private static boolean validaCnsProv(String cns) {
 		if (cns.trim().length() != 15) {
 			return (false);
@@ -32,7 +31,6 @@ public class CartaoSus {
 		}
 	}
 
-	// Rotina de validação de Números que iniciam com “1” ou “2”
 	private static boolean validaCns(String cns) {
 		if (cns.trim().length() != 15) {
 			return (false);
