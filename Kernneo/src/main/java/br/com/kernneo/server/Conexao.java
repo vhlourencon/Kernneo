@@ -1,4 +1,4 @@
-\package br.com.kernneo.server;
+package br.com.kernneo.server;
 
 import org.hibernate.Session;
 
