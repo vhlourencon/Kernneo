@@ -56,7 +56,7 @@ public abstract class CidadeFiltroFrame extends JDialog {
     private JLabel lblEntercSeleciona;
 
     public CidadeFiltroFrame() throws EstadoException, CidadeException {
-	setRootPaneCheckingEnabled(false);
+	setRootPaneCheckingEnabled(true);
 	setResizable(true);
 	getContentPane().setLayout(new BorderLayout(0, 0));
 	setModal(true);
@@ -120,10 +120,10 @@ public abstract class CidadeFiltroFrame extends JDialog {
 	panel.add(comboBoxUF);
 
 	comboBoxUF.addItem("--");
-	ArrayList<EstadoModel> listaDeEstados = new Estado().obterTodos(EstadoModel.class);
-	for (EstadoModel estadoModel : listaDeEstados) {
-	    comboBoxUF.addItem(estadoModel.getSigla());
-	}
+	//ArrayList<EstadoModel> listaDeEstados = new Estado().obterTodos(EstadoModel.class);
+//	for (EstadoModel estadoModel : listaDeEstados) {
+//	    comboBoxUF.addItem(estadoModel.getSigla());
+//	}
 	comboBoxUF.addActionListener(new ActionListener() {
 
 	    public void actionPerformed(ActionEvent e) {
@@ -137,8 +137,8 @@ public abstract class CidadeFiltroFrame extends JDialog {
 	panel.add(lblNewLabel_1);
 
 	setColunasDaTabela(new String[] { "id", "Nome da Cidade", "UF", "Código IBGE" });
-	listaDeCidades = new Cidade().obterTodos(CidadeModel.class);
-	setListaDeCidades(listaDeCidades);
+	//listaDeCidades = new Cidade().obterTodos(CidadeModel.class);
+	//setListaDeCidades(listaDeCidades);
 
 	table.getColumnModel().getColumn(0).setMinWidth(0);
 	table.getColumnModel().getColumn(0).setMaxWidth(0);

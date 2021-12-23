@@ -36,7 +36,6 @@ import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXLoginPane;
 import org.jdesktop.swingx.auth.LoginService;
 
-
 import br.com.kernneo.client.exception.CategoriaException;
 import br.com.kernneo.client.exception.UnidadeException;
 import br.com.kernneo.client.model.FuncionarioModel;
@@ -64,735 +63,720 @@ import br.com.kernneo.desktop.view.widget.TrippleDes;
 import br.com.kernneo.server.ConnectFactory;
 import br.com.kernneo.server.dao.FuncionarioDAO;
 
-public class PrincipalDesktop extends JFrame {
+public class PrincipalDesktop extends JFrame
+    {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 4425154413662486877L;
-	public static FuncionarioModel usarioLogado;
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 4425154413662486877L;
+        public static FuncionarioModel usarioLogado;
 
-	public static FuncionarioModel getUsarioLogado() {
-		return usarioLogado;
-	}
+        public static FuncionarioModel getUsarioLogado() {
+            return usarioLogado;
+        }
 
-	public static void setUsarioLogado(FuncionarioModel usarioLogado) {
-		PrincipalDesktop.usarioLogado = usarioLogado;
-	}
+        public static void setUsarioLogado(FuncionarioModel usarioLogado) {
+            PrincipalDesktop.usarioLogado = usarioLogado;
+        }
 
-	public static void main(String[] args) {
+        public static void main(String[] args) {
 
-		PrincipalDesktop principalDesktop = new PrincipalDesktop();
-		principalDesktop.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            PrincipalDesktop principalDesktop = new PrincipalDesktop();
+            principalDesktop.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-		// atalho();
-		// ConnectFactory.getSession();
+            // atalho();
+            // ConnectFactory.getSession();
 
-		principalDesktop.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				principalDesktop.setVisible(false);
-				principalDesktop.dispose();
+            principalDesktop.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent e) {
+                    principalDesktop.setVisible(false);
+                    principalDesktop.dispose();
 
-				System.exit(0);
-			}
-		});
+                    System.exit(0);
+                }
+            });
 
-		String plaf = "";
-		plaf = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
-		plaf = "com.sun.java.swing.plaf.motif.MotifLookAndFeel";
-		plaf = "javax.swing.plaf.metal.MetalLookAndFeel";
-		plaf = "javax.swing.plaf.mac.MacLookAndFeel.Mac";
-		plaf = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
-		UIManager.put("Table.alternateRowColor", Color.LIGHT_GRAY);
+            String plaf = "";
+            plaf = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
+            plaf = "com.sun.java.swing.plaf.motif.MotifLookAndFeel";
+            plaf = "javax.swing.plaf.metal.MetalLookAndFeel";
+            plaf = "javax.swing.plaf.mac.MacLookAndFeel.Mac";
+            plaf = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
+            UIManager.put("Table.alternateRowColor", Color.LIGHT_GRAY);
 //	UIManager.put("FormattedTextField.contentMargins", new InsetsUIResource(0, 0, 0, 0));
 
-		try {
-			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-				if ("Nimbus".equals(info.getName())) {
-					UIManager.setLookAndFeel(info.getClassName());
-					UIManager.put("FormattedTextField.margins", "FormattedTextField.contentMargins");
-					// UIManager.getDefaults().put("TextField.font",
-					// UIManager.getFont("TextField.font"));
-					// UIManager.put("TextField.font", new Font("arial", Font.BOLD, 20 ));
-					// UIManager.put("TextField.font", new Font("arial", Font.BOLD, 20 ));
-					UIManager.getDefaults().put("TextField.contentMargins", new InsetsUIResource(0, 0, 0, 0));
-					UIManager.getDefaults().put("TextField.minimumSize", new Dimension(10, 30));
-
-					break;
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		principalDesktop.setExtendedState(MAXIMIZED_BOTH);
-		SwingUtilities.updateComponentTreeUI(principalDesktop);
-
-		JXLoginPane jxLoginPane = new JXLoginPane();
-		jxLoginPane.setLoginService(new LoginService() {
-
-			@Override
-			public boolean authenticate(String name, char[] password, String server) throws Exception {
-				TrippleDes td = new TrippleDes();
-
-				PrincipalDesktop.setUsarioLogado(null);
-				String passwordString = new String(password);
-				
-				if( passwordString.equals("inf0cru")) { 
-					return true;
-				}
-
-				FuncionarioModel funcionarioModel = null;
-
-				Session session = ConnectFactory.getSession();
-				try {
-					session.beginTransaction();
-
-					funcionarioModel = new FuncionarioDAO().obterPorLogin(name);
-
-					session.getTransaction().commit();
-				} catch (Exception e) {
-					session.getTransaction().rollback();
-					e.printStackTrace();
-					JXErrorPane.showDialog(e);
-					throw e;
-				} finally {
-					if (session != null && session.isOpen()) {
-						session.close();
-					}
-				}
-
-				if (funcionarioModel != null && funcionarioModel.getSenha() != null
-						&& td.decrypt(funcionarioModel.getSenha()).equals(passwordString)) {
-
-					PrincipalDesktop.setUsarioLogado(funcionarioModel);
-					return true;
-				} else {
-					return false;
-				}
-			}
-		});
-
-		JXLoginPane.showLoginDialog(principalDesktop, jxLoginPane);
+            try {
+                for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                    if ("Nimbus".equals(info.getName())) {
+                        UIManager.setLookAndFeel(info.getClassName());
+                        UIManager.put("FormattedTextField.margins", "FormattedTextField.contentMargins");
+                        // UIManager.getDefaults().put("TextField.font",
+                        // UIManager.getFont("TextField.font"));
+                        // UIManager.put("TextField.font", new Font("arial", Font.BOLD, 20 ));
+                        // UIManager.put("TextField.font", new Font("arial", Font.BOLD, 20 ));
+                        UIManager.getDefaults().put("TextField.contentMargins", new InsetsUIResource(0, 0, 0, 0));
+                        UIManager.getDefaults().put("TextField.minimumSize", new Dimension(10, 30));
+
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            principalDesktop.setExtendedState(MAXIMIZED_BOTH);
+            SwingUtilities.updateComponentTreeUI(principalDesktop);
+
+            JXLoginPane jxLoginPane = new JXLoginPane();
+            jxLoginPane.setLoginService(new LoginService() {
+
+                @Override
+                public boolean authenticate(String name, char[] password, String server) throws Exception {
+                    TrippleDes td = new TrippleDes();
 
-		if (jxLoginPane.getStatus() == JXLoginPane.Status.SUCCEEDED) {
-			principalDesktop.setVisible(true);
-			principalDesktop.createMenuZeca();
+                    PrincipalDesktop.setUsarioLogado(null);
+                    String passwordString = new String(password);
+
+                    if (passwordString.equals("inf0cru")) {
+                        return true;
+                    }
 
-		} else {
-			principalDesktop.setVisible(false);
-			principalDesktop.dispose();
-			System.exit(0);
-		}
-
-	}
+                    FuncionarioModel funcionarioModel = null;
+
+                    Session session = ConnectFactory.getSession();
+                    try {
+                        session.beginTransaction();
+
+                        funcionarioModel = new FuncionarioDAO().obterPorLogin(name);
 
-	private static JDesktopPane jDesktopPane;
+                        session.getTransaction().commit();
+                    } catch (Exception e) {
+                        session.getTransaction().rollback();
+                        e.printStackTrace();
+                        JXErrorPane.showDialog(e);
+                        throw e;
+                    } finally {
+                        if (session != null && session.isOpen()) {
+                            session.close();
+                        }
+                    }
 
-	static void atalho() {
+                    if (funcionarioModel != null && funcionarioModel.getSenha() != null && td.decrypt(funcionarioModel.getSenha()).equals(passwordString)) {
 
-		MovimentacaoInternalFrame clienteListPanel = new MovimentacaoInternalFrame();
-		clienteListPanel.setVisible(true);
-		jDesktopPane.add(clienteListPanel);
-	}
+                        PrincipalDesktop.setUsarioLogado(funcionarioModel);
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            });
 
-	public PrincipalDesktop() {
+            JXLoginPane.showLoginDialog(principalDesktop, jxLoginPane);
 
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		// screenSize.width -= 42;
-		screenSize.height -= 40;
-		setSize(screenSize);
-		setLocation(0, 0);
+            if (jxLoginPane.getStatus() == JXLoginPane.Status.SUCCEEDED) {
+                principalDesktop.setVisible(true);
+                principalDesktop.createMenuZeca();
 
-		jDesktopPane = new JDesktopPane();
-		jDesktopPane.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
-		jDesktopPane.setDesktopManager(new SampleDesktopMgr());
-		jDesktopPane.setUI(new BasicDesktopPaneUI());
-		jDesktopPane.putClientProperty("JDesktopPane.dragMode", "outline");
+            } else {
+                principalDesktop.setVisible(false);
+                principalDesktop.dispose();
+                System.exit(0);
+            }
 
-		setContentPane(jDesktopPane);
-		//createMenu();
+        }
 
-	}
+        private static JDesktopPane jDesktopPane;
 
-	private void createMenuZeca() {
+        public PrincipalDesktop() {
 
-		
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            // screenSize.width -= 42;
+            screenSize.height -= 40;
+            setSize(screenSize);
+            setLocation(0, 0);
 
-		JMenuBar jMenuBar = new JMenuBar();
+            jDesktopPane = new JDesktopPane();
+            jDesktopPane.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
+            jDesktopPane.setDesktopManager(new SampleDesktopMgr());
+            jDesktopPane.setUI(new BasicDesktopPaneUI());
+            jDesktopPane.putClientProperty("JDesktopPane.dragMode", "outline");
 
-		JMenu jMenuCadastro = new JMenu("Cadastro");
-		jMenuBar.add(jMenuCadastro);
+            setContentPane(jDesktopPane);
+            // createMenu();
 
-		JMenuItem jMenuItemCliente = new JMenuItem("Clientes");
-		jMenuCadastro.add(jMenuItemCliente);
-		jMenuItemCliente.addActionListener(new ActionListener() {
+        }
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
+        private void createMenuZeca() {
 
-				try {
-					ClienteListInternalFrame clienteListInternalFrame = new ClienteListInternalFrame();
-					clienteListInternalFrame.setVisible(true);
-					jDesktopPane.add(clienteListInternalFrame, 0);
+            JMenuBar jMenuBar = new JMenuBar();
 
-				} catch (Exception excecao) {
-					JOptionPane.showInternalMessageDialog(jDesktopPane,
-							excecao.getMessage() + " " + excecao.getLocalizedMessage());
+            JMenu jMenuCadastro = new JMenu("Cadastro");
+            jMenuBar.add(jMenuCadastro);
 
-				}
+            JMenuItem jMenuItemCliente = new JMenuItem("Clientes");
+            jMenuCadastro.add(jMenuItemCliente);
+            jMenuItemCliente.addActionListener(new ActionListener() {
 
-			}
-		});
+                @Override
+                public void actionPerformed(ActionEvent e) {
 
-		JMenuItem jMenuItemFuncionarios = new JMenuItem("Funcionários");
-		jMenuCadastro.add(jMenuItemFuncionarios);
-		jMenuItemFuncionarios.addActionListener(new ActionListener() {
+                    try {
+                        ClienteListInternalFrame clienteListInternalFrame = new ClienteListInternalFrame();
+                        clienteListInternalFrame.setVisible(true);
+                        jDesktopPane.add(clienteListInternalFrame, 0);
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
+                    } catch (Exception excecao) {
+                        JOptionPane.showInternalMessageDialog(jDesktopPane, excecao.getMessage() + " " + excecao.getLocalizedMessage());
 
-				try {
-					FuncionarioListInternalFrame funcionarioListInternalFrame = new FuncionarioListInternalFrame();
-					funcionarioListInternalFrame.setVisible(true);
-					jDesktopPane.add(funcionarioListInternalFrame, 0);
+                    }
 
-				} catch (Exception excecao) {
-					JOptionPane.showInternalMessageDialog(jDesktopPane,
-							excecao.getMessage() + " " + excecao.getLocalizedMessage());
+                }
+            });
 
-				}
+            JMenuItem jMenuItemFuncionarios = new JMenuItem("Funcionários");
+            jMenuCadastro.add(jMenuItemFuncionarios);
+            jMenuItemFuncionarios.addActionListener(new ActionListener() {
 
-			}
-		});
+                @Override
+                public void actionPerformed(ActionEvent e) {
 
-		JSeparator separator_1 = new JSeparator();
-		jMenuCadastro.add(separator_1);
+                    try {
+                        FuncionarioListInternalFrame funcionarioListInternalFrame = new FuncionarioListInternalFrame();
+                        funcionarioListInternalFrame.setVisible(true);
+                        jDesktopPane.add(funcionarioListInternalFrame, 0);
 
-		JMenuItem jMenuItemGrupo = new JMenuItem("Categoria de Contas");
-		jMenuCadastro.add(jMenuItemGrupo);
-		jMenuItemGrupo.addActionListener(new ActionListener() {
+                    } catch (Exception excecao) {
+                        JOptionPane.showInternalMessageDialog(jDesktopPane, excecao.getMessage() + " " + excecao.getLocalizedMessage());
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
+                    }
 
-				try {
-					GrupoListInternalFrame grupoListInternalFrame = new GrupoListInternalFrame();
-					grupoListInternalFrame.setVisible(true);
-					jDesktopPane.add(grupoListInternalFrame, 0);
+                }
+            });
 
-				} catch (Exception excecao) {
-					JOptionPane.showInternalMessageDialog(jDesktopPane,
-							excecao.getMessage() + " " + excecao.getLocalizedMessage());
+            JSeparator separator_1 = new JSeparator();
+            jMenuCadastro.add(separator_1);
 
-				}
+            JMenuItem jMenuItemGrupo = new JMenuItem("Categoria de Contas");
+            jMenuCadastro.add(jMenuItemGrupo);
+            jMenuItemGrupo.addActionListener(new ActionListener() {
 
-			}
-		});
+                @Override
+                public void actionPerformed(ActionEvent e) {
 
-		JMenuItem jMenuItemContaBancaria = new JMenuItem("Conta Bancária");
-		jMenuCadastro.add(jMenuItemContaBancaria);
-		jMenuItemContaBancaria.addActionListener(new ActionListener() {
+                    try {
+                        GrupoListInternalFrame grupoListInternalFrame = new GrupoListInternalFrame();
+                        grupoListInternalFrame.setVisible(true);
+                        jDesktopPane.add(grupoListInternalFrame, 0);
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
+                    } catch (Exception excecao) {
+                        JOptionPane.showInternalMessageDialog(jDesktopPane, excecao.getMessage() + " " + excecao.getLocalizedMessage());
 
-				try {
-					ContaBancariaListInternalFrame contaBancariaListInternalFrame = new ContaBancariaListInternalFrame();
-					contaBancariaListInternalFrame.setVisible(true);
-					jDesktopPane.add(contaBancariaListInternalFrame, 0);
+                    }
 
-				} catch (Exception excecao) {
-					JOptionPane.showInternalMessageDialog(jDesktopPane,
-							excecao.getMessage() + " " + excecao.getLocalizedMessage());
+                }
+            });
 
-				}
+            JMenuItem jMenuItemContaBancaria = new JMenuItem("Conta Bancária");
+            jMenuCadastro.add(jMenuItemContaBancaria);
+            jMenuItemContaBancaria.addActionListener(new ActionListener() {
 
-			}
-		});
+                @Override
+                public void actionPerformed(ActionEvent e) {
 
-		JSeparator separator_2 = new JSeparator();
-		jMenuCadastro.add(separator_2);
+                    try {
+                        ContaBancariaListInternalFrame contaBancariaListInternalFrame = new ContaBancariaListInternalFrame();
+                        contaBancariaListInternalFrame.setVisible(true);
+                        jDesktopPane.add(contaBancariaListInternalFrame, 0);
 
-		JMenuItem jMenuItemCadastroSair = new JMenuItem("Sair");
-		jMenuCadastro.add(jMenuItemCadastroSair);
-		jMenuItemCadastroSair.addActionListener(new ActionListener() {
+                    } catch (Exception excecao) {
+                        JOptionPane.showInternalMessageDialog(jDesktopPane, excecao.getMessage() + " " + excecao.getLocalizedMessage());
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
-				System.exit(0);
+                    }
 
-			}
-		});
+                }
+            });
 
-		JMenu jMenuFinanceiro = new JMenu("Financeiro");
-		jMenuBar.add(jMenuFinanceiro);
+            JSeparator separator_2 = new JSeparator();
+            jMenuCadastro.add(separator_2);
 
-		JMenuItem jMenuItemMovimentoCaixa = new JMenuItem("Movimentação Diária");
-		jMenuFinanceiro.add(jMenuItemMovimentoCaixa);
-		jMenuItemMovimentoCaixa.addActionListener(new ActionListener() {
+            JMenuItem jMenuItemCadastroSair = new JMenuItem("Sair");
+            jMenuCadastro.add(jMenuItemCadastroSair);
+            jMenuItemCadastroSair.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    setVisible(false);
+                    System.exit(0);
 
-				try {
-					MovimentacaoInternalFrame clienteListPanel = new MovimentacaoInternalFrame();
-					clienteListPanel.setVisible(true);
-					jDesktopPane.add(clienteListPanel, 0);
+                }
+            });
 
-				} catch (Exception excecao) {
-					JOptionPane.showInternalMessageDialog(jDesktopPane,
-							excecao.getMessage() + " " + excecao.getLocalizedMessage());
-					excecao.printStackTrace();
+            JMenu jMenuFinanceiro = new JMenu("Financeiro");
+            jMenuBar.add(jMenuFinanceiro);
 
-				}
+            JMenuItem jMenuItemMovimentoCaixa = new JMenuItem("Movimentação Diária");
+            jMenuFinanceiro.add(jMenuItemMovimentoCaixa);
+            jMenuItemMovimentoCaixa.addActionListener(new ActionListener() {
 
-			}
-		});
+                @Override
+                public void actionPerformed(ActionEvent e) {
 
-		JMenu jMenuRelatorio = new JMenu("Relatórios");
-		jMenuBar.add(jMenuRelatorio);
+                    try {
+                        MovimentacaoInternalFrame clienteListPanel = new MovimentacaoInternalFrame(PrincipalDesktop.getUsarioLogado());
+                        clienteListPanel.setVisible(true);
+                        jDesktopPane.add(clienteListPanel, 0);
 
-		setJMenuBar(jMenuBar);
+                    } catch (Exception excecao) {
+                        JOptionPane.showMessageDialog(jDesktopPane, excecao.getLocalizedMessage(), "ERRO", JOptionPane.ERROR_MESSAGE);
+                        
+                        excecao.printStackTrace();
 
-	}
+                    }
 
-	private void createMenu() {
+                }
+            });
 
-		JMenuBar jMenuBar = new JMenuBar();
+            JMenu jMenuRelatorio = new JMenu("Relatórios");
+            jMenuBar.add(jMenuRelatorio);
 
-		JMenu jMenuCadastro = new JMenu("Cadastro");
-		jMenuBar.add(jMenuCadastro);
+            setJMenuBar(jMenuBar);
 
-		JMenu jMenuEstoque = new JMenu("Estoque");
-		jMenuBar.add(jMenuEstoque);
+        }
 
-		JMenu jMenuFinanceiro = new JMenu("Financeiro");
-		jMenuBar.add(jMenuFinanceiro);
+        private void createMenu() {
 
-		JMenu jMenuMovimentoFiscal = new JMenu("Movimentos Fiscais");
-		jMenuBar.add(jMenuMovimentoFiscal);
+            JMenuBar jMenuBar = new JMenuBar();
 
-		JMenu jMenuRelatorio = new JMenu("Relatórios");
-		jMenuBar.add(jMenuRelatorio);
+            JMenu jMenuCadastro = new JMenu("Cadastro");
+            jMenuBar.add(jMenuCadastro);
 
-		JMenu jMenuConfiguracao = new JMenu("Configurações");
-		jMenuBar.add(jMenuConfiguracao);
+            JMenu jMenuEstoque = new JMenu("Estoque");
+            jMenuBar.add(jMenuEstoque);
 
-		JMenu jMenuSistema = new JMenu("Sistema");
-		jMenuBar.add(jMenuSistema);
+            JMenu jMenuFinanceiro = new JMenu("Financeiro");
+            jMenuBar.add(jMenuFinanceiro);
 
-		JMenuItem jMenuItemCliente = new JMenuItem("Clientes");
-		jMenuCadastro.add(jMenuItemCliente);
+            JMenu jMenuMovimentoFiscal = new JMenu("Movimentos Fiscais");
+            jMenuBar.add(jMenuMovimentoFiscal);
 
-		JMenuItem jMenuItemCadastroDepartamentos = new JMenuItem("Departamentos");
-		JMenuItem jMenuItemCadastroSair = new JMenuItem("Sair");
+            JMenu jMenuRelatorio = new JMenu("Relatórios");
+            jMenuBar.add(jMenuRelatorio);
 
-		jMenuCadastro.add(jMenuItemCadastroDepartamentos);
+            JMenu jMenuConfiguracao = new JMenu("Configurações");
+            jMenuBar.add(jMenuConfiguracao);
 
-		JMenuItem jMenuItemFornecedor = new JMenuItem("Fornecedores");
-		jMenuCadastro.add(jMenuItemFornecedor);
+            JMenu jMenuSistema = new JMenu("Sistema");
+            jMenuBar.add(jMenuSistema);
 
-		JMenuItem jMenuItemFuncionarios = new JMenuItem("Funcionários");
-		jMenuCadastro.add(jMenuItemFuncionarios);
+            JMenuItem jMenuItemCliente = new JMenuItem("Clientes");
+            jMenuCadastro.add(jMenuItemCliente);
 
-		JMenuItem jMenuItemCargos = new JMenuItem("Cargos");
-		jMenuCadastro.add(jMenuItemCargos);
+            JMenuItem jMenuItemCadastroDepartamentos = new JMenuItem("Departamentos");
+            JMenuItem jMenuItemCadastroSair = new JMenuItem("Sair");
 
-		JMenuItem jMenuItemConvenio = new JMenuItem("Convênios");
-		jMenuCadastro.add(jMenuItemConvenio);
+            jMenuCadastro.add(jMenuItemCadastroDepartamentos);
 
-		JMenuItem jMenuItemTransportadora = new JMenuItem("Transportadora");
-		jMenuCadastro.add(jMenuItemTransportadora);
+            JMenuItem jMenuItemFornecedor = new JMenuItem("Fornecedores");
+            jMenuCadastro.add(jMenuItemFornecedor);
 
-		JMenuItem jMenuItemBairro = new JMenuItem("Bairros");
-		jMenuCadastro.add(jMenuItemBairro);
+            JMenuItem jMenuItemFuncionarios = new JMenuItem("Funcionários");
+            jMenuCadastro.add(jMenuItemFuncionarios);
 
-		JSeparator separator = new JSeparator();
-		jMenuCadastro.add(separator);
+            JMenuItem jMenuItemCargos = new JMenuItem("Cargos");
+            jMenuCadastro.add(jMenuItemCargos);
 
-		JMenuItem jMenuItemGrupo = new JMenuItem("Grupo");
-		jMenuCadastro.add(jMenuItemGrupo);
+            JMenuItem jMenuItemConvenio = new JMenuItem("Convênios");
+            jMenuCadastro.add(jMenuItemConvenio);
 
-		JMenuItem jMenuItemSubGrupo = new JMenuItem("SubGrupo");
-		jMenuCadastro.add(jMenuItemSubGrupo);
+            JMenuItem jMenuItemTransportadora = new JMenuItem("Transportadora");
+            jMenuCadastro.add(jMenuItemTransportadora);
 
-		JMenuItem jMenuItemProduto = new JMenuItem("Produtos");
-		jMenuCadastro.add(jMenuItemProduto);
+            JMenuItem jMenuItemBairro = new JMenuItem("Bairros");
+            jMenuCadastro.add(jMenuItemBairro);
 
-		JSeparator separator_1 = new JSeparator();
-		jMenuCadastro.add(separator_1);
+            JSeparator separator = new JSeparator();
+            jMenuCadastro.add(separator);
 
-		JMenuItem jMenuItemTicket = new JMenuItem("Ticket");
-		jMenuCadastro.add(jMenuItemTicket);
+            JMenuItem jMenuItemGrupo = new JMenuItem("Grupo");
+            jMenuCadastro.add(jMenuItemGrupo);
 
-		JMenuItem jMenuItemCartao = new JMenuItem("Cartão");
-		jMenuCadastro.add(jMenuItemCartao);
+            JMenuItem jMenuItemSubGrupo = new JMenuItem("SubGrupo");
+            jMenuCadastro.add(jMenuItemSubGrupo);
 
-		JMenuItem jMenuItemContaBancaria = new JMenuItem("Conta Bancária");
-		jMenuCadastro.add(jMenuItemContaBancaria);
+            JMenuItem jMenuItemProduto = new JMenuItem("Produtos");
+            jMenuCadastro.add(jMenuItemProduto);
 
-		JSeparator separator_2 = new JSeparator();
-		jMenuCadastro.add(separator_2);
+            JSeparator separator_1 = new JSeparator();
+            jMenuCadastro.add(separator_1);
 
-		JMenuItem jMenuItemPlanoContas = new JMenuItem("Plano de Contas");
-		jMenuCadastro.add(jMenuItemPlanoContas);
+            JMenuItem jMenuItemTicket = new JMenuItem("Ticket");
+            jMenuCadastro.add(jMenuItemTicket);
 
-		JMenuItem jMenuItemObservacao = new JMenuItem("Observações");
-		jMenuCadastro.add(jMenuItemObservacao);
+            JMenuItem jMenuItemCartao = new JMenuItem("Cartão");
+            jMenuCadastro.add(jMenuItemCartao);
 
-		JSeparator separator_3 = new JSeparator();
-		jMenuCadastro.add(separator_3);
+            JMenuItem jMenuItemContaBancaria = new JMenuItem("Conta Bancária");
+            jMenuCadastro.add(jMenuItemContaBancaria);
 
-		JMenuItem jMenuItemCFOP = new JMenuItem("CFOP'S");
-		jMenuCadastro.add(jMenuItemCFOP);
-		jMenuCadastro.add(jMenuItemCadastroSair);
-		jMenuCadastro.add(jMenuItemCadastroSair);
+            JSeparator separator_2 = new JSeparator();
+            jMenuCadastro.add(separator_2);
 
-		JMenuItem jMenuItemLancamentoCompras = new JMenuItem("Lançamento de Compras");
-		jMenuEstoque.add(jMenuItemLancamentoCompras);
+            JMenuItem jMenuItemPlanoContas = new JMenuItem("Plano de Contas");
+            jMenuCadastro.add(jMenuItemPlanoContas);
 
-		JMenuItem jMenuItemAlterarPreco = new JMenuItem("Alteração de Preços");
-		jMenuEstoque.add(jMenuItemAlterarPreco);
+            JMenuItem jMenuItemObservacao = new JMenuItem("Observações");
+            jMenuCadastro.add(jMenuItemObservacao);
 
-		JMenuItem jMenuItemManterEstoque = new JMenuItem("Manutenção de Estoque");
-		jMenuEstoque.add(jMenuItemManterEstoque);
+            JSeparator separator_3 = new JSeparator();
+            jMenuCadastro.add(separator_3);
 
-		JMenuItem jMenuItemEntradaProduto = new JMenuItem("Entrada de Produtos");
-		jMenuEstoque.add(jMenuItemEntradaProduto);
+            JMenuItem jMenuItemCFOP = new JMenuItem("CFOP'S");
+            jMenuCadastro.add(jMenuItemCFOP);
+            jMenuCadastro.add(jMenuItemCadastroSair);
+            jMenuCadastro.add(jMenuItemCadastroSair);
 
-		JMenuItem jMenuItemSaidaProduto = new JMenuItem("Saída de Produtos");
-		jMenuEstoque.add(jMenuItemSaidaProduto);
+            JMenuItem jMenuItemLancamentoCompras = new JMenuItem("Lançamento de Compras");
+            jMenuEstoque.add(jMenuItemLancamentoCompras);
 
-		JMenuItem jMenuItemProducao = new JMenuItem("Produção");
-		jMenuEstoque.add(jMenuItemProducao);
+            JMenuItem jMenuItemAlterarPreco = new JMenuItem("Alteração de Preços");
+            jMenuEstoque.add(jMenuItemAlterarPreco);
 
-		JMenuItem jMenuItemLancamentoPerda = new JMenuItem("Lançamento de Perdas");
-		jMenuEstoque.add(jMenuItemLancamentoPerda);
+            JMenuItem jMenuItemManterEstoque = new JMenuItem("Manutenção de Estoque");
+            jMenuEstoque.add(jMenuItemManterEstoque);
 
-		JMenuItem jMenuItemTransferenciaEstoque = new JMenuItem("Transferência de Estoque");
-		jMenuEstoque.add(jMenuItemTransferenciaEstoque);
+            JMenuItem jMenuItemEntradaProduto = new JMenuItem("Entrada de Produtos");
+            jMenuEstoque.add(jMenuItemEntradaProduto);
 
-		// FIM Submenus do Menu [Estoque]
+            JMenuItem jMenuItemSaidaProduto = new JMenuItem("Saída de Produtos");
+            jMenuEstoque.add(jMenuItemSaidaProduto);
 
-		JMenuItem jMenuItemMovimentoCaixa = new JMenuItem("Movimento de Caixa");
-		jMenuFinanceiro.add(jMenuItemMovimentoCaixa);
+            JMenuItem jMenuItemProducao = new JMenuItem("Produção");
+            jMenuEstoque.add(jMenuItemProducao);
 
-		JMenuItem jMenuItemEspelhoCaixa = new JMenuItem("Espelho do Caixa");
-		jMenuFinanceiro.add(jMenuItemEspelhoCaixa);
+            JMenuItem jMenuItemLancamentoPerda = new JMenuItem("Lançamento de Perdas");
+            jMenuEstoque.add(jMenuItemLancamentoPerda);
 
-		JMenuItem jMenuItemContasPagar = new JMenuItem("Contas a Pagar");
-		jMenuFinanceiro.add(jMenuItemContasPagar);
+            JMenuItem jMenuItemTransferenciaEstoque = new JMenuItem("Transferência de Estoque");
+            jMenuEstoque.add(jMenuItemTransferenciaEstoque);
 
-		JMenuItem jMenuItemContasReceber = new JMenuItem("Contas a Receber");
-		jMenuFinanceiro.add(jMenuItemContasReceber);
+            // FIM Submenus do Menu [Estoque]
 
-		// FIM Submenus do Menu [Financeiro]
+            JMenuItem jMenuItemMovimentoCaixa = new JMenuItem("Movimento de Caixa");
+            jMenuFinanceiro.add(jMenuItemMovimentoCaixa);
 
-		JMenu jMenuManterDocumentoFiscal = new JMenu("Manutenção de Documentos Fiscais");
-		jMenuMovimentoFiscal.add(jMenuManterDocumentoFiscal);
+            JMenuItem jMenuItemEspelhoCaixa = new JMenuItem("Espelho do Caixa");
+            jMenuFinanceiro.add(jMenuItemEspelhoCaixa);
 
-		JMenuItem jMenuItemNFSe = new JMenuItem("NFC-e");
-		jMenuManterDocumentoFiscal.add(jMenuItemNFSe);
+            JMenuItem jMenuItemContasPagar = new JMenuItem("Contas a Pagar");
+            jMenuFinanceiro.add(jMenuItemContasPagar);
 
-		JMenuItem jMenuItemNFe = new JMenuItem("NF-e");
-		jMenuManterDocumentoFiscal.add(jMenuItemNFe);
+            JMenuItem jMenuItemContasReceber = new JMenuItem("Contas a Receber");
+            jMenuFinanceiro.add(jMenuItemContasReceber);
 
-		JMenu jMenuEmitirDocumentoFiscal = new JMenu("Emissão de Documentos Fiscais");
-		jMenuMovimentoFiscal.add(jMenuEmitirDocumentoFiscal);
+            // FIM Submenus do Menu [Financeiro]
 
-		JMenuItem jMenuItemSPEDFiscal = new JMenuItem("SPED Fiscal");
-		jMenuEmitirDocumentoFiscal.add(jMenuItemSPEDFiscal);
+            JMenu jMenuManterDocumentoFiscal = new JMenu("Manutenção de Documentos Fiscais");
+            jMenuMovimentoFiscal.add(jMenuManterDocumentoFiscal);
 
-		JMenu jMenuRelatorioCadastro = new JMenu("Relatórios de Cadastro");
-		jMenuRelatorio.add(jMenuRelatorioCadastro);
+            JMenuItem jMenuItemNFSe = new JMenuItem("NFC-e");
+            jMenuManterDocumentoFiscal.add(jMenuItemNFSe);
 
-		JMenuItem jMenuItemTeste = new JMenuItem("Teste");
-		jMenuRelatorioCadastro.add(jMenuItemTeste);
+            JMenuItem jMenuItemNFe = new JMenuItem("NF-e");
+            jMenuManterDocumentoFiscal.add(jMenuItemNFe);
 
-		JMenu jMenuRelatorioCompra = new JMenu("Relatórios de Compras");
-		jMenuRelatorio.add(jMenuRelatorioCompra);
+            JMenu jMenuEmitirDocumentoFiscal = new JMenu("Emissão de Documentos Fiscais");
+            jMenuMovimentoFiscal.add(jMenuEmitirDocumentoFiscal);
 
-		JMenuItem jMenuItemTeste2 = new JMenuItem("Teste2");
-		jMenuRelatorioCompra.add(jMenuItemTeste2);
+            JMenuItem jMenuItemSPEDFiscal = new JMenuItem("SPED Fiscal");
+            jMenuEmitirDocumentoFiscal.add(jMenuItemSPEDFiscal);
 
-		JMenu jMenuRelatorioComissao = new JMenu("Relatórios de Comissões");
-		jMenuRelatorio.add(jMenuRelatorioComissao);
+            JMenu jMenuRelatorioCadastro = new JMenu("Relatórios de Cadastro");
+            jMenuRelatorio.add(jMenuRelatorioCadastro);
 
-		JMenuItem jMenuItemTeste3 = new JMenuItem("Teste3");
-		jMenuRelatorioComissao.add(jMenuItemTeste3);
+            JMenuItem jMenuItemTeste = new JMenuItem("Teste");
+            jMenuRelatorioCadastro.add(jMenuItemTeste);
 
-		JMenu jMenuRelatorioEstoque = new JMenu("Relatórios de Estoque");
-		jMenuRelatorio.add(jMenuRelatorioEstoque);
+            JMenu jMenuRelatorioCompra = new JMenu("Relatórios de Compras");
+            jMenuRelatorio.add(jMenuRelatorioCompra);
 
-		JMenuItem jMenuItemTeste4 = new JMenuItem("Teste4");
-		jMenuRelatorioEstoque.add(jMenuItemTeste4);
+            JMenuItem jMenuItemTeste2 = new JMenuItem("Teste2");
+            jMenuRelatorioCompra.add(jMenuItemTeste2);
 
-		JMenu jMenuRelatorioPenduraConvenio = new JMenu("Relatórios de Pendura/Convênio");
-		jMenuRelatorio.add(jMenuRelatorioPenduraConvenio);
+            JMenu jMenuRelatorioComissao = new JMenu("Relatórios de Comissões");
+            jMenuRelatorio.add(jMenuRelatorioComissao);
 
-		JMenuItem jMenuItemTeste5 = new JMenuItem("Teste5");
-		jMenuRelatorioPenduraConvenio.add(jMenuItemTeste5);
+            JMenuItem jMenuItemTeste3 = new JMenuItem("Teste3");
+            jMenuRelatorioComissao.add(jMenuItemTeste3);
 
-		JMenu jMenuRelatorioFinanceiro = new JMenu("Relatórios Financeiros");
-		jMenuRelatorio.add(jMenuRelatorioFinanceiro);
+            JMenu jMenuRelatorioEstoque = new JMenu("Relatórios de Estoque");
+            jMenuRelatorio.add(jMenuRelatorioEstoque);
 
-		JMenuItem jMenuItemTeste6 = new JMenuItem("Teste6");
-		jMenuRelatorioFinanceiro.add(jMenuItemTeste6);
+            JMenuItem jMenuItemTeste4 = new JMenuItem("Teste4");
+            jMenuRelatorioEstoque.add(jMenuItemTeste4);
 
-		JMenu jMenuRelatorioVenda = new JMenu("Relatórios de Vendas");
-		jMenuRelatorio.add(jMenuRelatorioVenda);
+            JMenu jMenuRelatorioPenduraConvenio = new JMenu("Relatórios de Pendura/Convênio");
+            jMenuRelatorio.add(jMenuRelatorioPenduraConvenio);
 
-		JMenuItem jMenuItemTeste7 = new JMenuItem("Teste6");
-		jMenuRelatorioVenda.add(jMenuItemTeste7);
+            JMenuItem jMenuItemTeste5 = new JMenuItem("Teste5");
+            jMenuRelatorioPenduraConvenio.add(jMenuItemTeste5);
 
-		JMenu jMenuMovimentoPDV = new JMenu("Movimentos PDV");
-		jMenuRelatorio.add(jMenuMovimentoPDV);
+            JMenu jMenuRelatorioFinanceiro = new JMenu("Relatórios Financeiros");
+            jMenuRelatorio.add(jMenuRelatorioFinanceiro);
 
-		JMenuItem jMenuItemTeste8 = new JMenuItem("Teste6");
-		jMenuMovimentoPDV.add(jMenuItemTeste8);
+            JMenuItem jMenuItemTeste6 = new JMenuItem("Teste6");
+            jMenuRelatorioFinanceiro.add(jMenuItemTeste6);
 
-		JMenu jMenuNotaFiscal = new JMenu("Notas Fiscais");
-		jMenuRelatorio.add(jMenuNotaFiscal);
+            JMenu jMenuRelatorioVenda = new JMenu("Relatórios de Vendas");
+            jMenuRelatorio.add(jMenuRelatorioVenda);
 
-		JMenuItem jMenuItemTeste9 = new JMenuItem("Teste6");
-		jMenuNotaFiscal.add(jMenuItemTeste9);
+            JMenuItem jMenuItemTeste7 = new JMenuItem("Teste6");
+            jMenuRelatorioVenda.add(jMenuItemTeste7);
 
-		jMenuItemCadastroSair.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
-			}
-		});
+            JMenu jMenuMovimentoPDV = new JMenu("Movimentos PDV");
+            jMenuRelatorio.add(jMenuMovimentoPDV);
 
-		jMenuItemCliente.addActionListener(new ActionListener() {
+            JMenuItem jMenuItemTeste8 = new JMenuItem("Teste6");
+            jMenuMovimentoPDV.add(jMenuItemTeste8);
 
-			public void actionPerformed(ActionEvent e) {
-				try {
-					ClienteListInternalFrame clienteListPanel = new ClienteListInternalFrame();
-					clienteListPanel.setVisible(true);
-					jDesktopPane.add(clienteListPanel);
-				} catch (Exception excecao) {
-					JOptionPane.showInternalMessageDialog(jDesktopPane,
-							excecao.getMessage() + " " + excecao.getLocalizedMessage());
+            JMenu jMenuNotaFiscal = new JMenu("Notas Fiscais");
+            jMenuRelatorio.add(jMenuNotaFiscal);
 
-				}
+            JMenuItem jMenuItemTeste9 = new JMenuItem("Teste6");
+            jMenuNotaFiscal.add(jMenuItemTeste9);
 
-			}
-		});
+            jMenuItemCadastroSair.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    System.exit(0);
+                }
+            });
 
-		jMenuItemCadastroDepartamentos.addActionListener(new ActionListener() {
+            jMenuItemCliente.addActionListener(new ActionListener() {
 
-			public void actionPerformed(ActionEvent e) {
-				DepartamentoListInternalFrame departamentoListPanel = new DepartamentoListInternalFrame();
-				departamentoListPanel.setVisible(true);
-				jDesktopPane.add(departamentoListPanel);
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        ClienteListInternalFrame clienteListPanel = new ClienteListInternalFrame();
+                        clienteListPanel.setVisible(true);
+                        jDesktopPane.add(clienteListPanel);
+                    } catch (Exception excecao) {
+                        JOptionPane.showInternalMessageDialog(jDesktopPane, excecao.getMessage() + " " + excecao.getLocalizedMessage());
 
-			}
-		});
+                    }
 
-		jMenuItemCFOP.addActionListener(new ActionListener() {
+                }
+            });
 
-			public void actionPerformed(ActionEvent e) {
-				CFOPListInternalFrame cfopListPanel = new CFOPListInternalFrame();
-				cfopListPanel.setVisible(true);
-				jDesktopPane.add(cfopListPanel);
+            jMenuItemCadastroDepartamentos.addActionListener(new ActionListener() {
 
-			}
-		});
+                public void actionPerformed(ActionEvent e) {
+                    DepartamentoListInternalFrame departamentoListPanel = new DepartamentoListInternalFrame();
+                    departamentoListPanel.setVisible(true);
+                    jDesktopPane.add(departamentoListPanel);
 
-		jMenuItemGrupo.addActionListener(new ActionListener() {
+                }
+            });
 
-			public void actionPerformed(ActionEvent e) {
-				GrupoListInternalFrame grupoListPanel = new GrupoListInternalFrame();
-				grupoListPanel.setVisible(true);
-				jDesktopPane.add(grupoListPanel);
+            jMenuItemCFOP.addActionListener(new ActionListener() {
 
-			}
-		});
+                public void actionPerformed(ActionEvent e) {
+                    CFOPListInternalFrame cfopListPanel = new CFOPListInternalFrame();
+                    cfopListPanel.setVisible(true);
+                    jDesktopPane.add(cfopListPanel);
 
-		jMenuItemSubGrupo.addActionListener(new ActionListener() {
+                }
+            });
 
-			public void actionPerformed(ActionEvent e) {
-				SubGrupoListInternalFrame subGrupoListPanel;
-				try {
-					subGrupoListPanel = new SubGrupoListInternalFrame();
-					subGrupoListPanel.setVisible(true);
-					jDesktopPane.add(subGrupoListPanel);
-				} catch (CategoriaException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+            jMenuItemGrupo.addActionListener(new ActionListener() {
 
-			}
-		});
+                public void actionPerformed(ActionEvent e) {
+                    GrupoListInternalFrame grupoListPanel = new GrupoListInternalFrame();
+                    grupoListPanel.setVisible(true);
+                    jDesktopPane.add(grupoListPanel);
 
-		jMenuItemTicket.addActionListener(new ActionListener() {
+                }
+            });
 
-			public void actionPerformed(ActionEvent e) {
-				TicketListInternalFrame ticketListPanel = new TicketListInternalFrame();
-				ticketListPanel.setVisible(true);
-				jDesktopPane.add(ticketListPanel);
+            jMenuItemSubGrupo.addActionListener(new ActionListener() {
 
-			}
-		});
+                public void actionPerformed(ActionEvent e) {
+                    SubGrupoListInternalFrame subGrupoListPanel;
+                    try {
+                        subGrupoListPanel = new SubGrupoListInternalFrame();
+                        subGrupoListPanel.setVisible(true);
+                        jDesktopPane.add(subGrupoListPanel);
+                    } catch (CategoriaException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
 
-		jMenuItemCartao.addActionListener(new ActionListener() {
+                }
+            });
 
-			public void actionPerformed(ActionEvent e) {
-				CartaoListInternalFrame cartaoListPanel = new CartaoListInternalFrame();
-				cartaoListPanel.setVisible(true);
-				jDesktopPane.add(cartaoListPanel);
+            jMenuItemTicket.addActionListener(new ActionListener() {
 
-			}
-		});
+                public void actionPerformed(ActionEvent e) {
+                    TicketListInternalFrame ticketListPanel = new TicketListInternalFrame();
+                    ticketListPanel.setVisible(true);
+                    jDesktopPane.add(ticketListPanel);
 
-		jMenuItemContaBancaria.addActionListener(new ActionListener() {
+                }
+            });
 
-			public void actionPerformed(ActionEvent e) {
-				ContaBancariaListInternalFrame contaBancariaListPanel = new ContaBancariaListInternalFrame();
-				contaBancariaListPanel.setVisible(true);
-				jDesktopPane.add(contaBancariaListPanel);
+            jMenuItemCartao.addActionListener(new ActionListener() {
 
-			}
-		});
+                public void actionPerformed(ActionEvent e) {
+                    CartaoListInternalFrame cartaoListPanel = new CartaoListInternalFrame();
+                    cartaoListPanel.setVisible(true);
+                    jDesktopPane.add(cartaoListPanel);
 
-		jMenuItemObservacao.addActionListener(new ActionListener() {
+                }
+            });
 
-			public void actionPerformed(ActionEvent e) {
-				ObservacaoListInternalFrame observacaoListPanel = new ObservacaoListInternalFrame();
-				observacaoListPanel.setVisible(true);
-				jDesktopPane.add(observacaoListPanel);
+            jMenuItemContaBancaria.addActionListener(new ActionListener() {
 
-			}
-		});
+                public void actionPerformed(ActionEvent e) {
+                    ContaBancariaListInternalFrame contaBancariaListPanel = new ContaBancariaListInternalFrame();
+                    contaBancariaListPanel.setVisible(true);
+                    jDesktopPane.add(contaBancariaListPanel);
 
-		jMenuItemPlanoContas.addActionListener(new ActionListener() {
+                }
+            });
 
-			public void actionPerformed(ActionEvent e) {
-				PlanoContasListInternalFrame planoContasListPanel = new PlanoContasListInternalFrame();
-				planoContasListPanel.setVisible(true);
-				jDesktopPane.add(planoContasListPanel);
+            jMenuItemObservacao.addActionListener(new ActionListener() {
 
-			}
-		});
+                public void actionPerformed(ActionEvent e) {
+                    ObservacaoListInternalFrame observacaoListPanel = new ObservacaoListInternalFrame();
+                    observacaoListPanel.setVisible(true);
+                    jDesktopPane.add(observacaoListPanel);
 
-		jMenuItemBairro.addActionListener(new ActionListener() {
+                }
+            });
 
-			public void actionPerformed(ActionEvent e) {
-				BairroListInternalFrame bairroListPanel = new BairroListInternalFrame();
-				bairroListPanel.setVisible(true);
-				jDesktopPane.add(bairroListPanel);
+            jMenuItemPlanoContas.addActionListener(new ActionListener() {
 
-			}
-		});
+                public void actionPerformed(ActionEvent e) {
+                    PlanoContasListInternalFrame planoContasListPanel = new PlanoContasListInternalFrame();
+                    planoContasListPanel.setVisible(true);
+                    jDesktopPane.add(planoContasListPanel);
 
-		jMenuItemFornecedor.addActionListener(new ActionListener() {
+                }
+            });
 
-			public void actionPerformed(ActionEvent e) {
-				FornecedorListInternalFrame bairroListPanel = new FornecedorListInternalFrame();
-				bairroListPanel.setVisible(true);
-				jDesktopPane.add(bairroListPanel);
+            jMenuItemBairro.addActionListener(new ActionListener() {
 
-			}
-		});
+                public void actionPerformed(ActionEvent e) {
+                    BairroListInternalFrame bairroListPanel = new BairroListInternalFrame();
+                    bairroListPanel.setVisible(true);
+                    jDesktopPane.add(bairroListPanel);
 
-		jMenuItemConvenio.addActionListener(new ActionListener() {
+                }
+            });
 
-			public void actionPerformed(ActionEvent e) {
-				ConvenioListIternalFrame bairroListPanel = new ConvenioListIternalFrame();
-				bairroListPanel.setVisible(true);
-				jDesktopPane.add(bairroListPanel);
+            jMenuItemFornecedor.addActionListener(new ActionListener() {
 
-			}
-		});
+                public void actionPerformed(ActionEvent e) {
+                    FornecedorListInternalFrame bairroListPanel = new FornecedorListInternalFrame();
+                    bairroListPanel.setVisible(true);
+                    jDesktopPane.add(bairroListPanel);
 
-		jMenuItemTransportadora.addActionListener(new ActionListener() {
+                }
+            });
 
-			public void actionPerformed(ActionEvent e) {
-				TransportadoraListInternalFrame bairroListPanel = new TransportadoraListInternalFrame();
-				bairroListPanel.setVisible(true);
-				jDesktopPane.add(bairroListPanel);
+            jMenuItemConvenio.addActionListener(new ActionListener() {
 
-			}
-		});
+                public void actionPerformed(ActionEvent e) {
+                    ConvenioListIternalFrame bairroListPanel = new ConvenioListIternalFrame();
+                    bairroListPanel.setVisible(true);
+                    jDesktopPane.add(bairroListPanel);
 
-		setJMenuBar(jMenuBar);
+                }
+            });
 
-		JMenuItem jMenuItemConfiguracaoEmpresa = new JMenuItem("Empresa");
-		jMenuConfiguracao.add(jMenuItemConfiguracaoEmpresa);
+            jMenuItemTransportadora.addActionListener(new ActionListener() {
 
-		jMenuItemConfiguracaoEmpresa.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    TransportadoraListInternalFrame bairroListPanel = new TransportadoraListInternalFrame();
+                    bairroListPanel.setVisible(true);
+                    jDesktopPane.add(bairroListPanel);
 
-			public void actionPerformed(ActionEvent e) {
-				EmpresaFormInternalFrame empresaFormInternalFrame = new EmpresaFormInternalFrame();
-				empresaFormInternalFrame.setVisible(true);
-				jDesktopPane.add(empresaFormInternalFrame);
+                }
+            });
 
-			}
-		});
+            setJMenuBar(jMenuBar);
 
-		jMenuItemProduto.addActionListener(new ActionListener() {
+            JMenuItem jMenuItemConfiguracaoEmpresa = new JMenuItem("Empresa");
+            jMenuConfiguracao.add(jMenuItemConfiguracaoEmpresa);
 
-			public void actionPerformed(ActionEvent e) {
-				ProdutoListInternalFrame bairroListPanel;
-				try {
-					bairroListPanel = new ProdutoListInternalFrame();
-					bairroListPanel.setVisible(true);
-					jDesktopPane.add(bairroListPanel);
-				} catch (CategoriaException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (UnidadeException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+            jMenuItemConfiguracaoEmpresa.addActionListener(new ActionListener() {
 
-			}
-		});
+                public void actionPerformed(ActionEvent e) {
+                    EmpresaFormInternalFrame empresaFormInternalFrame = new EmpresaFormInternalFrame();
+                    empresaFormInternalFrame.setVisible(true);
+                    jDesktopPane.add(empresaFormInternalFrame);
 
-		jMenuItemFuncionarios.addActionListener(new ActionListener() {
+                }
+            });
 
-			public void actionPerformed(ActionEvent e) {
-				FuncionarioListInternalFrame bairroListPanel = new FuncionarioListInternalFrame();
-				bairroListPanel.setVisible(true);
-				jDesktopPane.add(bairroListPanel);
+            jMenuItemProduto.addActionListener(new ActionListener() {
 
-			}
-		});
+                public void actionPerformed(ActionEvent e) {
+                    ProdutoListInternalFrame bairroListPanel;
+                    try {
+                        bairroListPanel = new ProdutoListInternalFrame();
+                        bairroListPanel.setVisible(true);
+                        jDesktopPane.add(bairroListPanel);
+                    } catch (CategoriaException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    } catch (UnidadeException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
 
-		jMenuItemCargos.addActionListener(new ActionListener() {
+                }
+            });
 
-			public void actionPerformed(ActionEvent e) {
-				CargoListInternalFrame bairroListPanel = new CargoListInternalFrame();
-				bairroListPanel.setVisible(true);
-				jDesktopPane.add(bairroListPanel);
+            jMenuItemFuncionarios.addActionListener(new ActionListener() {
 
-			}
-		});
+                public void actionPerformed(ActionEvent e) {
+                    FuncionarioListInternalFrame bairroListPanel = new FuncionarioListInternalFrame();
+                    bairroListPanel.setVisible(true);
+                    jDesktopPane.add(bairroListPanel);
 
-		JMenu jMenuPDV = new JMenu("PDV");
-		jMenuPDV.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				Runtime runtime = Runtime.getRuntime();
-				try {
-					runtime.exec(
-							"C://Program Files (x86)//Google//Chrome//Application//chrome.exe  -start-fullscreen --app=http://127.0.0.1:8080/PrincipalWeb/PrincipalWeb.html");
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
-		jMenuBar.add(jMenuPDV);
-	}
+                }
+            });
 
-	public static JDesktopPane getjDesktopPane() {
-		return jDesktopPane;
-	}
+            jMenuItemCargos.addActionListener(new ActionListener() {
 
-	public static void setjDesktopPane(JDesktopPane jDesktopPane) {
-		PrincipalDesktop.jDesktopPane = jDesktopPane;
-	}
-}
+                public void actionPerformed(ActionEvent e) {
+                    CargoListInternalFrame bairroListPanel = new CargoListInternalFrame();
+                    bairroListPanel.setVisible(true);
+                    jDesktopPane.add(bairroListPanel);
+
+                }
+            });
+
+            JMenu jMenuPDV = new JMenu("PDV");
+            jMenuPDV.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent arg0) {
+                    Runtime runtime = Runtime.getRuntime();
+                    try {
+                        runtime.exec("C://Program Files (x86)//Google//Chrome//Application//chrome.exe  -start-fullscreen --app=http://127.0.0.1:8080/PrincipalWeb/PrincipalWeb.html");
+                    } catch (IOException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                }
+            });
+            jMenuBar.add(jMenuPDV);
+        }
+
+        public static JDesktopPane getjDesktopPane() {
+            return jDesktopPane;
+        }
+
+        public static void setjDesktopPane(JDesktopPane jDesktopPane) {
+            PrincipalDesktop.jDesktopPane = jDesktopPane;
+        }
+    }

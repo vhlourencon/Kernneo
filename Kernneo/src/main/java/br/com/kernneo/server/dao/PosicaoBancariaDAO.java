@@ -20,61 +20,44 @@ import br.com.kernneo.client.types.MovimentacaoFinanceiraTypes;
 import br.com.kernneo.server.ConnectFactory;
 import br.com.kernneo.server.negocio.ContaBancaria;
 
-public class PosicaoBancariaDAO {
-	
-	
-	public PosicaoBancariaModel obterPosicaoBancaria(Date dataSelecionada,ContaBancariaModel contaBancariaSelecionada) throws Exception { 
-		
-		contaBancariaSelecionada = new ContaBancaria().obterPorId(contaBancariaSelecionada);
-		/*
-		 * CRÉDITOS 
-		 */
-		Session session = ConnectFactory.getSession();
-		Query select = session.createSQLQuery("select sum(valor)  FROM movimentacao " +
-				" p WHERE "
-				+ "p.deletado = :deletado "
-				+ "AND dataHora is not null "
-				+ "AND date(dataHora)<date(:dataHora)  "
-				+ "AND id_conta=:id_conta"
-				);
-		select.setParameter("deletado", false);
-		select.setParameter("dataHora",dataSelecionada);
-		select.setParameter("id_conta", contaBancariaSelecionada.getId());
-		
-		BigDecimal bigDecimalSaldo =  (BigDecimal) select.uniqueResult();
-		if(bigDecimalSaldo == null ) { 
-		    bigDecimalSaldo = BigDecimal.ZERO; 
-		}
-		
+public class PosicaoBancariaDAO
+    {
 
-		
-		
-		bigDecimalSaldo = bigDecimalSaldo.setScale(2,RoundingMode.HALF_EVEN);
-		
-		
+        public PosicaoBancariaModel obterPosicaoBancaria(Date dataSelecionada, ContaBancariaModel contaBancariaSelecionada) throws Exception {
 
-		
-		
-		select = session.createQuery("select p FROM  "+  MovimentacaoModel.class.getCanonicalName() +
-				" p WHERE "
-				+ "p.deletado = :deletado "
-				+ "AND dataHora is not null "
-				+ "AND date(dataHora)=date(:dataHora) "
-				+ "AND id_conta=:id_conta "
-				+ "order by id asc"
-				);
-		select.setParameter("deletado", false);
-		select.setParameter("dataHora",dataSelecionada);
-		select.setParameter("id_conta",contaBancariaSelecionada.getId());
-		
-		ArrayList<MovimentacaoModel> lista = (ArrayList<MovimentacaoModel>) select.getResultList();
-	
-		PosicaoBancariaModel posicaoBancariaModel = new PosicaoBancariaModel(); 
-		posicaoBancariaModel.setListaDeMovimentacao(lista);
-		posicaoBancariaModel.setContaBancariaSelecionada(contaBancariaSelecionada);
-		posicaoBancariaModel.setSaldo(bigDecimalSaldo);
+            contaBancariaSelecionada = new ContaBancaria().obterPorId(contaBancariaSelecionada);
+            /*
+             * SALDO EXECUTADO
+             */
+            Session session = ConnectFactory.getSession();
+            Query select = session.createSQLQuery("select sum(valor)  FROM movimentacao " + " p WHERE " + "p.deletado = :deletado " + "AND dataHora is not null " + "AND date(dataHora)<date(:dataHora)" + "AND id_conta=:id_conta" + " AND executado=:executado"
 
-		return posicaoBancariaModel; 
-	}
+            );
+            select.setParameter("deletado", false);
+            select.setParameter("dataHora", dataSelecionada);
+            select.setParameter("id_conta", contaBancariaSelecionada.getId());
+            select.setParameter("executado", true);
 
-}
+            BigDecimal bigDecimalSaldo = (BigDecimal) select.uniqueResult();
+            if (bigDecimalSaldo == null) {
+                bigDecimalSaldo = BigDecimal.ZERO;
+            }
+
+            bigDecimalSaldo = bigDecimalSaldo.setScale(2, RoundingMode.HALF_EVEN);
+
+            select = session.createQuery("select p FROM  " + MovimentacaoModel.class.getCanonicalName() + " p WHERE " + "p.deletado = :deletado " + "AND dataHora is not null " + "AND date(dataHora)=date(:dataHora) " + "AND id_conta=:id_conta " + "order by id asc");
+            select.setParameter("deletado", false);
+            select.setParameter("dataHora", dataSelecionada);
+            select.setParameter("id_conta", contaBancariaSelecionada.getId());
+
+            ArrayList<MovimentacaoModel> lista = (ArrayList<MovimentacaoModel>) select.getResultList();
+
+            PosicaoBancariaModel posicaoBancariaModel = new PosicaoBancariaModel();
+            posicaoBancariaModel.setListaDeMovimentacao(lista);
+            posicaoBancariaModel.setContaBancariaSelecionada(contaBancariaSelecionada);
+            posicaoBancariaModel.setSaldo(bigDecimalSaldo);
+
+            return posicaoBancariaModel;
+        }
+
+    }

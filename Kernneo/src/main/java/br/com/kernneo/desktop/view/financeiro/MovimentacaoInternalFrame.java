@@ -22,16 +22,23 @@ import org.jdatepicker.impl.UtilDateModel;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
+import br.com.kernneo.client.exception.CidadeException;
+import br.com.kernneo.client.exception.EstadoException;
+import br.com.kernneo.client.exception.MovimentacaoException;
 import br.com.kernneo.client.model.CategoriaModel;
+import br.com.kernneo.client.model.CidadeModel;
 import br.com.kernneo.client.model.ClienteModel;
 import br.com.kernneo.client.model.ContaBancariaModel;
 import br.com.kernneo.client.model.FornecedorModel;
+import br.com.kernneo.client.model.FuncionarioModel;
 import br.com.kernneo.client.model.MovimentacaoModel;
 import br.com.kernneo.client.model.PosicaoBancariaModel;
 import br.com.kernneo.client.model.PosicaoFinanceiraModel;
 import br.com.kernneo.client.types.MovimentacaoFinanceiraTypes;
 import br.com.kernneo.client.utils.StringUtils;
 import br.com.kernneo.desktop.PrincipalDesktop;
+import br.com.kernneo.desktop.view.cidade.CidadeFiltroFrame;
+import br.com.kernneo.desktop.view.util.DateLabelFormatter;
 import br.com.kernneo.desktop.view.widget.ButtonBarComponent;
 import br.com.kernneo.desktop.view.widget.CheckboxPanel;
 
@@ -57,6 +64,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -129,9 +137,13 @@ public class MovimentacaoInternalFrame extends JInternalFrame
 
 //	private Moviment
 
-        public MovimentacaoInternalFrame() {
+        public MovimentacaoInternalFrame(FuncionarioModel funcionarioModel) throws Exception {
 
             setTitle("Movimentação Diaria");
+
+            if (funcionarioModel.getPermissaoMovFinanceiraModel().isPermiteAcesso() == false) {
+                throw new Exception("Usuário sem permissao para acessar esse modulo");
+            }
 
             setResizable(false);
             setClosable(true);
@@ -192,11 +204,16 @@ public class MovimentacaoInternalFrame extends JInternalFrame
 
             // table.setModel(
             table.setModel(new MovimentacaoTableModel());
+            table.getColumnModel().getColumn(0).setMinWidth(0);
+            table.getColumnModel().getColumn(0).setMaxWidth(0);
 
-            JScrollPane scrollPane = new JScrollPane(table);
-            scrollPane.setBounds(341, 108, 810, 313);
+            JScrollPane scrollPaneLancamentos = new JScrollPane(table);
+            // scrollPaneLancamentos.setBounds(341, 250, 810, 313);
+            // scrollPaneLancamentos.setPreferredSize(new Dimension(-1,300));
+
+            scrollPaneLancamentos.setMinimumSize(new Dimension(341, 300));
             // scrollPane.setLayout(new MigLayout("grow,fill"));
-            getContentPane().add(scrollPane);
+            // getContentPane().add(scrollPaneLancamentos);
 
             JPanel panel_1 = new JPanel();
             panel_1.setBorder(new TitledBorder(null, "Informaçoes de Lançamento", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -324,7 +341,6 @@ public class MovimentacaoInternalFrame extends JInternalFrame
 
             btnNewButton.setBounds(10, 617, 321, 67);
             getContentPane().add(btnNewButton);
-           
 
             tableSaldo = new JTable();
             tableSaldo.setFillsViewportHeight(true);
@@ -380,25 +396,94 @@ public class MovimentacaoInternalFrame extends JInternalFrame
             // MatteBorder(1,1,1,1,Color.gray),new EmptyBorder(0,0,0,0)));
             jscrollPaneFooter.setPreferredSize(new Dimension(-1, 30));
 
-            JPanel holdingPanel = new JPanel(new BorderLayout());
+            BorderLayout bl_holdingPanel = new BorderLayout();
+            bl_holdingPanel.setVgap(5);
+            JPanel holdingPanel = new JPanel(bl_holdingPanel);
             holdingPanel.add(jPanelSaldo, BorderLayout.CENTER);
             holdingPanel.add(jscrollPaneFooter, BorderLayout.SOUTH);
 
-            JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-            tabbedPane.setBounds(341, 437, 810, 247);
-            tabbedPane.addTab("Saldo em Conta", null, holdingPanel, null);
+            JTabbedPane tabbedPaneSaldoEmConta = new JTabbedPane(JTabbedPane.TOP);
+            // tabbedPaneSaldoEmConta.setBounds(341, 437, 810, 247);
+            tabbedPaneSaldoEmConta.addTab("Saldo em Conta", null, holdingPanel, null);
+            tabbedPaneSaldoEmConta.setSize(-1, 100);
+            tabbedPaneSaldoEmConta.setPreferredSize(new Dimension(-1, 250));
 
-            getContentPane().add(tabbedPane);
+            // getContentPane().add(tabbedPaneSaldoEmConta);
 
             JPanel panel_4 = new JPanel();
             panel_4.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Barra de Ferramentas", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
             panel_4.setBounds(341, 10, 810, 77);
             panel_4.setLayout(new BorderLayout());
 
-            ButtonBarComponent buttonBarComponent = new ButtonBarComponent();
-            buttonBarComponent.setBorder(null);
-            // setarComponentes();
-            buttonBarComponent.btExcluir.addActionListener(new ActionListener() {
+            JButton btExcluir = new JButton(Icone.novo("btExcluir.png"));
+            btExcluir.setText("Excluir ");
+            JButton btAlterar = new JButton(Icone.novo("btAgenda2-old.png"));
+            btAlterar.setText("Alterar Data");
+
+            JButton btSair = new JButton(Icone.novo("btSair.png"));
+            btSair.setText("Sair");
+            btSair.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    setVisible(false);
+                    dispose();
+
+                }
+            });
+
+            JPanel buttonBarComponent = new JPanel();
+            // buttonBarComponent.setBorder(BorderFactory.createEmptyBorder());
+
+            buttonBarComponent.setLayout(new MigLayout("", "[150px][150px][400px][150px]", "[50px]"));
+
+            // buttonBarComponent.btAlterar.setp
+            buttonBarComponent.add(btAlterar, "cell 0 0,grow");
+            buttonBarComponent.add(btExcluir, "cell 1 0,grow");
+            buttonBarComponent.add(btSair, "cell 3 0,grow");
+
+            btAlterar.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                    try {
+                        if (getModelSelecionado() == null) {
+                            JOptionPane.showMessageDialog(null, "Selecione um registro");
+                        } else {
+                            DatePickerDialog datePickerDialog = new DatePickerDialog() {
+
+                                @Override
+                                public void getDataSelecionada(Date dataSelecionada) {
+                                    if (dataSelecionada == null) {
+                                        JOptionPane.showMessageDialog(this, "Data Inválida", "ERRO ", JOptionPane.ERROR_MESSAGE);
+
+                                    } else {
+                                        int dialogButton = JOptionPane.YES_NO_OPTION;
+                                        int dialogResult = JOptionPane.showConfirmDialog(null, "Deseja Alterar parada data Selecionada?", "Alerta", dialogButton);
+                                        if (dialogResult == JOptionPane.YES_OPTION) {
+                                            acaoEditarData(getModelSelecionado(), dataSelecionada);
+                                        }
+                                        this.setVisible(false);
+                                        this.dispose();
+                                    }
+
+                                }
+
+                            };
+                            datePickerDialog.centerOnScreen(true);
+                            datePickerDialog.setVisible(true);
+
+                        }
+
+                    } catch (Exception e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+
+                }
+            });
+            btExcluir.addActionListener(new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -418,6 +503,16 @@ public class MovimentacaoInternalFrame extends JInternalFrame
             panel_4.add(buttonBarComponent, BorderLayout.CENTER);
 
             getContentPane().add(panel_4);
+
+            BorderLayout bl_panel_5 = new BorderLayout();
+            bl_panel_5.setVgap(5);
+            JPanel panel_5 = new JPanel(bl_panel_5);
+            panel_5.setBounds(341, 108, 810, 576);
+            panel_5.add(scrollPaneLancamentos, BorderLayout.CENTER);
+            panel_5.add(tabbedPaneSaldoEmConta, BorderLayout.SOUTH);
+
+            // panel_5.add(comp)
+            getContentPane().add(panel_5);
 
             try {
                 Conexao.Executar(new Comando() {
@@ -442,15 +537,46 @@ public class MovimentacaoInternalFrame extends JInternalFrame
                         }
                         listaDeContasSelecionadas = new ContaBancaria().obterTodos(ContaBancariaModel.class);
                         // acaoObterPosicao();
-
                     }
                 });
             } catch (Exception e1) {
                 e1.printStackTrace();
+                JOptionPane.showMessageDialog(this, e1.getLocalizedMessage(), "ERRO ", JOptionPane.ERROR_MESSAGE);
+
+                throw e1;
             }
             setListaDeContasSelecionadas(getListaDeContasSelecionadas());
             acaoObterPosicao();
             setMovimentacaoModel(new MovimentacaoModel());
+
+            panel_5.removeAll();
+            if (funcionarioModel.getPermissaoMovFinanceiraModel().isVisualizarSaldoConta()) {
+                panel_5.add(scrollPaneLancamentos, BorderLayout.CENTER);
+                panel_5.add(tabbedPaneSaldoEmConta, BorderLayout.SOUTH);
+            } else {
+                panel_5.add(scrollPaneLancamentos, BorderLayout.CENTER);
+                table.getColumnModel().getColumn(6).setMinWidth(0);
+                table.getColumnModel().getColumn(6).setMaxWidth(0);
+            }
+
+        }
+
+        private void acaoEditarData(MovimentacaoModel modelSelecionado, Date dataSelecionada) {
+            try {
+                Conexao.Executar(new Comando() {
+
+                    @Override
+                    public void execute(Session session) throws Exception {
+                        modelSelecionado.setUsuarioEdit(PrincipalDesktop.getUsarioLogado());
+                        new Movimentacao().alterarData(modelSelecionado, dataSelecionada);
+                    }
+                });
+                acaoObterPosicao();
+                JOptionPane.showMessageDialog(this, "Registro Alterado com sucesso!", "Informação", JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, e.getLocalizedMessage(), "ERRO ", JOptionPane.ERROR_MESSAGE);
+
+            }
 
         }
 
@@ -464,8 +590,9 @@ public class MovimentacaoInternalFrame extends JInternalFrame
                         new Movimentacao().excluir(modelSelecionado);
                     }
                 });
-                JOptionPane.showMessageDialog(this, "Registro Excluido com sucesso!", "Informação", JOptionPane.INFORMATION_MESSAGE);
                 acaoObterPosicao();
+                JOptionPane.showMessageDialog(this, "Registro Excluido com sucesso!", "Informação", JOptionPane.INFORMATION_MESSAGE);
+
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, e.getLocalizedMessage(), "ERRO ", JOptionPane.ERROR_MESSAGE);
 
@@ -509,8 +636,10 @@ public class MovimentacaoInternalFrame extends JInternalFrame
                 for (PosicaoBancariaModel posBancariaModel : posicaoFinanceiraModel.getListaDePosicoesBancarias()) {
                     defaultTableModelPosBancaria.addRow(new String[] { posBancariaModel.getContaBancariaSelecionada().getNome(), currencyFormat(posBancariaModel.getCalcSaldoFinal()) });
                     for (MovimentacaoModel movimentacaoModel : posBancariaModel.getListaDeMovimentacao()) {
-                        bigDecimalSaldoGlobal = bigDecimalSaldoGlobal.add(movimentacaoModel.getValor());
-                        defaultTableModelMovimentacoes.addRow(new Object[] { movimentacaoModel.getId().toString(), movimentacaoModel.getDescricao(), movimentacaoModel.getConta().getNome(), movimentacaoModel.getTipo().toString(), currencyFormat(movimentacaoModel.getValor()), false, currencyFormat(bigDecimalSaldoGlobal) });
+                        if (movimentacaoModel.isExecutado()) {
+                            bigDecimalSaldoGlobal = bigDecimalSaldoGlobal.add(movimentacaoModel.getValor());
+                        }
+                        defaultTableModelMovimentacoes.addRow(new Object[] { movimentacaoModel.getId().toString(), movimentacaoModel.getDescricao(), movimentacaoModel.getConta().getNome(), movimentacaoModel.getTipo().toString(), currencyFormat(movimentacaoModel.getValor()), movimentacaoModel.isExecutado(), currencyFormat(bigDecimalSaldoGlobal) });
                     }
                 }
                 defaultTableModelMovimentacoes.addRow(new Object[] { "", "-> Saldo Final ", "", "", "", false, currencyFormat(posicaoFinanceiraModel.getCalcSaldoFinal()) });
@@ -527,25 +656,28 @@ public class MovimentacaoInternalFrame extends JInternalFrame
         private MovimentacaoModel getModelSelecionado() {
 
             if (table.getSelectedRow() == -1) {
-
                 return null;
-
             } else {
                 DefaultTableModel defaultTableModel = (DefaultTableModel) table.getModel();
                 String id = defaultTableModel.getValueAt(table.getSelectedRow(), 0).toString().trim();
 
-                MovimentacaoModel modelSelecionado = null;
-                for (PosicaoBancariaModel posicaoBancariaModel : getPosicaoFinanceiraModel().getListaDePosicoesBancarias()) {
-                    for (MovimentacaoModel model : posicaoBancariaModel.getListaDeMovimentacao()) {
-                        if (model.getId().toString().equals(id)) {
-                            modelSelecionado = model;
-                            break;
-                        }
-                    }
-                }
+                MovimentacaoModel modelSelecionado = getModelPorID(id);
 
                 return modelSelecionado;
             }
+        }
+
+        private MovimentacaoModel getModelPorID(String id) {
+            MovimentacaoModel modelSelecionado = null;
+            for (PosicaoBancariaModel posicaoBancariaModel : getPosicaoFinanceiraModel().getListaDePosicoesBancarias()) {
+                for (MovimentacaoModel model : posicaoBancariaModel.getListaDeMovimentacao()) {
+                    if (model.getId().toString().equals(id)) {
+                        modelSelecionado = model;
+                        break;
+                    }
+                }
+            }
+            return modelSelecionado;
         }
 
         public String currencyFormat(BigDecimal n) {
@@ -577,7 +709,7 @@ public class MovimentacaoInternalFrame extends JInternalFrame
         public MovimentacaoModel getMovimentacaoModel() {
             movimentacaoModel.setCategoria((CategoriaModel) comboBoxCategoria.getSelectedItem());
             movimentacaoModel.setConta((ContaBancariaModel) comboBoxConta.getSelectedItem());
-            movimentacaoModel.setFornecedor((FornecedorModel) comboBoxCliente.getSelectedItem());
+            movimentacaoModel.setCliente((ClienteModel) comboBoxCliente.getSelectedItem());
             movimentacaoModel.setTipo(MovimentacaoFinanceiraTypes.credito);
             if (radioButtonDebito.isSelected()) {
                 movimentacaoModel.setTipo(MovimentacaoFinanceiraTypes.debito);
@@ -613,42 +745,21 @@ public class MovimentacaoInternalFrame extends JInternalFrame
 
         }
 
-        public class DateLabelFormatter extends AbstractFormatter
-            {
-
-                private String datePattern = "dd/MM/yyyy";
-                private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
-
-                @Override
-                public Object stringToValue(String text) throws ParseException {
-                    return dateFormatter.parseObject(text);
-                }
-
-                @Override
-                public String valueToString(Object value) throws ParseException {
-                    if (value != null) {
-                        Calendar cal = (Calendar) value;
-                        return dateFormatter.format(cal.getTime());
-                    }
-
-                    return "";
-                }
-
-            }
-
         public class MovimentacaoTableModel extends DefaultTableModel
             {
+                private Movimentacao movimentacao;
 
                 public MovimentacaoTableModel() {
 
                     super(new String[] { "id", "Descrição", "Conta", "Tipo", "Valor", "Pago/Recebido", "Saldo Global" }, 0);
+                    movimentacao = new Movimentacao();
                 }
 
                 @Override
                 public Class<?> getColumnClass(int columnIndex) {
                     Class clazz = String.class;
                     switch (columnIndex) {
-                   
+
                     case 5:
                         clazz = Boolean.class;
                         break;
@@ -664,10 +775,36 @@ public class MovimentacaoInternalFrame extends JInternalFrame
                 @Override
                 public void setValueAt(Object aValue, int row, int column) {
                     if (aValue instanceof Boolean && column == 5) {
-                        System.out.println(aValue);
+                        // System.out.println(aValue);
                         Vector rowData = (Vector) getDataVector().get(row);
-                        rowData.set(5, (boolean) aValue);
-                        fireTableCellUpdated(row, column);
+                        // System.out.println();
+
+                        MovimentacaoModel movimentacaoModel = getModelPorID((String) rowData.get(0));
+                        if (movimentacaoModel != null) {
+
+                            try {
+                                Conexao.Executar(new Comando() {
+
+                                    @Override
+                                    public void execute(Session session) throws Exception {
+                                        movimentacao.executar(movimentacaoModel, (boolean) aValue);
+
+                                    }
+                                });
+
+                                rowData.set(5, (boolean) aValue);
+                                fireTableCellUpdated(row, column);
+                                // acaoObterPosicao();
+                            } catch (Exception e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(MovimentacaoInternalFrame.this, e.getLocalizedMessage(), "ERRO", JOptionPane.ERROR_MESSAGE);
+
+                            } finally {
+                                acaoObterPosicao();
+                            }
+                        }
+
                     }
                 }
             }

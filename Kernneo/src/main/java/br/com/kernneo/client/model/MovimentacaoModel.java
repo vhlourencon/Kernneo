@@ -51,6 +51,12 @@ public class MovimentacaoModel extends GenericModel {
 	private int repetirQtde;
 
 	private boolean contaMovimentacaoInicial;
+	
+	private boolean executado; 
+	
+	
+	
+	
 
 	@Enumerated(EnumType.STRING)
 	private MovimentacaoFinanceiraTypes tipo;
@@ -166,5 +172,13 @@ public class MovimentacaoModel extends GenericModel {
 	public void setContaMovimentacaoInicial(boolean contaMovimentacaoInicial) {
 		this.contaMovimentacaoInicial = contaMovimentacaoInicial;
 	}
+
+    public boolean isExecutado() {
+        return executado;
+    }
+
+    public void setExecutado(boolean executado) {
+        this.executado = executado;
+    }
 
 }
