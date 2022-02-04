@@ -41,13 +41,25 @@ public class ClienteFormCadPanel extends GenericFormCadPanel<ClienteModel> {
 
 	panel.add(textFieldDescricao);
 	textFieldDescricao.setColumns(50);
+	
+	
+	
+    }
+    
+    
 
+    public JTextField getTextFieldDescricao() {
+        return textFieldDescricao;
+    }
+
+    public void setTextFieldDescricao(JTextField textFieldDescricao) {
+        this.textFieldDescricao = textFieldDescricao;
     }
 
     @Override
     public ClienteModel getModel() {
 	model.setNome(textFieldDescricao.getText());
-
+	
 	return model;
     }
 
@@ -59,7 +71,8 @@ public class ClienteFormCadPanel extends GenericFormCadPanel<ClienteModel> {
 	}
 
 	super.setModel(model);
-	textFieldDescricao.setText(model.getNome());
+	textFieldDescricao.setText(model.getNome());	
+	textFieldDescricao.requestFocus();
 
     }
 }

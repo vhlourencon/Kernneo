@@ -100,12 +100,12 @@ public class DecimalFormattedField extends JFormattedTextField {
   
     /**Verifica se o valor digitado é válido, e insere os novos valores*/  
     public void thisFocusLost(FocusEvent evt) { 
-    	String minus = "";
-    	if(getText().charAt(0) == '-') { 
-    		minus = "-";
-    	}
-    	String valor = getText().replaceAll("\\D+", "");
-		valor = valor.substring(0, valor.length() - 2) + "." + valor.substring(valor.length() - 2);
+        String minus = "";
+        if(getText().charAt(0) == '-') { 
+            minus = "-";
+        }
+        String valor = getText().replaceAll("\\D+", "");
+        valor = valor.substring(0, valor.length() - 2) + "." + valor.substring(valor.length() - 2);
         if (!valor.equals("") && !valor.trim().isEmpty()) {  
             oldValue = valor;  
         }  
@@ -139,7 +139,9 @@ public class DecimalFormattedField extends JFormattedTextField {
             this.setText(String.format("%f", d));  
         }else{  
             this.setText(value.toString());  
-        }  
+        } 
+        this.thisFocusLost(null);
+        normalText();
     }  
   
     /** 
@@ -188,6 +190,7 @@ public class DecimalFormattedField extends JFormattedTextField {
     public void setText(String valor) {  
         super.setText(valor);  
         this.thisFocusLost(null);  
+       
     }  
   
     /**Arredondamento para corrigir possíveis diferenças em decimal do valor exibido com o valor retornado*/  

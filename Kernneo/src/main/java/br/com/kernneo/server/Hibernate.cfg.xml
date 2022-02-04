@@ -10,7 +10,7 @@
 
 		<!-- Database connection settings -->
 		<property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-		<property name="connection.url">jdbc:mysql://10.15.28.133:3306/kernneo</property>
+		<property name="connection.url">jdbc:mysql://10.15.28.207:3306/kernneo</property>
 		<property name="connection.username">root</property>
 		<property name="connection.password">admin</property>
 
@@ -19,7 +19,7 @@
 		<property name="connection.maxReconnects">10</property>
 
 		<!-- JDBC connection pool (use the built-in) -->
-		<property name="connection.pool_size">2</property>
+		<property name="connection.pool_size">10</property>
 
 		<!-- SQL dialect -->
 		<property name="dialect">org.hibernate.dialect.MySQL8Dialect</property>

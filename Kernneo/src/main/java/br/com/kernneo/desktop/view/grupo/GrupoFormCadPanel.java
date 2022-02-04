@@ -54,9 +54,19 @@ public class GrupoFormCadPanel extends GenericFormCadPanel<CategoriaModel> {
 	if (model == null) {
 	    model = new CategoriaModel();
 	}
+	
+	
 
 	super.setModel(model);
 	textFieldDescricao.setText(model.getCategoria_nome_portugues());
 
+    }
+
+    public JTextField getTextFieldDescricao() {
+        return textFieldDescricao;
+    }
+
+    public void setTextFieldDescricao(JTextField textFieldDescricao) {
+        this.textFieldDescricao = textFieldDescricao;
     }
 }

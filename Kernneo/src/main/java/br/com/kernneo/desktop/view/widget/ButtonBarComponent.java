@@ -21,6 +21,7 @@ public class ButtonBarComponent extends JPanel {
 
     public JButton btSalvar = new JButton(Icone.novo("btSalvar.png"));
     public JButton btCancelar = new JButton(Icone.novo("btCancelar.png"));
+    public JButton btImprimir = new JButton(Icone.novo("btImprime.png"));
 
     public ButtonBarComponent() {
 	setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -46,6 +47,10 @@ public class ButtonBarComponent extends JPanel {
 	add(btConsultar, "cell 3 0,grow");
 	btSair.setText("Sair");
 	btSair.setToolTipText("Sair (Ctrl + W)");
+	
+	btImprimir.setText("Imprimir");
+	btImprimir.setToolTipText("Imprimir (Ctrl + P)");
+	btImprimir.setMnemonic(KeyEvent.VK_P);
 	add(btSair, "cell 4 0,grow");
 	
 	btSalvar.setText("Salvar");

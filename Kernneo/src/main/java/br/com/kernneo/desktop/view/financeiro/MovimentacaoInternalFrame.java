@@ -1,51 +1,73 @@
 package br.com.kernneo.desktop.view.financeiro;
 
-import javax.swing.JFormattedTextField.AbstractFormatter;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Properties;
+import java.util.Vector;
+
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SpringLayout;
+import javax.swing.UIManager;
+import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.text.DefaultFormatterFactory;
-import javax.swing.text.NumberFormatter;
-import javax.swing.text.TabExpander;
-import javax.swing.JInternalFrame;
-import javax.swing.JToolBar;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListSelectionModel;
 
 import org.hibernate.Session;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
-import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
-import br.com.kernneo.client.exception.CidadeException;
-import br.com.kernneo.client.exception.EstadoException;
-import br.com.kernneo.client.exception.MovimentacaoException;
+import com.fasterxml.jackson.databind.BeanProperty.Bogus;
+
 import br.com.kernneo.client.model.CategoriaModel;
-import br.com.kernneo.client.model.CidadeModel;
 import br.com.kernneo.client.model.ClienteModel;
 import br.com.kernneo.client.model.ContaBancariaModel;
-import br.com.kernneo.client.model.FornecedorModel;
 import br.com.kernneo.client.model.FuncionarioModel;
+import br.com.kernneo.client.model.GenericModel;
 import br.com.kernneo.client.model.MovimentacaoModel;
 import br.com.kernneo.client.model.PosicaoBancariaModel;
 import br.com.kernneo.client.model.PosicaoFinanceiraModel;
 import br.com.kernneo.client.types.MovimentacaoFinanceiraTypes;
-import br.com.kernneo.client.utils.StringUtils;
 import br.com.kernneo.desktop.PrincipalDesktop;
-import br.com.kernneo.desktop.view.cidade.CidadeFiltroFrame;
+import br.com.kernneo.desktop.view.cliente.ClienteFormCadPanel;
+import br.com.kernneo.desktop.view.cliente.ClienteListInternalFrame;
+import br.com.kernneo.desktop.view.grupo.GrupoFormCadPanel;
+import br.com.kernneo.desktop.view.grupo.GrupoListInternalFrame;
 import br.com.kernneo.desktop.view.util.DateLabelFormatter;
-import br.com.kernneo.desktop.view.widget.ButtonBarComponent;
-import br.com.kernneo.desktop.view.widget.CheckboxPanel;
-
-import br.com.kernneo.desktop.view.widget.DecimalFormattedField;
 import br.com.kernneo.desktop.view.widget.Icone;
 import br.com.kernneo.desktop.view.widget.JMoneyField;
-import br.com.kernneo.desktop.view.widget.JPanelPad;
 import br.com.kernneo.server.Comando;
 import br.com.kernneo.server.Conexao;
 import br.com.kernneo.server.negocio.Categoria;
@@ -53,62 +75,8 @@ import br.com.kernneo.server.negocio.Cliente;
 import br.com.kernneo.server.negocio.ContaBancaria;
 import br.com.kernneo.server.negocio.Movimentacao;
 import br.com.kernneo.server.negocio.PosicaoFinanceira;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Properties;
-import java.util.Vector;
-
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.JFormattedTextField;
 import net.miginfocom.swing.MigLayout;
-import javax.swing.JLayeredPane;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
-import javax.swing.SpringLayout;
-import javax.swing.JTable;
-import javax.swing.JScrollPane;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JRadioButton;
-import java.awt.Font;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.border.MatteBorder;
-import javax.swing.JComboBox;
-import javax.swing.JTextField;
-import javax.swing.JCheckBox;
-import javax.swing.JToggleButton;
-import java.awt.Panel;
-import javax.swing.JSpinner;
-import javax.swing.SwingConstants;
-import javax.swing.JSeparator;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.Icon;
 
 public class MovimentacaoInternalFrame extends JInternalFrame
     {
@@ -134,6 +102,7 @@ public class MovimentacaoInternalFrame extends JInternalFrame
         private JTable footerTable;
 
         private PosicaoFinanceiraModel posicaoFinanceiraModel;
+        private JPanel panelInfoLancamento;
 
 //	private Moviment
 
@@ -165,7 +134,7 @@ public class MovimentacaoInternalFrame extends JInternalFrame
             p.put("text.year", "Ano");
 
             JPanel panel = new JPanel();
-            panel.setBounds(10, 10, 321, 77);
+            panel.setBounds(5, 5, 321, 77);
             getContentPane().add(panel);
 
             // panel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(1,
@@ -211,35 +180,112 @@ public class MovimentacaoInternalFrame extends JInternalFrame
             // scrollPaneLancamentos.setBounds(341, 250, 810, 313);
             // scrollPaneLancamentos.setPreferredSize(new Dimension(-1,300));
 
-            scrollPaneLancamentos.setMinimumSize(new Dimension(341, 300));
+            scrollPaneLancamentos.setMinimumSize(new Dimension(341, 100));
             // scrollPane.setLayout(new MigLayout("grow,fill"));
             // getContentPane().add(scrollPaneLancamentos);
 
-            JPanel panel_1 = new JPanel();
-            panel_1.setBorder(new TitledBorder(null, "Informaçoes de Lançamento", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-            panel_1.setBounds(10, 98, 321, 516);
-            getContentPane().add(panel_1);
-            panel_1.setLayout(null);
+            panelInfoLancamento = new JPanel() {
+
+                /** Stroke size. it is recommended to set it to 1 for better view */
+                protected int strokeSize = 1;
+                /** Color of shadow */
+                protected Color shadowColor = Color.black;
+                /** Sets if it drops shadow */
+                protected boolean shady = true;
+                /** Sets if it has an High Quality view */
+                protected boolean highQuality = true;
+                /** Double values for Horizontal and Vertical radius of corner arcs */
+                protected Dimension arcs = new Dimension(20, 20);
+                /** Distance between shadow border and opaque panel border */
+                protected int shadowGap = 5;
+                /** The offset of shadow. */
+                protected int shadowOffset = 4;
+                /** The transparency value of shadow. ( 0 - 255) */
+                protected int shadowAlpha = 150;
+
+                @Override
+                protected void paintComponent(Graphics g) {
+                    super.paintComponent(g);
+                    int width = getWidth();
+                    int height = getHeight();
+                    int shadowGap = this.shadowGap;
+                    Color shadowColorA = new Color(shadowColor.getRed(), shadowColor.getGreen(), shadowColor.getBlue(), shadowAlpha);
+                    Graphics2D graphics = (Graphics2D) g;
+
+                    // Sets antialiasing if HQ.
+                    if (highQuality) {
+                        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    }
+
+                    // Draws shadow borders if any.
+                    if (shady) {
+                        graphics.setColor(shadowColorA);
+                        graphics.fillRoundRect(shadowOffset, // X position
+                                shadowOffset, // Y position
+                                width - strokeSize - shadowOffset, // width
+                                height - strokeSize - shadowOffset, // height
+                                arcs.width, arcs.height);// arc Dimension
+                    } else {
+                        shadowGap = 1;
+                    }
+
+                    // Draws the rounded opaque panel with borders.
+                    graphics.setColor(getBackground());
+                    graphics.fillRoundRect(0, 0, width - shadowGap, height - shadowGap, arcs.width, arcs.height);
+                    graphics.setColor(getForeground());
+                    graphics.setStroke(new BasicStroke(strokeSize));
+                    graphics.drawRoundRect(0, 0, width - shadowGap, height - shadowGap, arcs.width, arcs.height);
+
+                    // Sets strokes to default, is better.
+                    graphics.setStroke(new BasicStroke());
+                }
+            };
+            // panelInfoLancamento.setBackground();
+            panelInfoLancamento.setBorder(new TitledBorder(null, "Informaçoes de Lançamento", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+            panelInfoLancamento.setBounds(5, 80, 321, 505);
+            panelInfoLancamento.setOpaque(false);
+            getContentPane().add(panelInfoLancamento);
+            panelInfoLancamento.setLayout(null);
 
             JLabel labelTipo = new JLabel("Tipo:");
             labelTipo.setBounds(10, 25, 46, 15);
-            panel_1.add(labelTipo);
+            panelInfoLancamento.add(labelTipo);
 
             JPanel panel_2 = new JPanel();
             panel_2.setBorder(new LineBorder(Color.LIGHT_GRAY));
             panel_2.setBackground(Color.WHITE);
             panel_2.setBounds(10, 45, 301, 45);
-            panel_1.add(panel_2);
+            panelInfoLancamento.add(panel_2);
             panel_2.setLayout(null);
 
             radioButtonCredito = new JRadioButton("Crédito");
+            // adioButtonCredito.setBackground(S);
             radioButtonCredito.setFont(new Font("Tahoma", Font.BOLD, 15));
             radioButtonCredito.setBounds(23, 9, 109, 23);
             panel_2.add(radioButtonCredito);
+            Color customColor = new Color(10, 10, 255);
+
+            radioButtonCredito.addChangeListener(new ChangeListener() {
+
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    if (radioButtonCredito.isSelected()) {
+                        panelInfoLancamento.setBackground(new Color(102, 153, 102));
+
+                    } else {
+                        panelInfoLancamento.setBackground(new Color(153, 102, 102));
+                    }
+                    validate();
+                    panelInfoLancamento.repaint();
+
+                }
+            });
 
             radioButtonDebito = new JRadioButton("Débito");
+            // radioButtonDebito.setBackground();
             radioButtonDebito.setFont(new Font("Tahoma", Font.BOLD, 15));
             radioButtonDebito.setBounds(166, 9, 109, 23);
+
             panel_2.add(radioButtonDebito);
 
             ButtonGroup buttonGroupLancamentoTipo = new ButtonGroup();
@@ -248,72 +294,218 @@ public class MovimentacaoInternalFrame extends JInternalFrame
             radioButtonCredito.setSelected(true);
 
             JLabel lblValor = new JLabel("Valor:");
-            lblValor.setBounds(10, 408, 46, 14);
-            panel_1.add(lblValor);
+            lblValor.setBounds(10, 398, 46, 14);
+            panelInfoLancamento.add(lblValor);
 
             textFieldValor = new JMoneyField();
             textFieldValor.setEditable(true);
             textFieldValor.setFont(new Font("Tahoma", Font.BOLD, 15));
 
-            textFieldValor.setBounds(10, 426, 301, 45);
-            panel_1.add(textFieldValor);
+            textFieldValor.setBounds(10, 415, 301, 45);
+            panelInfoLancamento.add(textFieldValor);
 
             comboBoxCliente = new JComboBox<ClienteModel>();
-            comboBoxCliente.setBounds(10, 270, 301, 43);
-            panel_1.add(comboBoxCliente);
+            comboBoxCliente.setBounds(10, 270, 240, 43);
+            
+            panelInfoLancamento.add(comboBoxCliente);
+            AutoCompleteDecorator.decorate(comboBoxCliente);
 
             JLabel labelCliente = new JLabel("Cliente:");
             labelCliente.setBounds(10, 250, 46, 14);
-            panel_1.add(labelCliente);
+            panelInfoLancamento.add(labelCliente);
 
             JLabel lblNewLabel_1_1 = new JLabel("Categoria:");
             lblNewLabel_1_1.setBounds(10, 175, 95, 14);
-            panel_1.add(lblNewLabel_1_1);
+            panelInfoLancamento.add(lblNewLabel_1_1);
 
             comboBoxCategoria = new JComboBox<CategoriaModel>();
             AutoCompleteDecorator.decorate(comboBoxCategoria);
             comboBoxCategoria.setSelectedIndex(-1);
-            comboBoxCategoria.setBounds(10, 195, 301, 43);
-            panel_1.add(comboBoxCategoria);
+            comboBoxCategoria.setBounds(10, 195, 240, 43);
+            panelInfoLancamento.add(comboBoxCategoria);
 
             textFieldDescricao = new JTextField();
             textFieldDescricao.setBounds(10, 121, 301, 43);
-            panel_1.add(textFieldDescricao);
+            panelInfoLancamento.add(textFieldDescricao);
             textFieldDescricao.setColumns(10);
 
             JLabel labelDescricao = new JLabel("Descrição:");
             labelDescricao.setBounds(10, 100, 80, 15);
-            panel_1.add(labelDescricao);
+            panelInfoLancamento.add(labelDescricao);
 
             checkBoxRepetir = new JCheckBox("Repetir");
-            checkBoxRepetir.setBounds(10, 478, 109, 23);
-            panel_1.add(checkBoxRepetir);
+            checkBoxRepetir.setEnabled(false);
+            checkBoxRepetir.setBounds(10, 470, 109, 23);
+            panelInfoLancamento.add(checkBoxRepetir);
 
             JLabel labelConta = new JLabel("Conta:");
             labelConta.setBounds(10, 324, 46, 14);
-            panel_1.add(labelConta);
+            panelInfoLancamento.add(labelConta);
 
             comboBoxConta = new JComboBox<ContaBancariaModel>();
             comboBoxConta.setBounds(10, 344, 301, 43);
-            panel_1.add(comboBoxConta);
+            panelInfoLancamento.add(comboBoxConta);
 
             JPanel panel_3 = new JPanel();
-            panel_3.setBounds(116, 478, 195, 23);
-            panel_1.add(panel_3);
+            panel_3.setBounds(116, 470, 195, 23);
+            panelInfoLancamento.add(panel_3);
             panel_3.setEnabled(false);
             panel_3.setLayout(null);
 
             comboboxRepetirPeriodo = new JComboBox();
+            comboboxRepetirPeriodo.setEnabled(false);
             comboboxRepetirPeriodo.setBounds(0, 0, 89, 25);
             panel_3.add(comboboxRepetirPeriodo);
 
             spinnerRepetirQtde = new JSpinner();
+            spinnerRepetirQtde.setEnabled(false);
             spinnerRepetirQtde.setBounds(99, 0, 55, 25);
             panel_3.add(spinnerRepetirQtde);
 
             JLabel lblVezes = new JLabel("Vezes");
+            lblVezes.setEnabled(false);
             lblVezes.setBounds(155, 5, 40, 14);
             panel_3.add(lblVezes);
+            
+            JButton buttonAddCliente = new JButton(Icone.novo("btAdic2.gif"));
+            buttonAddCliente.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        ClienteListInternalFrame clienteListInternalFrame = new ClienteListInternalFrame() {
+
+                            @Override
+                            public void acaoSalvar() {
+                               
+                                    try {
+                                        Long id = null ; 
+                                        Conexao.Executar(new Comando() {
+
+                                            @Override
+                                            public void execute(Session session) throws Exception {
+                                                ClienteModel model = getFormCadPanel().getModel();
+                                               ClienteModel modelAux =  negocio.salvar( model);
+                                               comboBoxCliente.addItem(modelAux);
+                                               comboBoxCliente.setSelectedItem(modelAux);
+
+                                             
+                                            }
+                                        });
+                                     
+                                        setVisible(false);
+                                        dispose();
+                                        JOptionPane.showMessageDialog(this, "Inserido com sucesso!");
+                                      
+
+                                    } catch (Exception e) {
+                                        JOptionPane.showMessageDialog(this, e.getMessage());
+                                        e.printStackTrace();
+
+                                    }
+
+                                
+                            }
+                            
+                        };
+                        clienteListInternalFrame.eventoBotaoIncluir();
+                        clienteListInternalFrame.setVisible(true);
+                        clienteListInternalFrame.setModoForm();
+                     
+                        clienteListInternalFrame.buttonBarComponent.btCancelar.addActionListener(new ActionListener() {
+                            
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                               clienteListInternalFrame.setVisible(false);
+                               clienteListInternalFrame.dispose();
+                                
+                            }
+                        });
+                        PrincipalDesktop.getjDesktopPane().add(clienteListInternalFrame, 0);
+                        clienteListInternalFrame.setSelected(true);
+                        PrincipalDesktop.getjDesktopPane().setSelectedFrame(clienteListInternalFrame);
+                     //   clienteListInternalFrame.setModoForm();
+                        ClienteFormCadPanel clienteFormCadPanel = (ClienteFormCadPanel) clienteListInternalFrame.getFormCadPanel();    
+                        clienteFormCadPanel.getTextFieldDescricao().requestFocus();
+                        clienteFormCadPanel.getTextFieldDescricao().selectAll();
+                      
+                        
+
+                    } catch (Exception excecao) {
+                        JOptionPane.showInternalMessageDialog(PrincipalDesktop.getjDesktopPane(), excecao.getMessage() + " " + excecao.getLocalizedMessage());
+
+                    }
+                }
+            });
+            buttonAddCliente.setBounds(256, 269, 56, 45);
+            panelInfoLancamento.add(buttonAddCliente);
+            
+            JButton buttonAddCategoria = new JButton(Icone.novo("btAdic2.gif"));
+            buttonAddCategoria.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        GrupoListInternalFrame grupoListInternalFrame = new GrupoListInternalFrame() {
+
+                            @Override
+                            public void acaoSalvar() {
+                               
+                                    try {
+                                        Long id = null ; 
+                                        Conexao.Executar(new Comando() {
+
+                                            @Override
+                                            public void execute(Session session) throws Exception {
+                                                CategoriaModel model = getFormCadPanel().getModel();
+                                                CategoriaModel modelAux =  negocio.salvar( model);
+                                               comboBoxCategoria.addItem(modelAux);
+                                               comboBoxCategoria.setSelectedItem(modelAux);
+
+                                             
+                                            }
+                                        });
+                                     
+                                        setVisible(false);
+                                        dispose();
+                                        JOptionPane.showMessageDialog(this, "Inserido com sucesso!");
+                                      
+
+                                    } catch (Exception e) {
+                                        JOptionPane.showMessageDialog(this, e.getMessage());
+                                        e.printStackTrace();
+
+                                    }
+
+                                
+                            }
+                            
+                        };
+                        grupoListInternalFrame.eventoBotaoIncluir();
+                        grupoListInternalFrame.setVisible(true);
+                        
+                        grupoListInternalFrame.buttonBarComponent.btCancelar.addActionListener(new ActionListener() {
+                            
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                grupoListInternalFrame.setVisible(false);
+                               grupoListInternalFrame.dispose();
+                                
+                            }
+                        });
+                        
+                        PrincipalDesktop.getjDesktopPane().add(grupoListInternalFrame, 0);
+                       grupoListInternalFrame.setSelected(true);
+                        PrincipalDesktop.getjDesktopPane().setSelectedFrame(grupoListInternalFrame);
+                        
+                        GrupoFormCadPanel formCadPanel = (GrupoFormCadPanel) grupoListInternalFrame.getFormCadPanel();    
+                        formCadPanel.getTextFieldDescricao().requestFocus();
+                        formCadPanel.getTextFieldDescricao().selectAll();
+
+                    } catch (Exception excecao) {
+                        JOptionPane.showInternalMessageDialog(PrincipalDesktop.getjDesktopPane(), excecao.getMessage() + " " + excecao.getLocalizedMessage());
+
+                    }
+                }
+            });
+            buttonAddCategoria.setBounds(255, 193, 56, 46);
+            panelInfoLancamento.add(buttonAddCategoria);
 
             JButton btnNewButton = new JButton(Icone.novo("chamado_concluido_16x16.png"));
             btnNewButton.addActionListener(new ActionListener() {
@@ -330,7 +522,7 @@ public class MovimentacaoInternalFrame extends JInternalFrame
                             }
                         });
                         acaoObterPosicao();
-                        setMovimentacaoModel(new MovimentacaoModel());
+                        setMovimentacaoModel(factoryMovimentacaoModel());
                     } catch (Exception e1) {
                         e1.printStackTrace();
                         JOptionPane.showMessageDialog(MovimentacaoInternalFrame.this, e1.getLocalizedMessage(), "ERRO", JOptionPane.ERROR_MESSAGE);
@@ -339,7 +531,7 @@ public class MovimentacaoInternalFrame extends JInternalFrame
             });
             btnNewButton.setText("Adicionar Lançamento");
 
-            btnNewButton.setBounds(10, 617, 321, 67);
+            btnNewButton.setBounds(5, 585, 321, 67);
             getContentPane().add(btnNewButton);
 
             tableSaldo = new JTable();
@@ -364,7 +556,7 @@ public class MovimentacaoInternalFrame extends JInternalFrame
             footerTable.setColumnSelectionAllowed(false);
             footerTable.setTableHeader(null);
             footerTable.setRowHeight(24);
-            String[] colunasTableSaldo = new String[] { "Conta", "Saldo", "Ch. Especial", "Saldo + Ch. Especial" };
+            String[] colunasTableSaldo = new String[] { "Conta",  "Ch. Especial", "Saldo + Ch. Especial" ,"Saldo"};
             tableSaldo.setModel(new DefaultTableModel(new Object[][] {
 
             }, colunasTableSaldo) {
@@ -397,7 +589,7 @@ public class MovimentacaoInternalFrame extends JInternalFrame
             jscrollPaneFooter.setPreferredSize(new Dimension(-1, 30));
 
             BorderLayout bl_holdingPanel = new BorderLayout();
-            bl_holdingPanel.setVgap(5);
+            bl_holdingPanel.setVgap(3);
             JPanel holdingPanel = new JPanel(bl_holdingPanel);
             holdingPanel.add(jPanelSaldo, BorderLayout.CENTER);
             holdingPanel.add(jscrollPaneFooter, BorderLayout.SOUTH);
@@ -406,13 +598,13 @@ public class MovimentacaoInternalFrame extends JInternalFrame
             // tabbedPaneSaldoEmConta.setBounds(341, 437, 810, 247);
             tabbedPaneSaldoEmConta.addTab("Saldo em Conta", null, holdingPanel, null);
             tabbedPaneSaldoEmConta.setSize(-1, 100);
-            tabbedPaneSaldoEmConta.setPreferredSize(new Dimension(-1, 250));
+            tabbedPaneSaldoEmConta.setPreferredSize(new Dimension(-1, 240));
 
             // getContentPane().add(tabbedPaneSaldoEmConta);
 
             JPanel panel_4 = new JPanel();
             panel_4.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Barra de Ferramentas", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-            panel_4.setBounds(341, 10, 810, 77);
+            panel_4.setBounds(330, 5, 816, 77);
             panel_4.setLayout(new BorderLayout());
 
             JButton btExcluir = new JButton(Icone.novo("btExcluir.png"));
@@ -507,7 +699,7 @@ public class MovimentacaoInternalFrame extends JInternalFrame
             BorderLayout bl_panel_5 = new BorderLayout();
             bl_panel_5.setVgap(5);
             JPanel panel_5 = new JPanel(bl_panel_5);
-            panel_5.setBounds(341, 108, 810, 576);
+            panel_5.setBounds(333, 85, 810, 565);
             panel_5.add(scrollPaneLancamentos, BorderLayout.CENTER);
             panel_5.add(tabbedPaneSaldoEmConta, BorderLayout.SOUTH);
 
@@ -532,7 +724,6 @@ public class MovimentacaoInternalFrame extends JInternalFrame
 
                         ArrayList<ClienteModel> listaDeClientes = new Cliente().obterTodos(ClienteModel.class);
                         for (ClienteModel clienteModel : listaDeClientes) {
-
                             comboBoxCliente.addItem(clienteModel);
                         }
                         listaDeContasSelecionadas = new ContaBancaria().obterTodos(ContaBancariaModel.class);
@@ -547,7 +738,7 @@ public class MovimentacaoInternalFrame extends JInternalFrame
             }
             setListaDeContasSelecionadas(getListaDeContasSelecionadas());
             acaoObterPosicao();
-            setMovimentacaoModel(new MovimentacaoModel());
+            setMovimentacaoModel(factoryMovimentacaoModel());
 
             panel_5.removeAll();
             if (funcionarioModel.getPermissaoMovFinanceiraModel().isVisualizarSaldoConta()) {
@@ -558,6 +749,8 @@ public class MovimentacaoInternalFrame extends JInternalFrame
                 table.getColumnModel().getColumn(6).setMinWidth(0);
                 table.getColumnModel().getColumn(6).setMaxWidth(0);
             }
+            
+           
 
         }
 
@@ -600,6 +793,12 @@ public class MovimentacaoInternalFrame extends JInternalFrame
 
         }
 
+        
+        private MovimentacaoModel factoryMovimentacaoModel() { 
+           MovimentacaoModel model =  new MovimentacaoModel();
+           model.setTipo(MovimentacaoFinanceiraTypes.debito);
+           return model; 
+        }
         private void acaoObterPosicao() {
             try {
                 Conexao.Executar(new Comando() {
@@ -628,22 +827,39 @@ public class MovimentacaoInternalFrame extends JInternalFrame
             defaultTableModelMovimentacoes.setRowCount(0);
             defaultTableModelPosBancaria.setRowCount(0);
             defaultTableModelPosBancariaFooter.setRowCount(0);
+            
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
             if (posicaoFinanceiraModel != null) {
 
-                defaultTableModelMovimentacoes.addRow(new Object[] { "", "-> Saldo Inicial ", "", "", "", false, currencyFormat(posicaoFinanceiraModel.getCalcSaldoInicial()) });
+                defaultTableModelMovimentacoes.addRow(new Object[] { "", "-> Saldo Inicial ", "", "", "", false, "", currencyFormat(posicaoFinanceiraModel.getCalcSaldoInicial()) });
 
                 BigDecimal bigDecimalSaldoGlobal = posicaoFinanceiraModel.getCalcSaldoInicial();
+                BigDecimal bigDecimalSaldoGloalMaisCheque = new BigDecimal(BigInteger.ZERO); 
                 for (PosicaoBancariaModel posBancariaModel : posicaoFinanceiraModel.getListaDePosicoesBancarias()) {
-                    defaultTableModelPosBancaria.addRow(new String[] { posBancariaModel.getContaBancariaSelecionada().getNome(), currencyFormat(posBancariaModel.getCalcSaldoFinal()) });
+                    BigDecimal bigDecimalSaldoMaisCheque = posBancariaModel.getContaBancariaSelecionada().getChequeEspecial().add(posBancariaModel.getCalcSaldoFinal()); 
+                    bigDecimalSaldoGloalMaisCheque = bigDecimalSaldoGloalMaisCheque.add(bigDecimalSaldoMaisCheque);
+                    
+                    String saldo =  currencyFormat(posBancariaModel.getCalcSaldoFinal()); 
+                    if (posBancariaModel.getCalcSaldoFinal().compareTo(BigDecimal.ZERO) == -1) { 
+                        saldo = "<HTML><FONT COLOR=RED>" + saldo + "</HTML>";
+                    }
+                    
+                    defaultTableModelPosBancaria.addRow(new String[] { posBancariaModel.getContaBancariaSelecionada().getNome(), currencyFormat(posBancariaModel.getContaBancariaSelecionada().getChequeEspecial()), currencyFormat(bigDecimalSaldoMaisCheque), saldo });
+                    
                     for (MovimentacaoModel movimentacaoModel : posBancariaModel.getListaDeMovimentacao()) {
                         if (movimentacaoModel.isExecutado()) {
                             bigDecimalSaldoGlobal = bigDecimalSaldoGlobal.add(movimentacaoModel.getValor());
                         }
-                        defaultTableModelMovimentacoes.addRow(new Object[] { movimentacaoModel.getId().toString(), movimentacaoModel.getDescricao(), movimentacaoModel.getConta().getNome(), movimentacaoModel.getTipo().toString(), currencyFormat(movimentacaoModel.getValor()), movimentacaoModel.isExecutado(), currencyFormat(bigDecimalSaldoGlobal) });
+                        String dataPagoRecebido  = "";
+                        if(movimentacaoModel.getDataHoraExecutado() !=null) { 
+                            dataPagoRecebido = formatter.format(movimentacaoModel.getDataHoraExecutado());
+                        }
+                        
+                        defaultTableModelMovimentacoes.addRow(new Object[] { movimentacaoModel.getId().toString(), movimentacaoModel.getDescricao(), movimentacaoModel.getConta().getNome(), movimentacaoModel.getTipo().toString(), currencyFormat(movimentacaoModel.getValor()), movimentacaoModel.isExecutado(),dataPagoRecebido, currencyFormat(bigDecimalSaldoGlobal) });
                     }
                 }
-                defaultTableModelMovimentacoes.addRow(new Object[] { "", "-> Saldo Final ", "", "", "", false, currencyFormat(posicaoFinanceiraModel.getCalcSaldoFinal()) });
-                defaultTableModelPosBancariaFooter.addRow((new String[] { "<HTML><B>TOTAL</B></HTML> ", currencyFormat(posicaoFinanceiraModel.getCalcSaldoFinal()), "" }));
+                defaultTableModelMovimentacoes.addRow(new Object[] { "", "-> Saldo Final ", "", "", "", false, "",  currencyFormat(posicaoFinanceiraModel.getCalcSaldoFinal()) });
+                defaultTableModelPosBancariaFooter.addRow((new String[] { "<HTML><B>TOTAL</B></HTML> ",  "" , currencyFormat(bigDecimalSaldoGloalMaisCheque),currencyFormat(posicaoFinanceiraModel.getCalcSaldoFinal())}));
 
             }
 
@@ -731,10 +947,14 @@ public class MovimentacaoInternalFrame extends JInternalFrame
             } else {
                 if (movimentacaoModel.getTipo() == MovimentacaoFinanceiraTypes.credito) {
                     radioButtonCredito.setSelected(true);
+
                 }
                 if (movimentacaoModel.getTipo() == MovimentacaoFinanceiraTypes.debito) {
                     radioButtonDebito.setSelected(true);
+
                 }
+                panelInfoLancamento.repaint();
+                panelInfoLancamento.validate();
             }
             if (movimentacaoModel.getValor() == null) {
                 BigDecimal bigDecimal = BigDecimal.ZERO;
@@ -748,10 +968,12 @@ public class MovimentacaoInternalFrame extends JInternalFrame
         public class MovimentacaoTableModel extends DefaultTableModel
             {
                 private Movimentacao movimentacao;
+                private Date dataAux;
+                private boolean confirmaAlteracao;
 
                 public MovimentacaoTableModel() {
 
-                    super(new String[] { "id", "Descrição", "Conta", "Tipo", "Valor", "Pago/Recebido", "Saldo Global" }, 0);
+                    super(new String[] { "id", "Descrição", "Conta", "Tipo", "Valor", "Pago/Recebido", "Data Pago/Recebido", "Saldo Global" }, 0);
                     movimentacao = new Movimentacao();
                 }
 
@@ -781,32 +1003,60 @@ public class MovimentacaoInternalFrame extends JInternalFrame
 
                         MovimentacaoModel movimentacaoModel = getModelPorID((String) rowData.get(0));
                         if (movimentacaoModel != null) {
-
-                            try {
-                                Conexao.Executar(new Comando() {
+                            dataAux = null;
+                            confirmaAlteracao = true;
+                            if ((boolean) aValue == true) {
+                                
+                                confirmaAlteracao =false; 
+                                DatePickerDialog datePickerDialog = new DatePickerDialog() {
 
                                     @Override
-                                    public void execute(Session session) throws Exception {
-                                        movimentacao.executar(movimentacaoModel, (boolean) aValue);
+                                    public void getDataSelecionada(Date dataSelecionada) {
+                                        if (dataSelecionada == null) {
+                                            JOptionPane.showMessageDialog(this, "Data Inválida", "ERRO ", JOptionPane.ERROR_MESSAGE);
+                                            confirmaAlteracao = false;
 
+                                        } else {
+                                            dataAux = dataSelecionada;
+                                            confirmaAlteracao = true;
+                                            this.setVisible(false);
+                                            this.dispose();
+                                        }
                                     }
-                                });
-
-                                rowData.set(5, (boolean) aValue);
-                                fireTableCellUpdated(row, column);
-                                // acaoObterPosicao();
-                            } catch (Exception e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                                JOptionPane.showMessageDialog(MovimentacaoInternalFrame.this, e.getLocalizedMessage(), "ERRO", JOptionPane.ERROR_MESSAGE);
-
-                            } finally {
-                                acaoObterPosicao();
+                                };
+                                datePickerDialog.getModel().setValue(model.getValue());
+                                datePickerDialog.setTitelBorder("Informe uma data para o Pgto/Recbto");
+                                datePickerDialog.setTextBottom("Clique \"Ok\" para  CONFIRMAR");
+                                datePickerDialog.centerOnScreen(true);
+                                datePickerDialog.setVisible(true);
+                                
                             }
+                            if (confirmaAlteracao) {
+                                try {
+                                    Conexao.Executar(new Comando() {
+
+                                        @Override
+                                        public void execute(Session session) throws Exception {
+                                            movimentacao.executar(movimentacaoModel, (boolean) aValue,dataAux);
+                                        }
+                                    });
+                                    rowData.set(5, (boolean) aValue);
+                                    fireTableCellUpdated(row, column);
+                                } catch (Exception e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                    JOptionPane.showMessageDialog(MovimentacaoInternalFrame.this, e.getLocalizedMessage(), "ERRO", JOptionPane.ERROR_MESSAGE);
+
+                                } finally {
+                                    acaoObterPosicao();
+                                }
+                            }
+
+                            // acaoObterPosicao();
+
                         }
 
                     }
                 }
             }
-
     }

@@ -8,6 +8,8 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
@@ -45,6 +47,25 @@ public abstract class DatePickerDialog extends JDialog
         private JLabel lblEntercSeleciona;
 
         private UtilDateModel model;
+        private JPanel panel;
+
+        private TitledBorder titledBorder;
+        
+        
+        
+        
+        public UtilDateModel getModel() {
+            return model;
+        }
+        public void setModel(UtilDateModel model) {
+            this.model = model;
+        }
+        public void setTextBottom(String textBottom) { 
+            lblEntercSeleciona.setText(textBottom);
+        }
+        public void setTitelBorder(String tituloBorderPanel) { 
+           titledBorder.setTitle(tituloBorderPanel);
+        }
 
         public DatePickerDialog() {
             setRootPaneCheckingEnabled(false);
@@ -67,7 +88,7 @@ public abstract class DatePickerDialog extends JDialog
             p.put("text.month", "Mês");
             p.put("text.year", "Ano");
 
-            JPanel panel = new JPanel();
+             panel = new JPanel();
             panel.setLayout(null);
             panel.setPreferredSize(new Dimension(100, 100));
             buttonOk.addActionListener(new ActionListener() {
@@ -75,7 +96,7 @@ public abstract class DatePickerDialog extends JDialog
                     getDataSelecionada(model.getValue());
                 }
             });
-
+            
             // buttonOk.setToolTipText("");
             buttonOk.setText("Ok");
             buttonOk.setBounds(24, 69, 125, 37);
@@ -84,7 +105,8 @@ public abstract class DatePickerDialog extends JDialog
 
             // panel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(1,
             // 1, 1, 1, Color.red), BorderFactory.createEtchedBorder()));
-            panel.setBorder(new TitledBorder(null, "Selecione uma Data", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+             titledBorder = new TitledBorder(null, "Selecione uma Data", TitledBorder.LEADING, TitledBorder.TOP, null, null);
+            panel.setBorder(titledBorder);
 
             // Don't know about the formatter, but there it is...
             JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
@@ -104,7 +126,28 @@ public abstract class DatePickerDialog extends JDialog
             datePicker.setLocation(24, 21);
             datePicker.setSize(267, 37);
             datePicker.setTextEditable(true);
-
+            datePicker.getJFormattedTextField().addKeyListener(new KeyListener() {
+                
+                @Override
+                public void keyTyped(KeyEvent e) {
+                    // TODO Auto-generated method stub
+                    
+                }
+                
+                @Override
+                public void keyReleased(KeyEvent e) {
+                    // TODO Auto-generated method stub
+                    
+                }
+                
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode()==KeyEvent.VK_ENTER){
+                       getDataSelecionada(model.getValue());
+                    }
+                    
+                }
+            });
             panel.setLayout(null);
             panel.add(datePicker);
             panel.add(buttonOk);

@@ -16,19 +16,19 @@ public class ContaBancariaFiltroPanel  extends GenericFiltroPanel<ContaBancariaM
     private JTextField textField;
    
     public ContaBancariaFiltroPanel() {
-    	buttonOk.setSize(77, 28);
-    	buttonOk.setLocation(312, 37); 
+    	buttonOk.setSize(77, 30);
+    	buttonOk.setLocation(312, 41); 
 
 	setBorder(new TitledBorder(null, "Filtrar por ", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 	setLayout(null);
-	setPreferredSize(new Dimension(536, 80));
+	setPreferredSize(new Dimension(536, 86));
 	
 	JLabel lblNewLabel_1 = new JLabel("Descrição:");
 	lblNewLabel_1.setBounds(10, 24, 101, 14);
 	add(lblNewLabel_1);
 	
 	textField = new JTextField();
-	textField.setBounds(10, 41, 292, 20);
+	textField.setBounds(10, 41, 292, 30);
 	add(textField);
 	textField.setColumns(10);
     }

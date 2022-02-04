@@ -42,5 +42,7 @@ public class ClienteListInternalFrame extends GenericListInternalFrame<Cliente, 
             return row;
 
         }
+        
+      
 
     }

@@ -226,7 +226,10 @@ public class GenericListInternalFrame<NEGOCIO extends Negocio, GENERICMODEL exte
             getContentPane().add(panelCenter, BorderLayout.CENTER);
             getContentPane().add(buttonBarComponent, BorderLayout.NORTH);
 
+            
         }
+        
+        
 
         protected void acaoExcluir(GENERICMODEL model) {
             try {
@@ -536,7 +539,7 @@ public class GenericListInternalFrame<NEGOCIO extends Negocio, GENERICMODEL exte
             this.negocio = negocio;
         }
 
-        public String[] modelToRow(GENERICMODEL model) {
+        public Object[] modelToRow(GENERICMODEL model) {
             return null;
         }
 

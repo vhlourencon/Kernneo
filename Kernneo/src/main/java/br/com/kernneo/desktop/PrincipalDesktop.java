@@ -49,6 +49,7 @@ import br.com.kernneo.desktop.view.convenio.ConvenioListIternalFrame;
 import br.com.kernneo.desktop.view.departamento.DepartamentoListInternalFrame;
 import br.com.kernneo.desktop.view.empresa.EmpresaFormInternalFrame;
 import br.com.kernneo.desktop.view.financeiro.MovimentacaoInternalFrame;
+import br.com.kernneo.desktop.view.financeiro.MovimentacaoListInternalFrame;
 import br.com.kernneo.desktop.view.fornecedor.FornecedorListInternalFrame;
 import br.com.kernneo.desktop.view.funcionario.FuncionarioListInternalFrame;
 import br.com.kernneo.desktop.view.grupo.GrupoListInternalFrame;
@@ -161,7 +162,7 @@ public class PrincipalDesktop extends JFrame
                             session.close();
                         }
                     }
-
+ 
                     if (funcionarioModel != null && funcionarioModel.getSenha() != null && td.decrypt(funcionarioModel.getSenha()).equals(passwordString)) {
 
                         PrincipalDesktop.setUsarioLogado(funcionarioModel);
@@ -245,6 +246,7 @@ public class PrincipalDesktop extends JFrame
                         FuncionarioListInternalFrame funcionarioListInternalFrame = new FuncionarioListInternalFrame();
                         funcionarioListInternalFrame.setVisible(true);
                         jDesktopPane.add(funcionarioListInternalFrame, 0);
+                      
 
                     } catch (Exception excecao) {
                         JOptionPane.showInternalMessageDialog(jDesktopPane, excecao.getMessage() + " " + excecao.getLocalizedMessage());
@@ -326,6 +328,10 @@ public class PrincipalDesktop extends JFrame
                         MovimentacaoInternalFrame clienteListPanel = new MovimentacaoInternalFrame(PrincipalDesktop.getUsarioLogado());
                         clienteListPanel.setVisible(true);
                         jDesktopPane.add(clienteListPanel, 0);
+                        clienteListPanel.pack();
+                        clienteListPanel.setMaximum(true);
+                        clienteListPanel.setSelected(true);
+                        clienteListPanel.setMaximizable(true);
 
                     } catch (Exception excecao) {
                         JOptionPane.showMessageDialog(jDesktopPane, excecao.getLocalizedMessage(), "ERRO", JOptionPane.ERROR_MESSAGE);
@@ -339,6 +345,33 @@ public class PrincipalDesktop extends JFrame
 
             JMenu jMenuRelatorio = new JMenu("Relatórios");
             jMenuBar.add(jMenuRelatorio);
+            
+            JMenuItem jMenuItemRelatorioMovimentacao = new JMenuItem("Movimentação Financeira");
+            jMenuRelatorio.add(jMenuItemRelatorioMovimentacao);
+            jMenuItemRelatorioMovimentacao.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                    try {
+                        MovimentacaoListInternalFrame listPanel = new MovimentacaoListInternalFrame();
+                        listPanel.setVisible(true);
+                        jDesktopPane.add(listPanel, 0);
+                        listPanel.pack();
+                        listPanel.setMaximum(true);
+                        listPanel.setSelected(true);
+                        listPanel.setMaximizable(true);
+
+
+                    } catch (Exception excecao) {
+                        JOptionPane.showMessageDialog(jDesktopPane, excecao.getLocalizedMessage(), "ERRO", JOptionPane.ERROR_MESSAGE);
+                        
+                        excecao.printStackTrace();
+
+                    }
+
+                }
+            });
 
             setJMenuBar(jMenuBar);
 

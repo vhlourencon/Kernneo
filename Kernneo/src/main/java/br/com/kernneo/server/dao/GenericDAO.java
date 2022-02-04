@@ -100,9 +100,8 @@ public abstract class GenericDAO<GENERICMODEL extends GenericModel> {
 	public ArrayList<GenericModel> obterTodosComFiltro(String filtro) throws SQLException {
 
 		Session session = ConnectFactory.getSession();
-		org.hibernate.Query select = session.createQuery(filtro);
-		ArrayList<GenericModel> lista = (ArrayList<GenericModel>) select.list();
-
+		Query select = session.createQuery(filtro);
+		ArrayList<GenericModel> lista = (ArrayList<GenericModel>) select.getResultList();
 		return lista;
 	}
 

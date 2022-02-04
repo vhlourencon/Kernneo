@@ -19,22 +19,23 @@ public class Movimentacao extends Negocio<MovimentacaoModel, MovimentacaoDAO, Mo
             dao = new MovimentacaoDAO();
         }
 
-        public boolean executar(MovimentacaoModel movimentacaoModel, boolean executado) throws MovimentacaoException {
+        public boolean executar(MovimentacaoModel movimentacaoModel, boolean executado, Date dataSelecionada) throws MovimentacaoException {
             movimentacaoModel.setExecutado(executado);
+            movimentacaoModel.setDataHoraExecutado(dataSelecionada);
 
             alterar(movimentacaoModel);
-           
 
             return true;
 
         }
-        
-        public boolean alterarData(MovimentacaoModel movimentacaoModel,Date dataSelecionada) throws MovimentacaoException {
+
+        public boolean alterarData(MovimentacaoModel movimentacaoModel, Date dataSelecionada) throws MovimentacaoException {
             movimentacaoModel.setDataHora(dataSelecionada);
 
             alterar(movimentacaoModel);
             if (1 == 1) {
-             //   throw new MovimentacaoException("Usuário sem permissao para deletar esse registro!");
+                // throw new MovimentacaoException("Usuário sem permissao para deletar esse
+                // registro!");
             }
 
             return true;
@@ -137,9 +138,9 @@ public class Movimentacao extends Negocio<MovimentacaoModel, MovimentacaoDAO, Mo
             String deletado = "and deletado = false";
             filtro += " where 1=1 " + deletado;
 
-            // if (vo.getNome() != null && vo.getNome().trim().length() > 0) {
-            // filtro += " and nome like('%" + vo.getNome() + "%')";
-            // }
+            if (vo.getDescricao() != null && vo.getDescricao().trim().length() > 0) {
+                filtro += " and nome like('%" + vo.getDescricao() + "%')";
+            }
 
             filtro += " order by id asc";
 

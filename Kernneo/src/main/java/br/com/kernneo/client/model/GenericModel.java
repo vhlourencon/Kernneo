@@ -1,6 +1,7 @@
 package br.com.kernneo.client.model;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -89,6 +90,11 @@ public abstract class GenericModel implements IsSerializable {
 		}
 
 	}
+	
+
+    public String currencyFormat(BigDecimal n) {
+        return NumberFormat.getCurrencyInstance().format(n);
+    }
 
 	public abstract Record toRecord();
 
