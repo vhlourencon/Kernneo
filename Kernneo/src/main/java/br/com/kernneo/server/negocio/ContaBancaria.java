@@ -14,16 +14,16 @@ public class ContaBancaria extends Negocio<ContaBancariaModel, ContaBancariaDAO,
 	@Override
 	public ContaBancariaModel salvar(ContaBancariaModel vo) throws ContaBancariaException {
 		vo = super.salvar(vo);
-	     if(vo.getMovimentacaoInicial() == null) { 
-	    	 vo.setMovimentacaoInicial(new MovimentacaoModel());
-	    	 vo.getMovimentacaoInicial().setValor(BigDecimal.ZERO);
-	     }
-	     vo.getMovimentacaoInicial().setTipo(null);
-	     vo.getMovimentacaoInicial().setContaMovimentacaoInicial(true);
-	     vo.getMovimentacaoInicial().setConta(vo);
-	     alterar(vo);
-	     vo = obterPorId(vo);
-	     
+	    // if(vo.getMovimentacaoInicial() == null) { 
+	    //	 vo.setMovimentacaoInicial(new MovimentacaoModel());
+	    //	 vo.getMovimentacaoInicial().setValor(BigDecimal.ZERO);
+	   //  }
+	   //  vo.getMovimentacaoInicial().setTipo(null);
+	  //   vo.getMovimentacaoInicial().setContaMovimentacaoInicial(true);
+	   //  vo.getMovimentacaoInicial().setConta(vo);
+	   //  alterar(vo);
+	  //   vo = obterPorId(vo);
+	    
 		return vo;
 	}
 

@@ -3,27 +3,21 @@ package br.com.kernneo.server.negocio;
 import java.util.ArrayList;
 import java.util.Date;
 
-import br.com.kernneo.client.model.ContaBancariaModel;
-import br.com.kernneo.client.model.PosicaoBancariaModel;
+import br.com.kernneo.client.model.MovimentacaoModel;
 import br.com.kernneo.client.model.PosicaoFinanceiraModel;
-import br.com.kernneo.server.dao.PosicaoBancariaDAO;
+import br.com.kernneo.server.dao.ContaBancariaDAO;
+import br.com.kernneo.server.dao.MovimentacaoDAO;
 
-public class PosicaoFinanceira {
-	
-	
-	public PosicaoFinanceiraModel obterPosicoesFinanceira(Date dataSelecionada,ArrayList<ContaBancariaModel> listaDeContasSelecionadas ) throws Exception { 
-		PosicaoFinanceiraModel posicaoFinanceiraModel = new PosicaoFinanceiraModel(); 
-		PosicaoBancariaDAO posicaoFinanceiraDAO = new PosicaoBancariaDAO(); 
-		
-		ArrayList<PosicaoBancariaModel> listaDePosicoesBancarias = new ArrayList<PosicaoBancariaModel>(); 
-		for (ContaBancariaModel contaBancariaSelecionada : listaDeContasSelecionadas) {
-			
-			PosicaoBancariaModel posicaoBancariaModel = posicaoFinanceiraDAO.obterPosicaoBancaria(dataSelecionada, contaBancariaSelecionada);
-			posicaoFinanceiraModel.getListaDePosicoesBancarias().add(posicaoBancariaModel);
-			
-			
-		}
-		return posicaoFinanceiraModel; 
-	}
+public class PosicaoFinanceira
+    {
 
-}
+        public PosicaoFinanceiraModel obterPosicoesFinanceira(Date dataSelecionada, String orderBy, boolean desc) throws Exception {
+            PosicaoFinanceiraModel posicaoFinanceiraModel = new PosicaoFinanceiraModel();
+
+            ArrayList<MovimentacaoModel> listaDeMovimentacao = new MovimentacaoDAO().obterPorData(dataSelecionada, orderBy, desc);
+            posicaoFinanceiraModel.setListaDeMovimentacoes(listaDeMovimentacao);
+            posicaoFinanceiraModel.setListaDeContasBancarias(new ContaBancariaDAO().obterTodasContasComPoiscao(dataSelecionada));
+            return posicaoFinanceiraModel;
+        }
+
+    }

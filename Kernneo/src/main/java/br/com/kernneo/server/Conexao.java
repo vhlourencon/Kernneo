@@ -4,8 +4,6 @@ import org.hibernate.Session;
 
 public  interface Conexao  {
 	
-
-	
 	public static void Executar(Comando comando) throws Exception {
 		Session session = ConnectFactory.getSession();
 		try {

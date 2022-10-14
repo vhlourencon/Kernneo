@@ -108,7 +108,8 @@
 		<mapping class="br.com.kernneo.client.model.OpcaoProdutoModel" />
 		<mapping class="br.com.kernneo.client.model.OpcaoItemModel" />
 		<mapping class="br.com.kernneo.client.model.OpcaoItemAlternativaModel" />
-
+		<mapping class="br.com.kernneo.client.model.VeiculoModel" />
+		
 
 
 

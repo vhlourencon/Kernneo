@@ -6,48 +6,73 @@ import java.util.Date;
 
 import br.com.kernneo.client.types.MovimentacaoFinanceiraTypes;
 
-public class PosicaoFinanceiraModel {
+public class PosicaoFinanceiraModel
+    {
 
-	private Date dataSelecionada;
-	private ArrayList<PosicaoBancariaModel> listaDePosicoesBancarias;
+        private Date dataSelecionada;
+        private ArrayList<ContaBancariaModel> listaDeContasBancarias;
+        private ArrayList<MovimentacaoModel>  listaDeMovimentacoes;
+        
+        
+        
 
-	public BigDecimal getCalcSaldoInicial() {
-		BigDecimal bigDecimalSaldoInicial = new BigDecimal(0.0);
-		for (PosicaoBancariaModel posicaoBancariaModel : getListaDePosicoesBancarias()) {
-              bigDecimalSaldoInicial = bigDecimalSaldoInicial.add(posicaoBancariaModel.getCalcSaldoInicial());
-		}
-		
-		return bigDecimalSaldoInicial; 
+        public BigDecimal getSaldoInicial() {
+            BigDecimal bigDecimalSaldoInicial = new BigDecimal(0.0);
+            for (ContaBancariaModel contaBancariaModel : getListaDeContasBancarias()) {
+                bigDecimalSaldoInicial = bigDecimalSaldoInicial.add(contaBancariaModel.getSaldoInicial());
+            }
+            return bigDecimalSaldoInicial;
+        }
 
-	}
-	
-	public BigDecimal getCalcSaldoFinal() {
-		BigDecimal bigDecimalSaldoFinal = new BigDecimal(0.0);
-		for (PosicaoBancariaModel posicaoBancariaModel : getListaDePosicoesBancarias()) {
-			bigDecimalSaldoFinal = bigDecimalSaldoFinal.add(posicaoBancariaModel.getCalcSaldoFinal());
-		}
-		
-		return bigDecimalSaldoFinal; 
+        public BigDecimal getSaldoInicialComPosicaoBancaria() {
+            BigDecimal bigDecimalSaldoInicial = new BigDecimal(0.0);
+            for (ContaBancariaModel contaBancariaModel : getListaDeContasBancarias()) {
+                bigDecimalSaldoInicial = bigDecimalSaldoInicial.add(contaBancariaModel.getPosicaoAux().getSaldo()).add(contaBancariaModel.getSaldoInicial());
+            }
+            return bigDecimalSaldoInicial;
+        }
 
-	}
+        public BigDecimal getSaldoFinalExecutado() {
+            BigDecimal bigDecimalSaldoFinal = getSaldoInicialComPosicaoBancaria();   
+            
+            for (MovimentacaoModel movimentacaoModel : getListaDeMovimentacoes()) {
+                if(movimentacaoModel.isExecutado()) {
+                bigDecimalSaldoFinal = bigDecimalSaldoFinal.add(movimentacaoModel.getValor());
+                }
+            }
+            return bigDecimalSaldoFinal;
+        }
 
-	public Date getDataSelecionada() {
-		return dataSelecionada;
-	}
+        public Date getDataSelecionada() {
+            return dataSelecionada;
+        }
 
-	public void setDataSelecionada(Date dataSelecionada) {
-		this.dataSelecionada = dataSelecionada;
-	}
+        public void setDataSelecionada(Date dataSelecionada) {
+            this.dataSelecionada = dataSelecionada;
+        }
 
-	public ArrayList<PosicaoBancariaModel> getListaDePosicoesBancarias() {
-		if(listaDePosicoesBancarias == null) { 
-			listaDePosicoesBancarias = new ArrayList<PosicaoBancariaModel>();
-		}
-		return listaDePosicoesBancarias;
-	}
+        public ArrayList<ContaBancariaModel> getListaDeContasBancarias() {
+            if (listaDeContasBancarias == null) {
+                listaDeContasBancarias = new ArrayList<ContaBancariaModel>();
+            }
+            return listaDeContasBancarias;
+        }
 
-	public void setListaDePosicoesBancarias(ArrayList<PosicaoBancariaModel> listaDePosicoesBancarias) {
-		this.listaDePosicoesBancarias = listaDePosicoesBancarias;
-	}
+        public void setListaDeContasBancarias(ArrayList<ContaBancariaModel> listaDeContasBancarias) {
+            this.listaDeContasBancarias = listaDeContasBancarias;
+        }
 
-}
+        public ArrayList<MovimentacaoModel> getListaDeMovimentacoes() {
+            return listaDeMovimentacoes;
+        }
+
+        public void setListaDeMovimentacoes(ArrayList<MovimentacaoModel> listaDeMovimentacoes) {
+            this.listaDeMovimentacoes = listaDeMovimentacoes;
+        }
+        
+        
+        
+        
+        
+
+    }

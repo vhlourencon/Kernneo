@@ -1,57 +1,21 @@
 package br.com.kernneo.client.model;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-
-import br.com.kernneo.client.types.MovimentacaoFinanceiraTypes;
+import java.math.RoundingMode;
 
 public class PosicaoBancariaModel
     {
 
-        private Date dataSelecionada;
         private ContaBancariaModel contaBancariaSelecionada;
         private BigDecimal saldo;
 
-        private ArrayList<MovimentacaoModel> listaDeMovimentacao;
-
-        public BigDecimal getCalcSaldoInicial() {
-            BigDecimal bigDecimalSaldo = new BigDecimal(0.0);
-            if (getContaBancariaSelecionada() != null && getContaBancariaSelecionada().getMovimentacaoInicial() != null) {
-                bigDecimalSaldo = bigDecimalSaldo.add(getContaBancariaSelecionada().getMovimentacaoInicial().getValor());
-            }
-            bigDecimalSaldo = bigDecimalSaldo.add(getSaldo());
-            return bigDecimalSaldo;
+        public PosicaoBancariaModel(BigDecimal saldo, ContaBancariaModel conta) {
+            this.saldo = saldo;
+            this.contaBancariaSelecionada = conta;
         }
 
-        public BigDecimal getCalcSaldoFinal() {
-            BigDecimal bigDecimalSaldoAux = getCalcSaldoInicial();
-            if (getListaDeMovimentacao() != null) {
-
-                for (MovimentacaoModel movimentacaoModel : listaDeMovimentacao) {
-                    if (movimentacaoModel.isExecutado()) {
-                        bigDecimalSaldoAux = bigDecimalSaldoAux.add(movimentacaoModel.getValor());
-                    }
-                }
-
-            }
-            return bigDecimalSaldoAux;
-        }
-
-        public Date getDataSelecionada() {
-            return dataSelecionada;
-        }
-
-        public void setDataSelecionada(Date dataSelecionada) {
-            this.dataSelecionada = dataSelecionada;
-        }
-
-        public ArrayList<MovimentacaoModel> getListaDeMovimentacao() {
-            return listaDeMovimentacao;
-        }
-
-        public void setListaDeMovimentacao(ArrayList<MovimentacaoModel> listaDeMovimentacao) {
-            this.listaDeMovimentacao = listaDeMovimentacao;
+        public PosicaoBancariaModel() {
+            // TODO Auto-generated constructor stub
         }
 
         public ContaBancariaModel getContaBancariaSelecionada() {
@@ -63,6 +27,9 @@ public class PosicaoBancariaModel
         }
 
         public BigDecimal getSaldo() {
+            if (saldo != null) {
+                saldo = saldo.setScale(2, RoundingMode.HALF_EVEN);
+            }
             return saldo;
         }
 

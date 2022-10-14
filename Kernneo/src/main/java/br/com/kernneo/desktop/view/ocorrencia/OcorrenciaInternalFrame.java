@@ -1,4 +1,4 @@
-package br.com.kernneo.desktop.view.financeiro;
+package br.com.kernneo.desktop.view.ocorrencia;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -35,6 +36,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -45,6 +47,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SpinnerDateModel;
 import javax.swing.SpringLayout;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
@@ -57,6 +60,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import javax.swing.text.MaskFormatter;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.hibernate.Session;
@@ -66,6 +70,7 @@ import org.jdatepicker.impl.UtilDateModel;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 import br.com.kernneo.client.model.CategoriaModel;
+import br.com.kernneo.client.model.CidadeModel;
 import br.com.kernneo.client.model.ClienteModel;
 import br.com.kernneo.client.model.ContaBancariaModel;
 import br.com.kernneo.client.model.FuncionarioModel;
@@ -75,6 +80,7 @@ import br.com.kernneo.client.types.MovimentacaoFinanceiraTypes;
 import br.com.kernneo.desktop.PrincipalDesktop;
 import br.com.kernneo.desktop.view.cliente.ClienteFormCadPanel;
 import br.com.kernneo.desktop.view.cliente.ClienteListInternalFrame;
+import br.com.kernneo.desktop.view.financeiro.DatePickerDialog;
 import br.com.kernneo.desktop.view.grupo.GrupoFormCadPanel;
 import br.com.kernneo.desktop.view.grupo.GrupoListInternalFrame;
 import br.com.kernneo.desktop.view.util.DateLabelFormatter;
@@ -83,29 +89,26 @@ import br.com.kernneo.desktop.view.widget.JMoneyField;
 import br.com.kernneo.server.Comando;
 import br.com.kernneo.server.Conexao;
 import br.com.kernneo.server.negocio.Categoria;
+import br.com.kernneo.server.negocio.Cidade;
 import br.com.kernneo.server.negocio.Cliente;
 import br.com.kernneo.server.negocio.ContaBancaria;
 import br.com.kernneo.server.negocio.Movimentacao;
 import br.com.kernneo.server.negocio.PosicaoFinanceira;
 import net.miginfocom.swing.MigLayout;
 
-public class MovimentacaoInternalFrame extends JInternalFrame
+public class OcorrenciaInternalFrame extends JInternalFrame
     {
         private SpringLayout springLayout;
         private SpringLayout springLayout_1;
         private JTable jTableMovimentacoes;
-        private JTextField textFieldDescricao;
+        private JFormattedTextField formattedTextFieldOcorrenciaNumero;
 
         private MovimentacaoModel movimentacaoModel;
         private UtilDateModel model;
         private JComboBox<CategoriaModel> comboBoxCategoria;
-        private JComboBox<ClienteModel> comboBoxCliente;
-        private Component checkBoxRepetir;
+        private JComboBox<CidadeModel> comboBoxCidade;
+        private Component checkQTA;
         private JComboBox<ContaBancariaModel> comboBoxConta;
-        private JComboBox comboboxRepetirPeriodo;
-        private JSpinner spinnerRepetirQtde;
-        private JRadioButton radioButtonCredito;
-        private JRadioButton radioButtonDebito;
         private JMoneyField textFieldValor;
 
         private ArrayList<ContaBancariaModel> listaDeContasSelecionadas;
@@ -126,16 +129,17 @@ public class MovimentacaoInternalFrame extends JInternalFrame
         private ImageIcon imageIconCancelar;
         private ImageIcon imageIconEditar;
         private boolean obtendoPosicao = false;
+        private JFormattedTextField formatText;
 
 //	private Moviment
 
-        public MovimentacaoInternalFrame(FuncionarioModel funcionarioModel) throws Exception {
+        public OcorrenciaInternalFrame(FuncionarioModel funcionarioModel) throws Exception {
 
-            setTitle("Movimentação Diaria");
+            setTitle("Lançamento de Ocorrências");
 
-            if (funcionarioModel.getPermissaoMovFinanceiraModel().isPermiteAcesso() == false) {
-                throw new Exception("Usuário sem permissao para acessar esse modulo");
-            }
+//            if (funcionarioModel.getPermissaoMovFinanceiraModel().isPermiteAcesso() == false) {
+//             //   throw new Exception("Usuário sem permissao para acessar esse modulo");
+//            }
 
             setResizable(false);
             setClosable(true);
@@ -206,7 +210,7 @@ public class MovimentacaoInternalFrame extends JInternalFrame
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
                     }
-                   
+
                 }
 
                 @Override
@@ -380,56 +384,13 @@ public class MovimentacaoInternalFrame extends JInternalFrame
             };
             // panelInfoLancamento.setBackground();
             panelInfoLancamento.setBorder(new TitledBorder(null, "Informaçoes de Lançamento", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-            panelInfoLancamento.setBounds(5, 80, 321, 505);
+            panelInfoLancamento.setBounds(5, 80, 321, 539);
             panelInfoLancamento.setOpaque(false);
             getContentPane().add(panelInfoLancamento);
             panelInfoLancamento.setLayout(null);
-
-            JLabel labelTipo = new JLabel("Tipo:");
-            labelTipo.setBounds(10, 25, 46, 15);
-            panelInfoLancamento.add(labelTipo);
-
-            JPanel panel_2 = new JPanel();
-            panel_2.setBorder(new LineBorder(Color.LIGHT_GRAY));
-            panel_2.setBackground(Color.WHITE);
-            panel_2.setBounds(10, 45, 301, 45);
-            panelInfoLancamento.add(panel_2);
-            panel_2.setLayout(null);
-
-            radioButtonCredito = new JRadioButton("Crédito");
-            // adioButtonCredito.setBackground(S);
-            radioButtonCredito.setFont(new Font("Tahoma", Font.BOLD, 15));
-            radioButtonCredito.setBounds(23, 9, 109, 23);
-            panel_2.add(radioButtonCredito);
             Color customColor = new Color(10, 10, 255);
 
-            radioButtonCredito.addChangeListener(new ChangeListener() {
-
-                @Override
-                public void stateChanged(ChangeEvent e) {
-                    if (radioButtonCredito.isSelected()) {
-                        panelInfoLancamento.setBackground(new Color(102, 153, 102));
-
-                    } else {
-                        panelInfoLancamento.setBackground(new Color(153, 102, 102));
-                    }
-                    validate();
-                    panelInfoLancamento.repaint();
-
-                }
-            });
-
-            radioButtonDebito = new JRadioButton("Débito");
-            // radioButtonDebito.setBackground();
-            radioButtonDebito.setFont(new Font("Tahoma", Font.BOLD, 15));
-            radioButtonDebito.setBounds(166, 9, 109, 23);
-
-            panel_2.add(radioButtonDebito);
-
             ButtonGroup buttonGroupLancamentoTipo = new ButtonGroup();
-            buttonGroupLancamentoTipo.add(radioButtonCredito);
-            buttonGroupLancamentoTipo.add(radioButtonDebito);
-            radioButtonCredito.setSelected(true);
 
             JLabel lblValor = new JLabel("Valor:");
             lblValor.setBounds(10, 398, 46, 14);
@@ -468,19 +429,19 @@ public class MovimentacaoInternalFrame extends JInternalFrame
             textFieldValor.setBounds(10, 415, 301, 45);
             panelInfoLancamento.add(textFieldValor);
 
-            comboBoxCliente = new JComboBox<ClienteModel>();
-            comboBoxCliente.setBounds(10, 270, 240, 43);
+            comboBoxCidade = new JComboBox<CidadeModel>();
+            comboBoxCidade.setBounds(10, 270, 240, 43);
 
-            panelInfoLancamento.add(comboBoxCliente);
-            AutoCompleteDecorator.decorate(comboBoxCliente);
+            panelInfoLancamento.add(comboBoxCidade);
+            AutoCompleteDecorator.decorate(comboBoxCidade);
 
-            JLabel labelCliente = new JLabel("Cliente:");
-            labelCliente.setBounds(10, 250, 46, 14);
-            panelInfoLancamento.add(labelCliente);
+            JLabel labelCidade = new JLabel("Cidade:");
+            labelCidade.setBounds(10, 249, 240, 15);
+            panelInfoLancamento.add(labelCidade);
 
-            JLabel lblNewLabel_1_1 = new JLabel("Categoria:");
-            lblNewLabel_1_1.setBounds(10, 175, 95, 14);
-            panelInfoLancamento.add(lblNewLabel_1_1);
+            JLabel lblVeiculo = new JLabel("Veículo:");
+            lblVeiculo.setBounds(10, 175, 240, 14);
+            panelInfoLancamento.add(lblVeiculo);
 
             comboBoxCategoria = new JComboBox<CategoriaModel>();
             AutoCompleteDecorator.decorate(comboBoxCategoria);
@@ -488,19 +449,18 @@ public class MovimentacaoInternalFrame extends JInternalFrame
             comboBoxCategoria.setBounds(10, 195, 240, 43);
             panelInfoLancamento.add(comboBoxCategoria);
 
-            textFieldDescricao = new JTextField();
-            textFieldDescricao.setBounds(10, 121, 301, 43);
-            panelInfoLancamento.add(textFieldDescricao);
-            textFieldDescricao.setColumns(10);
+            formattedTextFieldOcorrenciaNumero = new JFormattedTextField();
+            formattedTextFieldOcorrenciaNumero.setBounds(10, 45, 149, 43);
+            panelInfoLancamento.add(formattedTextFieldOcorrenciaNumero);
+            formattedTextFieldOcorrenciaNumero.setColumns(10);
 
-            JLabel labelDescricao = new JLabel("Descrição:");
-            labelDescricao.setBounds(10, 100, 80, 15);
+            JLabel labelDescricao = new JLabel("Nº:");
+            labelDescricao.setBounds(10, 24, 80, 15);
             panelInfoLancamento.add(labelDescricao);
 
-            checkBoxRepetir = new JCheckBox("Repetir");
-            checkBoxRepetir.setEnabled(false);
-            checkBoxRepetir.setBounds(10, 470, 109, 23);
-            panelInfoLancamento.add(checkBoxRepetir);
+            checkQTA = new JCheckBox("QTA");
+            checkQTA.setBounds(10, 470, 109, 23);
+            panelInfoLancamento.add(checkQTA);
 
             JLabel labelConta = new JLabel("Conta:");
             labelConta.setBounds(10, 324, 46, 14);
@@ -509,93 +469,6 @@ public class MovimentacaoInternalFrame extends JInternalFrame
             comboBoxConta = new JComboBox<ContaBancariaModel>();
             comboBoxConta.setBounds(10, 344, 301, 43);
             panelInfoLancamento.add(comboBoxConta);
-
-            JPanel panel_3 = new JPanel();
-            panel_3.setBounds(116, 470, 195, 23);
-            panelInfoLancamento.add(panel_3);
-            panel_3.setEnabled(false);
-            panel_3.setLayout(null);
-
-            comboboxRepetirPeriodo = new JComboBox();
-            comboboxRepetirPeriodo.setEnabled(false);
-            comboboxRepetirPeriodo.setBounds(0, 0, 89, 25);
-            panel_3.add(comboboxRepetirPeriodo);
-
-            spinnerRepetirQtde = new JSpinner();
-            spinnerRepetirQtde.setEnabled(false);
-            spinnerRepetirQtde.setBounds(99, 0, 55, 25);
-            panel_3.add(spinnerRepetirQtde);
-
-            JLabel lblVezes = new JLabel("Vezes");
-            lblVezes.setEnabled(false);
-            lblVezes.setBounds(155, 5, 40, 14);
-            panel_3.add(lblVezes);
-
-            JButton buttonAddCliente = new JButton(Icone.novo("btAdic2.gif"));
-            buttonAddCliente.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    try {
-                        ClienteListInternalFrame clienteListInternalFrame = new ClienteListInternalFrame() {
-
-                            @Override
-                            public void acaoSalvar() {
-
-                                try {
-                                    Long id = null;
-                                    Conexao.Executar(new Comando() {
-
-                                        @Override
-                                        public void execute(Session session) throws Exception {
-                                            ClienteModel model = getFormCadPanel().getModel();
-                                            ClienteModel modelAux = negocio.salvar(model);
-                                            comboBoxCliente.addItem(modelAux);
-                                            comboBoxCliente.setSelectedItem(modelAux);
-
-                                        }
-                                    });
-
-                                    setVisible(false);
-                                    dispose();
-                                    JOptionPane.showMessageDialog(this, "Inserido com sucesso!");
-
-                                } catch (Exception e) {
-                                    JOptionPane.showMessageDialog(this, e.getMessage());
-                                    e.printStackTrace();
-
-                                }
-
-                            }
-
-                        };
-                        clienteListInternalFrame.eventoBotaoIncluir();
-                        clienteListInternalFrame.setVisible(true);
-                        clienteListInternalFrame.setModoForm();
-
-                        clienteListInternalFrame.buttonBarComponent.btCancelar.addActionListener(new ActionListener() {
-
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                clienteListInternalFrame.setVisible(false);
-                                clienteListInternalFrame.dispose();
-
-                            }
-                        });
-                        PrincipalDesktop.getjDesktopPane().add(clienteListInternalFrame, 0);
-                        clienteListInternalFrame.setSelected(true);
-                        PrincipalDesktop.getjDesktopPane().setSelectedFrame(clienteListInternalFrame);
-                        // clienteListInternalFrame.setModoForm();
-                        ClienteFormCadPanel clienteFormCadPanel = (ClienteFormCadPanel) clienteListInternalFrame.getFormCadPanel();
-                        clienteFormCadPanel.getTextFieldDescricao().requestFocus();
-                        clienteFormCadPanel.getTextFieldDescricao().selectAll();
-
-                    } catch (Exception excecao) {
-                        JOptionPane.showInternalMessageDialog(PrincipalDesktop.getjDesktopPane(), excecao.getMessage() + " " + excecao.getLocalizedMessage());
-
-                    }
-                }
-            });
-            buttonAddCliente.setBounds(256, 269, 56, 45);
-            panelInfoLancamento.add(buttonAddCliente);
 
             JButton buttonAddCategoria = new JButton(Icone.novo("btAdic2.gif"));
             buttonAddCategoria.addActionListener(new ActionListener() {
@@ -661,6 +534,52 @@ public class MovimentacaoInternalFrame extends JInternalFrame
             });
             buttonAddCategoria.setBounds(255, 193, 56, 46);
             panelInfoLancamento.add(buttonAddCategoria);
+
+            JLabel lblHora = new JLabel("Hora Envio:");
+            lblHora.setBounds(169, 25, 80, 15);
+            panelInfoLancamento.add(lblHora);
+
+            MaskFormatter mask = null;
+            try {
+                mask = new MaskFormatter("##:##:##");//the # is for numeric values
+                mask.setPlaceholderCharacter('#');
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            //
+            // Create a formatted text field that accept a valid time.
+            //
+            SimpleDateFormat formatter = new SimpleDateFormat("hh:mm:ss");
+            String dateString = formatter.format(new Date());
+            
+           
+            
+            try {
+                MaskFormatter maskFormatter = new MaskFormatter("**:**");
+                maskFormatter.setPlaceholderCharacter('_');
+
+                formatText = new JFormattedTextField(maskFormatter);
+                formatText.setFocusLostBehavior(JFormattedTextField.PERSIST);
+                formatText.addKeyListener(new KeyAdapter() {
+                    public void keyTyped(KeyEvent e) {
+                    char c = e.getKeyChar();
+                    if (((c < '0') || (c > '9')) && (c != KeyEvent.VK_BACK_SPACE)) {
+                        e.consume();
+                    }
+                    }
+                });
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            
+           
+            formatText.setBounds(169, 46, 142, 43);
+            formatText.setText(dateString);
+            
+            panelInfoLancamento.add(formatText);
+            
+            
             buttonAddMovimentacao = new JButton(Icone.novo("chamado_concluido_16x16.png"));
             buttonAddMovimentacao.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -668,8 +587,7 @@ public class MovimentacaoInternalFrame extends JInternalFrame
                 }
             });
             buttonAddMovimentacao.setText("Adicionar Lançamento");
-
-            buttonAddMovimentacao.setBounds(5, 585, 321, 67);
+            buttonAddMovimentacao.setBounds(5, 630, 321, 67);
             getContentPane().add(buttonAddMovimentacao);
 
             tableSaldo = new JTable();
@@ -764,7 +682,6 @@ public class MovimentacaoInternalFrame extends JInternalFrame
                     // TODO Auto-generated method stub
                     if (getMovimentacaoModel().getId() == null) {
                         MovimentacaoModel model = getModelSelecionado();
-
                         if (model == null) {
                             JOptionPane.showMessageDialog(null, "Selecione um registro");
                         } else {
@@ -889,9 +806,9 @@ public class MovimentacaoInternalFrame extends JInternalFrame
                             comboBoxConta.addItem(contaBancariaModel);
                         }
 
-                        ArrayList<ClienteModel> listaDeClientes = new Cliente().obterTodos(ClienteModel.class);
-                        for (ClienteModel clienteModel : listaDeClientes) {
-                            comboBoxCliente.addItem(clienteModel);
+                        ArrayList<CidadeModel> listaDeCidades = new Cidade().obterTodos(CidadeModel.class);
+                        for (CidadeModel cidadeModel : listaDeCidades) {
+                            comboBoxCidade.addItem(cidadeModel);
                         }
                         listaDeContasSelecionadas = new ContaBancaria().obterTodos(ContaBancariaModel.class);
                         // acaoObterPosicao();
@@ -908,14 +825,16 @@ public class MovimentacaoInternalFrame extends JInternalFrame
             setMovimentacaoModel(factoryMovimentacaoModel());
 
             panel_5.removeAll();
-            if (funcionarioModel.getPermissaoMovFinanceiraModel().isVisualizarSaldoConta()) {
-                panel_5.add(scrollPaneLancamentos, BorderLayout.CENTER);
-                panel_5.add(tabbedPaneSaldoEmConta, BorderLayout.SOUTH);
-            } else {
-                panel_5.add(scrollPaneLancamentos, BorderLayout.CENTER);
-                jTableMovimentacoes.getColumnModel().getColumn(6).setMinWidth(0);
-                jTableMovimentacoes.getColumnModel().getColumn(6).setMaxWidth(0);
-            }
+            // if
+            // (funcionarioModel.getPermissaoMovFinanceiraModel().isVisualizarSaldoConta())
+            // {
+            // panel_5.add(scrollPaneLancamentos, BorderLayout.CENTER);
+            // panel_5.add(tabbedPaneSaldoEmConta, BorderLayout.SOUTH);
+            // } else {
+            panel_5.add(scrollPaneLancamentos, BorderLayout.CENTER);
+            jTableMovimentacoes.getColumnModel().getColumn(6).setMinWidth(0);
+            jTableMovimentacoes.getColumnModel().getColumn(6).setMaxWidth(0);
+            // }
 
         }
 
@@ -938,10 +857,8 @@ public class MovimentacaoInternalFrame extends JInternalFrame
                 setMovimentacaoModel(factoryMovimentacaoModel());
             } catch (Exception e1) {
                 e1.printStackTrace();
-                JOptionPane.showMessageDialog(MovimentacaoInternalFrame.this, e1.getLocalizedMessage(), "ERRO", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(OcorrenciaInternalFrame.this, e1.getLocalizedMessage(), "ERRO", JOptionPane.ERROR_MESSAGE);
             }
-            // TODO Auto-generated method stub
-
         }
 
         private void acaoEditarData(MovimentacaoModel modelSelecionado, Date dataSelecionada) {
@@ -1146,6 +1063,17 @@ public class MovimentacaoInternalFrame extends JInternalFrame
             }
 
         }
+        
+        private MaskFormatter createFormatter(String s) {
+            MaskFormatter formatter = null;
+            try {
+              formatter = new MaskFormatter(s);
+              formatter.setPlaceholderCharacter('_');
+            } catch (java.text.ParseException exc) {
+              System.err.println("formatter is bad: " + exc.getMessage());
+            }
+            return formatter;
+          }
 
         public PosicaoFinanceiraModel getPosicaoFinanceiraModel() {
             return posicaoFinanceiraModel;
@@ -1206,13 +1134,10 @@ public class MovimentacaoInternalFrame extends JInternalFrame
         public MovimentacaoModel getMovimentacaoModel() {
             movimentacaoModel.setCategoria((CategoriaModel) comboBoxCategoria.getSelectedItem());
             movimentacaoModel.setConta((ContaBancariaModel) comboBoxConta.getSelectedItem());
-            movimentacaoModel.setCliente((ClienteModel) comboBoxCliente.getSelectedItem());
+            movimentacaoModel.setCliente((ClienteModel) comboBoxCidade.getSelectedItem());
             movimentacaoModel.setTipo(MovimentacaoFinanceiraTypes.credito);
-            if (radioButtonDebito.isSelected()) {
-                movimentacaoModel.setTipo(MovimentacaoFinanceiraTypes.debito);
-            }
-
-            movimentacaoModel.setDescricao(textFieldDescricao.getText());
+          
+            movimentacaoModel.setDescricao(formattedTextFieldOcorrenciaNumero.getText());
             movimentacaoModel.setValor(BigDecimal.valueOf(textFieldValor.getValor()));
             movimentacaoModel.setDataHora(model.getValue());
             return movimentacaoModel;
@@ -1221,17 +1146,17 @@ public class MovimentacaoInternalFrame extends JInternalFrame
         public void setMovimentacaoModel(MovimentacaoModel movimentacaoModel) {
             this.movimentacaoModel = movimentacaoModel;
 
-            textFieldDescricao.setText(movimentacaoModel.getDescricao());
+            formattedTextFieldOcorrenciaNumero.setText(movimentacaoModel.getDescricao());
             // comboBoxCategoria.setSelectedItem(anObject);
             if (movimentacaoModel.getTipo() == null) {
-                radioButtonCredito.setSelected(true);
+              //  radioButtonCredito.setSelected(true);
             } else {
                 if (movimentacaoModel.getTipo() == MovimentacaoFinanceiraTypes.credito) {
-                    radioButtonCredito.setSelected(true);
+                  //  radioButtonCredito.setSelected(true);
 
                 }
                 if (movimentacaoModel.getTipo() == MovimentacaoFinanceiraTypes.debito) {
-                    radioButtonDebito.setSelected(true);
+                    //radioButtonDebito.setSelected(true);
 
                 }
                 panelInfoLancamento.repaint();
@@ -1259,7 +1184,7 @@ public class MovimentacaoInternalFrame extends JInternalFrame
                 buttonAddMovimentacao.setText("Alterar Lançamento");
 
                 comboBoxCategoria.setSelectedItem(movimentacaoModel.getCategoria());
-                comboBoxCliente.setSelectedItem(movimentacaoModel.getCliente());
+                comboBoxCidade.setSelectedItem(movimentacaoModel.getCliente());
                 comboBoxConta.setSelectedItem(movimentacaoModel.getConta());
             } else {
                 buttonAlterarData.setEnabled(true);
@@ -1275,7 +1200,7 @@ public class MovimentacaoInternalFrame extends JInternalFrame
                 buttonAddMovimentacao.setText("Adicionar Lançamento");
 
                 comboBoxCategoria.setSelectedIndex(0);
-                comboBoxCliente.setSelectedIndex(0);
+                comboBoxCidade.setSelectedIndex(-1);
                 comboBoxConta.setSelectedIndex(0);
             }
 
@@ -1417,7 +1342,7 @@ public class MovimentacaoInternalFrame extends JInternalFrame
                                 } catch (Exception e) {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
-                                    JOptionPane.showMessageDialog(MovimentacaoInternalFrame.this, e.getLocalizedMessage(), "ERRO", JOptionPane.ERROR_MESSAGE);
+                                    JOptionPane.showMessageDialog(OcorrenciaInternalFrame.this, e.getLocalizedMessage(), "ERRO", JOptionPane.ERROR_MESSAGE);
 
                                 } finally {
                                     acaoObterPosicao();

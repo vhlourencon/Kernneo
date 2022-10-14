@@ -90,7 +90,7 @@ public class ContaBancariaFormCadPanel extends GenericFormCadPanel<ContaBancaria
         @Override
         public ContaBancariaModel getModel() {
             model.setNome(textFieldDescricao.getText());
-            model.getMovimentacaoInicial().setValor(BigDecimal.valueOf(getValor(textField)));
+            model.setSaldoInicial(BigDecimal.valueOf(getValor(textField)));
             model.setChequeEspecial(BigDecimal.valueOf(getValor(textFieldChequeEspecial)));
             return model;
         }
@@ -123,7 +123,7 @@ public class ContaBancariaFormCadPanel extends GenericFormCadPanel<ContaBancaria
             super.setModel(model);
 
             textFieldDescricao.setText(model.getNome());
-             textField.setValue(model.getMovimentacaoInicial().getValor().doubleValue());
+             textField.setValue(model.getSaldoInicial());
              textFieldChequeEspecial.setValue(model.getChequeEspecial());
              System.out.println(model.getChequeEspecial());
          //   setValor(model.getMovimentacaoInicial().getValor());

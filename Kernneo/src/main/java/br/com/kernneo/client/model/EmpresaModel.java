@@ -120,8 +120,22 @@ public class EmpresaModel extends GenericModel {
 	private BigDecimal taxaDeEntrega;
 	
 	
+	private int ultimaAtualicacao; 
+	
+	
+	
+	
+	
 
-	public String getLogo() {
+    public int getUltimaAtualicacao() {
+        return ultimaAtualicacao;
+    }
+
+    public void setUltimaAtualicacao(int ultimaAtualicacao) {
+        this.ultimaAtualicacao = ultimaAtualicacao;
+    }
+
+    public String getLogo() {
 		return logo;
 	}
 

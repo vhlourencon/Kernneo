@@ -46,7 +46,7 @@ public class ContaBancariaListInternalFrame extends GenericListInternalFrame<Con
     public String[] modelToRow(ContaBancariaModel model) {
 	String id = String.valueOf(model.getId());
 	String descricao = model.getNome();
-	String saldoInicial = model.currencyFormat(model.getMovimentacaoInicial().getValor());
+	String saldoInicial = model.currencyFormat(model.getSaldoInicial());
 	String chequeEspecial = model.currencyFormat(model.getChequeEspecial());
 	
 	String[] row = new String[] { id, descricao, saldoInicial, chequeEspecial };

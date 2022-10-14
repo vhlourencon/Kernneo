@@ -1,7 +1,12 @@
 package br.com.kernneo.desktop;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dialog;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,16 +21,27 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JDesktopPane;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JRootPane;
 import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.InsetsUIResource;
@@ -54,6 +70,7 @@ import br.com.kernneo.desktop.view.fornecedor.FornecedorListInternalFrame;
 import br.com.kernneo.desktop.view.funcionario.FuncionarioListInternalFrame;
 import br.com.kernneo.desktop.view.grupo.GrupoListInternalFrame;
 import br.com.kernneo.desktop.view.observacao.ObservacaoListInternalFrame;
+import br.com.kernneo.desktop.view.ocorrencia.OcorrenciaInternalFrame;
 import br.com.kernneo.desktop.view.planocontas.PlanoContasListInternalFrame;
 import br.com.kernneo.desktop.view.produto.ProdutoListInternalFrame;
 import br.com.kernneo.desktop.view.subgrupo.SubGrupoListInternalFrame;
@@ -108,8 +125,12 @@ public class PrincipalDesktop extends JFrame
 //	UIManager.put("FormattedTextField.contentMargins", new InsetsUIResource(0, 0, 0, 0));
 
             try {
-                for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels())
+
+                {
+
                     if ("Nimbus".equals(info.getName())) {
+
                         UIManager.setLookAndFeel(info.getClassName());
                         UIManager.put("FormattedTextField.margins", "FormattedTextField.contentMargins");
                         // UIManager.getDefaults().put("TextField.font",
@@ -139,7 +160,7 @@ public class PrincipalDesktop extends JFrame
                     PrincipalDesktop.setUsarioLogado(null);
                     String passwordString = new String(password);
 
-                    if (passwordString.equals("inf0cru")) {
+                    if (passwordString.equals("")) {
                         return true;
                     }
 
@@ -162,9 +183,8 @@ public class PrincipalDesktop extends JFrame
                             session.close();
                         }
                     }
- 
-                    if (funcionarioModel != null && funcionarioModel.getSenha() != null && td.decrypt(funcionarioModel.getSenha()).equals(passwordString)) {
 
+                    if (funcionarioModel != null && funcionarioModel.getSenha() != null && td.decrypt(funcionarioModel.getSenha()).equals(passwordString)) {
                         PrincipalDesktop.setUsarioLogado(funcionarioModel);
                         return true;
                     } else {
@@ -174,10 +194,10 @@ public class PrincipalDesktop extends JFrame
             });
 
             JXLoginPane.showLoginDialog(principalDesktop, jxLoginPane);
-
             if (jxLoginPane.getStatus() == JXLoginPane.Status.SUCCEEDED) {
                 principalDesktop.setVisible(true);
-                principalDesktop.createMenuZeca();
+               // principalDesktop.createMenuZeca();
+                principalDesktop.createMenuSamu();
 
             } else {
                 principalDesktop.setVisible(false);
@@ -207,6 +227,38 @@ public class PrincipalDesktop extends JFrame
             // createMenu();
 
         }
+        
+        private void createMenuSamu() { 
+            JMenuBar jMenuBar = new JMenuBar();
+            
+            JMenu jMenuFinanceiro = new JMenu("Financeiro");
+            jMenuBar.add(jMenuFinanceiro);
+
+            JMenuItem jMenuItemMovimentoCaixa = new JMenuItem("Movimentação Diária");
+            jMenuFinanceiro.add(jMenuItemMovimentoCaixa);
+            jMenuItemMovimentoCaixa.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                    try {
+                        OcorrenciaInternalFrame internalFrame = new OcorrenciaInternalFrame(PrincipalDesktop.getUsarioLogado());
+                        internalFrame.setVisible(true);
+                        jDesktopPane.add(internalFrame, 0);
+                        internalFrame.pack();
+                        internalFrame.setMaximum(true);
+                        internalFrame.setSelected(true);
+                        internalFrame.setMaximizable(true);
+
+                    } catch (Exception excecao) {
+                        JOptionPane.showMessageDialog(jDesktopPane, excecao.getMessage(), "ERRO", JOptionPane.ERROR_MESSAGE);
+                        excecao.printStackTrace();
+                    }
+
+                }
+            });
+            setJMenuBar(jMenuBar);
+        }
 
         private void createMenuZeca() {
 
@@ -229,9 +281,7 @@ public class PrincipalDesktop extends JFrame
 
                     } catch (Exception excecao) {
                         JOptionPane.showInternalMessageDialog(jDesktopPane, excecao.getMessage() + " " + excecao.getLocalizedMessage());
-
                     }
-
                 }
             });
 
@@ -246,7 +296,6 @@ public class PrincipalDesktop extends JFrame
                         FuncionarioListInternalFrame funcionarioListInternalFrame = new FuncionarioListInternalFrame();
                         funcionarioListInternalFrame.setVisible(true);
                         jDesktopPane.add(funcionarioListInternalFrame, 0);
-                      
 
                     } catch (Exception excecao) {
                         JOptionPane.showInternalMessageDialog(jDesktopPane, excecao.getMessage() + " " + excecao.getLocalizedMessage());
@@ -335,7 +384,7 @@ public class PrincipalDesktop extends JFrame
 
                     } catch (Exception excecao) {
                         JOptionPane.showMessageDialog(jDesktopPane, excecao.getLocalizedMessage(), "ERRO", JOptionPane.ERROR_MESSAGE);
-                        
+
                         excecao.printStackTrace();
 
                     }
@@ -345,7 +394,7 @@ public class PrincipalDesktop extends JFrame
 
             JMenu jMenuRelatorio = new JMenu("Relatórios");
             jMenuBar.add(jMenuRelatorio);
-            
+
             JMenuItem jMenuItemRelatorioMovimentacao = new JMenuItem("Movimentação Financeira");
             jMenuRelatorio.add(jMenuItemRelatorioMovimentacao);
             jMenuItemRelatorioMovimentacao.addActionListener(new ActionListener() {
@@ -362,10 +411,9 @@ public class PrincipalDesktop extends JFrame
                         listPanel.setSelected(true);
                         listPanel.setMaximizable(true);
 
-
                     } catch (Exception excecao) {
                         JOptionPane.showMessageDialog(jDesktopPane, excecao.getLocalizedMessage(), "ERRO", JOptionPane.ERROR_MESSAGE);
-                        
+
                         excecao.printStackTrace();
 
                     }
@@ -812,4 +860,78 @@ public class PrincipalDesktop extends JFrame
         public static void setjDesktopPane(JDesktopPane jDesktopPane) {
             PrincipalDesktop.jDesktopPane = jDesktopPane;
         }
+
+        public static void Loading(JInternalFrame jInternalFrame) {
+            JFrame frame = new JFrame();
+            JPanel panel = new JPanel();
+            JLabel label = new JLabel("Loading...");
+            JProgressBar jpb = new JProgressBar();
+            jpb.setIndeterminate(false);
+            int max = 1000;
+            jpb.setMaximum(max);
+            panel.add(label);
+            panel.add(jpb);
+            frame.add(panel);
+            frame.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+            // frame.setModal(true);
+            frame.setResizable(false);
+            frame.pack();
+            frame.setSize(200, 90);
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            // frame.setUndecorated(true);
+            frame.getRootPane().setWindowDecorationStyle(JRootPane.NONE);
+            new Task_IntegerUpdate(frame, jpb, max, label).execute();
+
+        }
+
+        static class Task_IntegerUpdate extends SwingWorker<Void, Integer>
+            {
+
+                JProgressBar jpb;
+                int max;
+                JLabel label;
+                JFrame j;
+
+                public Task_IntegerUpdate(JFrame jFrame, JProgressBar jpb, int max, JLabel label) {
+                    this.jpb = jpb;
+                    this.max = max;
+                    this.label = label;
+                    this.j = jFrame;
+
+                }
+
+                @Override
+                protected void process(List<Integer> chunks) {
+                    int i = chunks.get(chunks.size() - 1);
+                    jpb.setValue(i); // The last value in this array is all we care about.
+                    // System.out.println(i);
+                    label.setText("Loading " + i + " of " + max);
+                }
+
+                @Override
+                protected Void doInBackground() throws Exception {
+                    for (int i = 0; i < max; i++) {
+                        Thread.sleep(1); // Illustrating long-running code.
+                        publish(i);
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void done() {
+                    try {
+                        get();
+
+                        j.setVisible(false);
+                        j.dispose();
+                        // JOptionPane.showMessageDialog(jpb.getParent(), "Success", "Success",
+                        // JOptionPane.INFORMATION_MESSAGE);
+                        // frame.getContentPane().add(c);
+                    } catch (ExecutionException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
     }

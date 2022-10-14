@@ -12,108 +12,109 @@ import br.com.kernneo.client.utils.GenericPagina;
 import br.com.kernneo.server.ConnectFactory;
 import br.com.kernneo.server.PaginacaoUtils;
 
-public abstract class GenericDAO<GENERICMODEL extends GenericModel> {
+public abstract class GenericDAO<GENERICMODEL extends GenericModel>
+    {
 
-	public GENERICMODEL salvar(GENERICMODEL vo) throws SQLException {
-		Session session = ConnectFactory.getSession();
-		session.save(vo);
-		return vo;
-	}
+        public GENERICMODEL salvar(GENERICMODEL vo) throws SQLException {
+            Session session = ConnectFactory.getSession();
+            session.save(vo);
+            return vo;
+        }
 
-	public void alterar(GENERICMODEL model) throws SQLException {
-		Session session = ConnectFactory.getSession();
-		session.merge(model);
+        public void alterar(GENERICMODEL model) throws SQLException {
+            Session session = ConnectFactory.getSession();
+            session.merge(model);
 
-	}
+        }
 
-	public void excluir(GENERICMODEL model) throws SQLException {
-		model.setDeletado(true);
-		alterar(model);
-	}
+        public void excluir(GENERICMODEL model) throws SQLException {
+            model.setDeletado(true);
+            alterar(model);
+        }
 
-	public void setarDeletado(GENERICMODEL model) throws SQLException {
-		Session session = ConnectFactory.getSession();
-		session.update(model);
-	}
+        public void setarDeletado(GENERICMODEL model) throws SQLException {
+            Session session = ConnectFactory.getSession();
+            session.update(model);
+        }
 
-	public GENERICMODEL merge(GENERICMODEL vo) throws SQLException {
-		Session session = ConnectFactory.getSession();
-		session.merge(vo);
+        public GENERICMODEL merge(GENERICMODEL vo) throws SQLException {
+            Session session = ConnectFactory.getSession();
+            session.merge(vo);
 
-		return vo;
-	}
+            return vo;
+        }
 
-	public GENERICMODEL saveOrUpdate(GENERICMODEL vo) throws SQLException {
-		Session session = ConnectFactory.getSession();
-		session.saveOrUpdate(vo);
+        public GENERICMODEL saveOrUpdate(GENERICMODEL vo) throws SQLException {
+            Session session = ConnectFactory.getSession();
+            session.saveOrUpdate(vo);
 
-		return vo;
-	}
+            return vo;
+        }
 
-	public GENERICMODEL obterPorId(GENERICMODEL model) throws SQLException {
+        public void remove(GENERICMODEL model) throws SQLException {
+            Session session = ConnectFactory.getSession();
+            session.delete(model);
+        }
 
-		Session session = ConnectFactory.getSession();
-		org.hibernate.Query select = session
-				.createQuery("select g FROM " + model.getClass().getCanonicalName() + " g WHERE g.id = :id ");
-		select.setLong("id", model.getId());
+        public GENERICMODEL obterPorId(GENERICMODEL model) throws SQLException {
 
-		model = (GENERICMODEL) select.uniqueResult();
+            Session session = ConnectFactory.getSession();
+            org.hibernate.Query select = session.createQuery("select g FROM " + model.getClass().getCanonicalName() + " g WHERE g.id = :id ");
+            select.setLong("id", model.getId());
 
-		return (GENERICMODEL) model;
-	}
+            model = (GENERICMODEL) select.uniqueResult();
 
-	public GENERICMODEL obterPorId(Class classe, Long id) throws SQLException {
+            return (GENERICMODEL) model;
+        }
 
-		Session session = ConnectFactory.getSession();
-		org.hibernate.Query select = session
-				.createQuery("select g FROM " + classe.getCanonicalName() + " g WHERE g.id = :id ");
-		select.setLong("id", id);
+        public GENERICMODEL obterPorId(Class classe, Long id) throws SQLException {
 
-		GENERICMODEL model = (GENERICMODEL) select.uniqueResult();
+            Session session = ConnectFactory.getSession();
+            org.hibernate.Query select = session.createQuery("select g FROM " + classe.getCanonicalName() + " g WHERE g.id = :id ");
+            select.setLong("id", id);
 
-		return model;
-	}
+            GENERICMODEL model = (GENERICMODEL) select.uniqueResult();
 
-	public Long obterUltimoID(Class classe) throws SQLException {
+            return model;
+        }
 
-		Session session = ConnectFactory.getSession();
+        public Long obterUltimoID(Class classe) throws SQLException {
 
-		org.hibernate.Query select = session.createQuery("SELECT max(id) from " + classe.getCanonicalName());
-		Long maxId = (Long) select.uniqueResult();
-		if (maxId == null) {
-			maxId = 0L;
-		}
-		return maxId;
+            Session session = ConnectFactory.getSession();
 
-	}
+            org.hibernate.Query select = session.createQuery("SELECT max(id) from " + classe.getCanonicalName());
+            Long maxId = (Long) select.uniqueResult();
+            if (maxId == null) {
+                maxId = 0L;
+            }
+            return maxId;
 
-	public ArrayList<GenericModel> obterTodos(Class c) throws SQLException {
+        }
 
-		Session session = ConnectFactory.getSession();
-		Query select = session.createQuery(" FROM " + c.getCanonicalName() + " g WHERE g.deletado = :deletado");
-		select.setParameter("deletado", false);
-		ArrayList<GenericModel> lista = (ArrayList<GenericModel>) select.getResultList();
+        public ArrayList<GenericModel> obterTodos(Class c) throws SQLException {
+            Session session = ConnectFactory.getSession();
+            Query select = session.createQuery(" FROM " + c.getCanonicalName() + " g WHERE g.deletado = :deletado");
+            select.setParameter("deletado", false);
+            ArrayList<GenericModel> lista = (ArrayList<GenericModel>) select.getResultList();
 
-		return lista;
-	}
+            return lista;
+        }
 
-	public ArrayList<GenericModel> obterTodosComFiltro(String filtro) throws SQLException {
+        public ArrayList<GenericModel> obterTodosComFiltro(String filtro) throws SQLException {
 
-		Session session = ConnectFactory.getSession();
-		Query select = session.createQuery(filtro);
-		ArrayList<GenericModel> lista = (ArrayList<GenericModel>) select.getResultList();
-		return lista;
-	}
+            Session session = ConnectFactory.getSession();
+            Query select = session.createQuery(filtro);
+            ArrayList<GenericModel> lista = (ArrayList<GenericModel>) select.getResultList();
+            return lista;
+        }
 
-	public GenericPagina<GENERICMODEL> obterPaginaPosterior(GenericPagina<GENERICMODEL> pagina, String filtroSql)
-			throws Exception {
+        public GenericPagina<GENERICMODEL> obterPaginaPosterior(GenericPagina<GENERICMODEL> pagina, String filtroSql) throws Exception {
 
-		return new PaginacaoUtils().getPaginaPosterior(filtroSql, pagina);
-	}
+            return new PaginacaoUtils().getPaginaPosterior(filtroSql, pagina);
+        }
 
-	public GenericPagina<GENERICMODEL> obterPaginaAnterior(GenericPagina<GENERICMODEL> pagina, String filtroSql)
-			throws Exception {
-		return new PaginacaoUtils().getPaginaAnterior(filtroSql, pagina);
-	}
+        public GenericPagina<GENERICMODEL> obterPaginaAnterior(GenericPagina<GENERICMODEL> pagina, String filtroSql) throws Exception {
+            return new PaginacaoUtils().getPaginaAnterior(filtroSql, pagina);
+        }
 
-}
+    }

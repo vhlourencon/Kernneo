@@ -40,7 +40,6 @@ public class Empresa extends Negocio<EmpresaModel, EmpresaDAO, EmpresaException>
 	try {
 	    Long ultimoId = obterUltimoId(EmpresaModel.class);
 	    EmpresaModel empresaModel = obterPorId(EmpresaModel.class, ultimoId);
-
 	    if (empresaModel == null) {
 		empresaModel = new EmpresaModel();
 	    }

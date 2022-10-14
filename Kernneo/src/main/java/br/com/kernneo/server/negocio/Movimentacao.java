@@ -141,6 +141,10 @@ public class Movimentacao extends Negocio<MovimentacaoModel, MovimentacaoDAO, Mo
             if (vo.getDescricao() != null && vo.getDescricao().trim().length() > 0) {
                 filtro += " and nome like('%" + vo.getDescricao() + "%')";
             }
+            
+            if(vo.isContaMovimentacaoInicial()) {
+                filtro += " and contaMovimentacaoInicial = true"; 
+            }
 
             filtro += " order by id asc";
 

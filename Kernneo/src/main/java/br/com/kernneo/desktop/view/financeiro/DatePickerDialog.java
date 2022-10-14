@@ -50,6 +50,10 @@ public abstract class DatePickerDialog extends JDialog
         private JPanel panel;
 
         private TitledBorder titledBorder;
+
+        private JDatePanelImpl datePanel;
+
+        private JDatePickerImpl datePicker;
         
         
         
@@ -93,6 +97,7 @@ public abstract class DatePickerDialog extends JDialog
             panel.setPreferredSize(new Dimension(100, 100));
             buttonOk.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
+                    datePicker.getInternalEventHandler().propertyChange(null);
                     getDataSelecionada(model.getValue());
                 }
             });
@@ -109,7 +114,7 @@ public abstract class DatePickerDialog extends JDialog
             panel.setBorder(titledBorder);
 
             // Don't know about the formatter, but there it is...
-            JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
+             datePanel = new JDatePanelImpl(model, p);
             datePanel.addActionListener(new ActionListener() {
 
                 @Override
@@ -122,7 +127,7 @@ public abstract class DatePickerDialog extends JDialog
 
             // datePanel.setBounds(24, 64, 267, 193);
 
-            JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new br.com.kernneo.desktop.view.util.DateLabelFormatter());
+            datePicker = new JDatePickerImpl(datePanel, new br.com.kernneo.desktop.view.util.DateLabelFormatter());
             datePicker.setLocation(24, 21);
             datePicker.setSize(267, 37);
             datePicker.setTextEditable(true);
@@ -131,7 +136,7 @@ public abstract class DatePickerDialog extends JDialog
                 @Override
                 public void keyTyped(KeyEvent e) {
                     // TODO Auto-generated method stub
-                    
+                  
                 }
                 
                 @Override
@@ -143,6 +148,7 @@ public abstract class DatePickerDialog extends JDialog
                 @Override
                 public void keyPressed(KeyEvent e) {
                     if (e.getKeyCode()==KeyEvent.VK_ENTER){
+                        datePicker.getInternalEventHandler().propertyChange(null);
                        getDataSelecionada(model.getValue());
                     }
                     
