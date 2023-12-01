@@ -1,6 +1,7 @@
 package br.com.kernneo.client.utils;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -13,9 +14,13 @@ import com.google.gwt.i18n.client.NumberFormat;
  * 
  */
 public final class StringUtils {
-
+	private static SimpleDateFormat	formatterHora = new SimpleDateFormat("HH:mm");
 	private StringUtils() {
 	}
+	
+    public static String currencyFormat(BigDecimal n) {
+        return java.text.NumberFormat.getCurrencyInstance().format(n);
+    }
 
 	
 	public static String reformatCartaoSus(String cartaoSus) {
@@ -96,4 +101,8 @@ public final class StringUtils {
 		}
 		return sb.toString();
 	}
+	public  static String getHoraFormat(Date data) {
+		return formatterHora.format(data);
+	}
+	
 }

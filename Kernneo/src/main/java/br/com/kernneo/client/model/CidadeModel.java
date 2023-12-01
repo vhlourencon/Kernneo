@@ -97,4 +97,8 @@ public class CidadeModel extends GenericModel {
 	this.codigoIbge = codigoIbge;
     }
 
+    @Override
+    public String toString() {
+       return getNome() != null ?  getNome().toUpperCase() : "";    }  
+
 }

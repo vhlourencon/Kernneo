@@ -10,7 +10,7 @@
 
 		<!-- Database connection settings -->
 		<property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-		<property name="connection.url">jdbc:mysql://10.15.28.207:3306/kernneo</property>
+		<property name="connection.url">jdbc:mysql://10.15.28.207:3306/sti</property>
 		<property name="connection.username">root</property>
 		<property name="connection.password">admin</property>
 
@@ -109,18 +109,18 @@
 		<mapping class="br.com.kernneo.client.model.OpcaoItemModel" />
 		<mapping class="br.com.kernneo.client.model.OpcaoItemAlternativaModel" />
 		<mapping class="br.com.kernneo.client.model.VeiculoModel" />
-		
-
-
+		<mapping class="br.com.kernneo.client.model.HospitalModel" />
+		<mapping class="br.com.kernneo.client.model.OcorrenciaModel" />
+		<mapping class="br.com.kernneo.client.model.OcorrenciaDetalheModel" />
+	
+	
 
 		<mapping class="br.com.kernneo.client.model.CstPisCofinsModel" />
 		<mapping class="br.com.kernneo.client.model.CstIpiModel" />
 		<mapping class="br.com.kernneo.client.model.CstIpiModel" />
-		
+	
 		
 		<mapping class="br.com.kernneo.client.model.permissao.PermissaoMovFinanceiraModel" />
-		
-		
 		
 
 
@@ -159,6 +159,13 @@
 
 		<mapping class="br.com.kernneo.client.caravana.model.CredenciamentoServicoModel" />
 		<mapping class="br.com.kernneo.client.caravana.model.RelatorioCredenciamentoCategoriaModel" />
+		
+		
+		<mapping class="br.com.kernneo.client.model.RegulacaoModel" />
+		
+		<mapping class="br.com.kernneo.client.model.SolicitacaoModel" />
+		<mapping class="br.com.kernneo.client.model.SolicitacaoItemModel" />
+	
 		
 
 

@@ -42,21 +42,21 @@ public class Cidade extends Negocio<CidadeModel, CidadeDAO, CidadeException> {
 	}
 	
 	if ( vo.getEstado() == null) { 
-	    msg.append("O estado nao pode ser nulo \n");
+	  //  msg.append("O estado nao pode ser nulo \n");
 	}
 
 	if (vo.getCodigoIbge() == null) {
-	    msg.append("O campo código Ibge é obrigatório \n");
+	  //  msg.append("O campo código Ibge é obrigatório \n");
 	} else {
 	 
 	    try {
 		 CidadeModel cidadeAux = obterPorCodigoIbge(vo.getCodigoIbge());
 		if ( cidadeAux != null && vo.getId() != cidadeAux.getId()) { 
-		    msg.append("Código ibge já cadastrao \n");
+		 //   msg.append("Código ibge já cadastrao \n");
 		}
 	    } catch (CidadeException e) {
 		e.printStackTrace();
-		msg.append("erro ao comparar códigos das cidades \n");
+		//msg.append("erro ao comparar códigos das cidades \n");
 	    }
 
 	}

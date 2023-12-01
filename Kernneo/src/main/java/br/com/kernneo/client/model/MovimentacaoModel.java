@@ -19,6 +19,7 @@ import com.smartgwt.client.docs.MobileDevelopment;
 
 import br.com.kernneo.client.types.FormaDePagamento;
 import br.com.kernneo.client.types.MovimentacaoFinanceiraTypes;
+import br.com.kernneo.client.types.MovimentacaoRecorrenciaTypes;
 import br.com.kernneo.client.types.MovimentacaoTypes;
 
 @Table
@@ -54,8 +55,14 @@ public class MovimentacaoModel extends GenericModel
         private Date dataHoraExecutado;
         private String descricao;
 
-        private boolean repetir;
-        private int repetirQtde;
+       
+        private int recorrenciaQuantidade=1;
+        private int recorrenciaParcela =1; 
+        @Enumerated(EnumType.STRING)
+        private MovimentacaoRecorrenciaTypes recorrenciaTipo;
+        
+        
+       
 
         public Date getDataHoraExecutado() {
             return dataHoraExecutado;
@@ -68,6 +75,9 @@ public class MovimentacaoModel extends GenericModel
         private boolean contaMovimentacaoInicial;
 
         private boolean executado;
+        
+        @Transient
+        private Boolean filtroExecutado;
 
         @Enumerated(EnumType.STRING)
         private MovimentacaoFinanceiraTypes tipo;
@@ -135,21 +145,9 @@ public class MovimentacaoModel extends GenericModel
             this.descricao = descricao;
         }
 
-        public boolean isRepetir() {
-            return repetir;
-        }
+        
 
-        public void setRepetir(boolean repetir) {
-            this.repetir = repetir;
-        }
-
-        public int getRepetirQtde() {
-            return repetirQtde;
-        }
-
-        public void setRepetirQtde(int repetirQtde) {
-            this.repetirQtde = repetirQtde;
-        }
+        
 
         public MovimentacaoFinanceiraTypes getTipo() {
             return tipo;
@@ -188,5 +186,43 @@ public class MovimentacaoModel extends GenericModel
         public void setExecutado(boolean executado) {
             this.executado = executado;
         }
+
+        public Boolean getFiltroExecutado() {
+            return filtroExecutado;
+        }
+
+        public void setFiltroExecutado(Boolean filtroExecutado) {
+            this.filtroExecutado = filtroExecutado;
+        }
+
+		public int getRecorrenciaQuantidade() {
+			return recorrenciaQuantidade;
+		}
+
+		public void setRecorrenciaQuantidade(int recorrenciaQuantidade) {
+			this.recorrenciaQuantidade = recorrenciaQuantidade;
+		}
+
+		public MovimentacaoRecorrenciaTypes getRecorrenciaTipo() {
+			return recorrenciaTipo;
+		}
+
+		public void setRecorrenciaTipo(MovimentacaoRecorrenciaTypes recorrenciaTipo) {
+			this.recorrenciaTipo = recorrenciaTipo;
+		}
+
+		public int getRecorrenciaParcela() {
+			return recorrenciaParcela;
+		}
+
+		public void setRecorrenciaParcela(int recorrenciaParcela) {
+			this.recorrenciaParcela = recorrenciaParcela;
+		}
+
+		
+     
+		
+		
+        
 
     }

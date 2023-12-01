@@ -138,7 +138,7 @@ public class CategoriaModel extends GenericModel {
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return getCategoria_nome_portugues();
+		return getCategoria_nome_portugues().toUpperCase();
 	}
 
 }

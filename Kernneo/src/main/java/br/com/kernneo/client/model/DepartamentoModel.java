@@ -21,8 +21,15 @@ public class DepartamentoModel extends GenericModel {
     public void setNome(String nome) {
 	this.nome = nome;
     }
+    
 
     @Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return getNome() != null ? getNome().toUpperCase() : "";
+	}
+
+	@Override
     public Record toRecord() {
 	// TODO Auto-generated method stub
 	return null;

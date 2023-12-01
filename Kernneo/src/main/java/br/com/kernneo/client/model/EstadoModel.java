@@ -48,4 +48,11 @@ public class EstadoModel extends GenericModel {
 	this.codigoIbge = codigoIbge;
     }
 
+	@Override
+	public String toString() {
+		return  sigla;
+	}
+    
+    
+
 }

@@ -22,6 +22,12 @@
 			<version>1.6.1</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/com.toedter/jcalendar -->
+		<dependency>
+			<groupId>com.toedter</groupId>
+			<artifactId>jcalendar</artifactId>
+			<version>1.4</version>
+		</dependency>
 
 
 		<dependency>
@@ -85,8 +91,9 @@
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
-			<version>6.5.1</version>
+			<version>6.20.0</version>
 		</dependency>
+
 
 
 

@@ -26,7 +26,7 @@ public class DepartamentoFiltroPanel extends GenericFiltroPanel<DepartamentoMode
 	add(lblNewLabel_1);
 
 	textField = new JTextField();
-	textField.setBounds(10, 41, 292, 20);
+	textField.setBounds(10, 41, 292, 30);
 	add(textField);
 	textField.setColumns(10);
     }
@@ -35,7 +35,6 @@ public class DepartamentoFiltroPanel extends GenericFiltroPanel<DepartamentoMode
     public DepartamentoModel getModelFiltro() {
 	if (modelFiltro == null) {
 	    setModelFiltro(new DepartamentoModel());
-
 	    getModelFiltro().setNome(null);
 	}
 

@@ -148,7 +148,6 @@ public class GenericListInternalFrame<NEGOCIO extends Negocio, GENERICMODEL exte
 
                 public void actionPerformed(ActionEvent e) {
                     if (buttonBarComponent.btConsultar.isSelected()) {
-
                         getPanelCenter().add(getGenericFiltroPanel(), BorderLayout.NORTH);
                     } else {
                         getPanelCenter().remove(getGenericFiltroPanel());

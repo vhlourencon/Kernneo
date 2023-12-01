@@ -27,4 +27,9 @@ public class VeiculoModel extends GenericModel
             return record;
         }
 
+        @Override
+        public String toString() {
+            return getNome() != null ? getNome() : "";
+        }
+
     }

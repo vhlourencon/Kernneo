@@ -14,6 +14,7 @@ public class DepartamentoFormCadPanel extends GenericFormCadPanel<DepartamentoMo
      */
     private static final long serialVersionUID = 1L;
     private JTextField textFieldDescricao;
+    private TitledBorder titledBorder;
 
     public DepartamentoFormCadPanel() {
 	initialize();
@@ -24,9 +25,11 @@ public class DepartamentoFormCadPanel extends GenericFormCadPanel<DepartamentoMo
 
 	setSize(536, 108);
 	setLayout(null);
+	
+	titledBorder  = new TitledBorder(null, "Informaçoes de Departamento", TitledBorder.LEADING, TitledBorder.TOP, null, null);
 
 	JPanel panel = new JPanel();
-	panel.setBorder(new TitledBorder(null, "Informa\u00E7\u00F5es de Departamento", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+	panel.setBorder(titledBorder);
 	panel.setBounds(10, 11, 516, 80);
 	add(panel);
 	panel.setLayout(null);
@@ -36,7 +39,7 @@ public class DepartamentoFormCadPanel extends GenericFormCadPanel<DepartamentoMo
 	panel.add(labelNome);
 
 	textFieldDescricao = new JTextField();
-	textFieldDescricao.setBounds(54, 35, 438, 20);
+	textFieldDescricao.setBounds(54, 35, 438, 30);
 	panel.add(textFieldDescricao);
 	textFieldDescricao.setColumns(10);
 
@@ -57,8 +60,21 @@ public class DepartamentoFormCadPanel extends GenericFormCadPanel<DepartamentoMo
 	}
 
 	super.setModel(model);
-
 	textFieldDescricao.setText(model.getNome());
 
     }
+    
+    public TitledBorder getTitledBorder() {
+		return titledBorder;
+	}
+
+	public JTextField getTextFieldDescricao() {
+		return textFieldDescricao;
+	}
+
+	public void setTextFieldDescricao(JTextField textFieldDescricao) {
+		this.textFieldDescricao = textFieldDescricao;
+	}
+    
+    
 }

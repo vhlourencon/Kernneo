@@ -31,6 +31,24 @@ public class PosicaoFinanceiraModel
             }
             return bigDecimalSaldoInicial;
         }
+        
+        public BigDecimal getSaldoAcumuladoMensal() {
+            BigDecimal bigDecimalSaldoInicial = new BigDecimal(0.0);
+            for (ContaBancariaModel contaBancariaModel : getListaDeContasBancarias()) {
+                bigDecimalSaldoInicial = bigDecimalSaldoInicial.add(contaBancariaModel.getPosicaoAux().getSaldoAcumuladoMensal()).add(contaBancariaModel.getSaldoInicial());
+            }
+            return bigDecimalSaldoInicial;
+        }
+        
+        public BigDecimal getSaldoAcumuladoTotal() {
+            BigDecimal bigDecimalSaldoInicial = new BigDecimal(0.0);
+            for (ContaBancariaModel contaBancariaModel : getListaDeContasBancarias()) {
+                bigDecimalSaldoInicial = bigDecimalSaldoInicial.add(contaBancariaModel.getPosicaoAux().getSaldoAcumuladoTotal()).add(contaBancariaModel.getSaldoInicial());
+            }
+            return bigDecimalSaldoInicial;
+        }
+        
+        
 
         public BigDecimal getSaldoFinalExecutado() {
             BigDecimal bigDecimalSaldoFinal = getSaldoInicialComPosicaoBancaria();   

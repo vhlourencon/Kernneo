@@ -1,6 +1,8 @@
 package br.com.kernneo.client.model;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -13,6 +15,7 @@ import org.hibernate.annotations.CascadeType;
 import com.smartgwt.client.data.Record;
 
 import br.com.kernneo.client.model.permissao.PermissaoMovFinanceiraModel;
+import br.com.kernneo.client.types.Modulo;
 
 @Table
 @Entity(name = "funcionario")
@@ -36,6 +39,9 @@ public class FuncionarioModel extends GenericModel {
 	@ManyToOne
 	@JoinColumn(name = "id_cargo")
 	private CargoModel cargo;
+	
+	@Enumerated(EnumType.STRING)
+	private Modulo moduloDeAcesso = Modulo.ZECA;
 
 	public boolean ativo;
 	private String login;
@@ -160,6 +166,18 @@ public class FuncionarioModel extends GenericModel {
 	public void setPermissaoMovFinanceiraModel(PermissaoMovFinanceiraModel permissaoMovFinanceiraModel) {
 		this.permissaoMovFinanceiraModel = permissaoMovFinanceiraModel;
 	}
+	
+	
+
+	
+
+	public Modulo getModuloDeAcesso() {
+		return moduloDeAcesso;
+	}
+
+	public void setModuloDeAcesso(Modulo moduloDeAcesso) {
+		this.moduloDeAcesso = moduloDeAcesso;
+	}
 
 	@Override
 	public Record toRecord() {
@@ -178,5 +196,13 @@ public class FuncionarioModel extends GenericModel {
 		}
 		return record;
 	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return  getNome() != null ? getNome() : "";
+	}
+	
+	
 
 }
